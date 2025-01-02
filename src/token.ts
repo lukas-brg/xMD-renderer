@@ -1,3 +1,5 @@
+import { Point } from "./mdinput";
+
 export enum ContentKind {
     BLOCK,
     INLINE,
@@ -19,7 +21,7 @@ export class Token {
         kind: ContentKind,
         content?: string,
         parseContent?: boolean,
-        depth?: number
+        depth?: number,
     ) {
         this.tag = tag;
         this.relatedPosition = relatedPosition;
@@ -36,15 +38,8 @@ export class BlockToken extends Token {
         content: string,
         relatedPosition: Point,
         parseContent?: boolean,
-        depth?: number
+        depth?: number,
     ) {
-        super(
-            tag,
-            relatedPosition,
-            ContentKind.BLOCK,
-            content,
-            parseContent,
-            depth
-        );
+        super(tag, relatedPosition, ContentKind.BLOCK, content, parseContent, depth);
     }
 }
