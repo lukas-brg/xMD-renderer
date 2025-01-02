@@ -111,10 +111,6 @@ class MdInput {
     }
 }
 
-interface TokenizingState {
-    currentPoint: Point;
-}
-
 interface Compiler {}
 
 enum ContentKind {
@@ -150,8 +146,21 @@ class Token {
 }
 
 class BlockToken extends Token {
-    constructor(tag: string, content: string, relatedPosition: Point) {
-        super(tag, relatedPosition, ContentKind.BLOCK, content);
+    constructor(
+        tag: string,
+        content: string,
+        relatedPosition: Point,
+        parseContent?: boolean,
+        depth?: number
+    ) {
+        super(
+            tag,
+            relatedPosition,
+            ContentKind.BLOCK,
+            content,
+            parseContent,
+            depth
+        );
     }
 }
 
@@ -177,39 +186,32 @@ class ParsingState {
     }
 }
 
-class Heading implements BlockRule {
-    static headingTypes: { [key: string]: string } = {
-        "#": "h1",
-        "##": "h2",
-        "###": "h3",
-        "####": "h4",
-        "#####": "h5",
-        "######": "h6",
-    };
-
-    process = (input: MdInput, state: ParsingState) => {
+const Heading: BlockRule = {
+    process: (input: MdInput, state: ParsingState) => {
+        const headingTypes: { [key: string]: string } = {
+            "#": "h1",
+            "##": "h2",
+            "###": "h3",
+            "####": "h4",
+            "#####": "h5",
+            "######": "h6",
+        };
         const prevLine = input.previousLine();
         if (prevLine != null && !isEmpty(prevLine)) {
             return false;
         }
         const line = input.currentLine();
         const [heading, remainingLine] = line.split(/\s+/, 2);
-        const headingTag = Heading.headingTypes[heading];
-        console.log(remainingLine);
+        const headingTag = headingTypes[heading];
 
         if (!headingTag) return false;
         state.addBlockToken(
-            new Token(
-                headingTag,
-                input.currentPoint,
-                ContentKind.BLOCK,
-                remainingLine
-            )
+            new BlockToken(headingTag, remainingLine, input.currentPoint)
         );
 
         return true;
-    };
-}
+    },
+};
 
 function parse(doc: MdInput, rules: Array<BlockRule>) {
     let line;
@@ -219,14 +221,14 @@ function parse(doc: MdInput, rules: Array<BlockRule>) {
         for (let rule of rules) {
             rule.process(doc, state);
         }
-        console.log(state.tokens);
     }
+    console.log(state.tokens);
 }
 
 function renderFile(filePath: string) {
     let fileContent = readFile(filePath);
     let rules = new Array<BlockRule>();
-    rules.push(new Heading());
+    rules.push(Heading);
     if (!fileContent) {
         return;
     }
