@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "target": "ESNext",
-    "module": "CommonJS",
+    "module": "CommonJS",        
+    "target": "ESNext",          
+    "esModuleInterop": true,   
+    "skipLibCheck": true,     
+    "strict": true,             
     "outDir": "./dist",
-    "rootDir": "./src",
-    "esModuleInterop": true,
-    "strict": true
+    "sourceMap": true
   },
-  "include": ["src/**/*","node_modules/@types/node/"],
-  "exclude": ["node_modules"]
+  "include": [
+    "src/**/*.ts"
+  ]
 }

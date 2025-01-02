@@ -1,5 +1,4 @@
 import { MdInput, Point } from "./mdinput";
-import { leadingWhitespaces, isEmpty } from "./string_util";
 import { Token, BlockToken } from "./token";
 import { BlockRule } from "./rules";
 

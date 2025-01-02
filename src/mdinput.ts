@@ -10,7 +10,6 @@ export class MdInput {
     readonly lines: string[];
     private content: string;
     private _currentPoint: Point;
-    private prevLine: string | null = null;
     constructor(content: string) {
         this.content = replaceTabs(content);
         this.lines = content.split("\n");
@@ -43,11 +42,7 @@ export class MdInput {
     }
 
     currentLine(): string {
-        const lineIdx = this._currentPoint.line - 1;
-
-        if (lineIdx == -1) {
-            return this.lines[0];
-        }
+        const lineIdx = Math.max(this._currentPoint.line - 1, 0);
         return this.lines[lineIdx];
     }
 
