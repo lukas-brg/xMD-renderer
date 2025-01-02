@@ -1,3 +1,4 @@
+import { throws } from "assert";
 import * as fs from "fs";
 
 function readFile(filePath: string): string | null {
@@ -19,14 +20,14 @@ interface Point {
 class MdInput {
     content: string;
     currentPoint: Point;
-
+    prevLine: string | null = null;
     constructor(content: string) {
         this.content = content;
-        this.currentPoint = { line: 1, column: 1, offset: 0 };
+        this.currentPoint = { line: 0, column: 1, offset: 0 };
     }
 
     reset() {
-        this.currentPoint = { line: 1, column: 1, offset: 0 };
+        this.currentPoint = { line: 0, column: 1, offset: 0 };
     }
 
     currentChar(): string | null {
@@ -68,6 +69,7 @@ class MdInput {
             startOfPrevLine,
             endOfLine === -1 ? undefined : endOfLine
         );
+        // return this.prevLine;
     }
 
     currentLine(): string {
@@ -99,6 +101,12 @@ class MdInput {
         this.currentPoint.column = 1;
         this.currentPoint.line++;
         this.currentPoint.offset = endOfLine + 1;
+        this.prevLine = this.currentLine();
+        if (this.currentPoint.line == 1) {
+            this.prevLine = null;
+            this.currentPoint.offset = endOfLine;
+            return this.content.substring(0, endOfLine);
+        }
         return this.content.substring(endOfLine + 1, endOfNextLine);
     }
 }
@@ -122,19 +130,22 @@ class Token {
     content?: string;
     kind: ContentKind;
     parseContent: boolean;
+    depth: number = 0;
 
     constructor(
         tag: string,
         relatedPosition: Point,
         kind: ContentKind,
         content?: string,
-        parseContent?: boolean
+        parseContent?: boolean,
+        depth?: number
     ) {
         this.tag = tag;
         this.relatedPosition = relatedPosition;
         this.content = content;
         this.kind = kind;
         this.parseContent = parseContent ?? true;
+        this.depth = depth ?? 0;
     }
 }
 
@@ -149,9 +160,21 @@ function isEmpty(line: string): boolean {
 }
 
 interface BlockRule {
-    process: (input: MdInput) => boolean;
+    process: (input: MdInput, state: ParsingState) => boolean;
     before?: (input: MdInput) => void;
     after?: (input: MdInput) => void;
+}
+
+class ParsingState {
+    tokens: Array<Token>;
+
+    constructor() {
+        this.tokens = new Array<Token>();
+    }
+
+    addBlockToken(token: Token) {
+        this.tokens.push(token);
+    }
 }
 
 class Heading implements BlockRule {
@@ -164,48 +187,51 @@ class Heading implements BlockRule {
         "######": "h6",
     };
 
-    process = (input: MdInput) => {
+    process = (input: MdInput, state: ParsingState) => {
         const prevLine = input.previousLine();
         if (prevLine != null && !isEmpty(prevLine)) {
             return false;
         }
         const line = input.currentLine();
-        const [heading, remainingLine] = line.split("/\s+/g", 1);
+        const [heading, remainingLine] = line.split(/\s+/, 2);
         const headingTag = Heading.headingTypes[heading];
+        console.log(remainingLine);
 
         if (!headingTag) return false;
+        state.addBlockToken(
+            new Token(
+                headingTag,
+                input.currentPoint,
+                ContentKind.BLOCK,
+                remainingLine
+            )
+        );
+
         return true;
     };
 }
 
-function parse(doc: MdInput) {
+function parse(doc: MdInput, rules: Array<BlockRule>) {
     let line;
-    let tokens = new Array<Token>();
+    let state = new ParsingState();
 
-    while ((line = doc.nextLine())) {
-        if (line.startsWith("# ")) {
-            tokens.push(
-                new BlockToken("h1", line.substring(2), doc.currentPoint)
-            );
+    while ((line = doc.nextLine()) != null) {
+        for (let rule of rules) {
+            rule.process(doc, state);
         }
+        console.log(state.tokens);
     }
 }
 
 function renderFile(filePath: string) {
     let fileContent = readFile(filePath);
+    let rules = new Array<BlockRule>();
+    rules.push(new Heading());
     if (!fileContent) {
         return;
     }
     let doc = new MdInput(fileContent);
-    parse(doc);
-    // console.log(doc.currentChar());
-    // console.log(doc.nextChar());
-    // console.log(doc.nextChar());
-    // console.log(doc.remainingCurrentLine());
-    // console.log(doc.currentLine());
-    // console.log(doc.nextLine());
-    // console.log(doc.previousLine());
-    // console.log(doc.remainingCurrentLine());
+    parse(doc, rules);
 }
 
 renderFile("test.md");
