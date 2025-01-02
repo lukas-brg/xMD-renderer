@@ -1,4 +1,4 @@
-import { readFile } from "./string_util";
+import { readFile, replaceTabs } from "./string_util";
 
 export interface Point {
     line: number;
@@ -7,12 +7,14 @@ export interface Point {
 }
 
 export class MdInput {
-    content: string;
-    currentPoint: Point;
-    prevLine: string | null = null;
+    readonly lines: string[];
+    private content: string;
+    private _currentPoint: Point;
+    private prevLine: string | null = null;
     constructor(content: string) {
-        this.content = content;
-        this.currentPoint = { line: 0, column: 1, offset: 0 };
+        this.content = replaceTabs(content);
+        this.lines = content.split("\n");
+        this._currentPoint = { line: 0, column: 1, offset: 0 };
     }
 
     static fromFile(filePath: string): MdInput {
@@ -23,96 +25,62 @@ export class MdInput {
         return new MdInput(fileContent);
     }
 
+    get currentPoint(): Point {
+        return { ...this._currentPoint };
+    }
+
     reset() {
-        this.currentPoint = { line: 0, column: 1, offset: 0 };
-    }
-
-    currentChar(): string | null {
-        if (this.currentPoint.offset < this.content.length) {
-            const char = this.content[this.currentPoint.offset];
-            return char;
-        }
-        return null;
-    }
-
-    nextChar(): string | null {
-        if (this.currentPoint.offset < this.content.length - 1) {
-            const char = this.content[++this.currentPoint.offset];
-            if (char === "\n") {
-                this.currentPoint.line++;
-                this.currentPoint.column = 1;
-            } else {
-                this.currentPoint.column++;
-            }
-            return char;
-        }
-        return null;
+        this._currentPoint = { line: 0, column: 1, offset: 0 };
     }
 
     previousLine(): string | null {
-        if (this.currentPoint.line == 1) {
+        const lineIdx = this._currentPoint.line - 1;
+
+        if (lineIdx == 0) {
             return null;
         }
-        const startOfPrevLine =
-            this.content.lastIndexOf(
-                "\n",
-                this.currentPoint.offset - this.currentPoint.column - 1,
-            ) + 1;
-        const endOfLine = this.content.indexOf(
-            "\n",
-            this.currentPoint.offset - this.currentPoint.column - 1,
-        );
-        return this.content.substring(
-            startOfPrevLine,
-            endOfLine === -1 ? undefined : endOfLine,
-        );
-        // return this.prevLine;
+        return this.lines[lineIdx - 1];
     }
 
     currentLine(): string {
-        const startOfLine =
-            this.content.lastIndexOf("\n", this.currentPoint.offset - 1) + 1;
-        const endOfLine = this.content.indexOf("\n", this.currentPoint.offset);
-        return this.content.substring(
-            startOfLine,
-            endOfLine === -1 ? undefined : endOfLine,
-        );
-    }
+        const lineIdx = this._currentPoint.line - 1;
 
-    remainingCurrentLine(): string {
-        return this.content.substring(
-            this.currentPoint.offset,
-            this.content.indexOf("\n", this.currentPoint.offset + 1),
-        );
+        if (lineIdx == -1) {
+            return this.lines[0];
+        }
+        return this.lines[lineIdx];
     }
 
     nextLine(): string | null {
-        const endOfLine = this.content.indexOf("\n", this.currentPoint.offset);
-        if (endOfLine == -1) {
+        const lineIdx = this._currentPoint.line;
+
+        if (lineIdx >= this.lines.length) {
             return null;
         }
-        const endOfNextLine = this.content.indexOf("\n", endOfLine + 1);
-        if (endOfNextLine == -1) {
-            return null;
-        }
-        this.currentPoint.column = 1;
-        this.currentPoint.line++;
-        this.currentPoint.offset = endOfLine + 1;
-        this.prevLine = this.currentLine();
-        if (this.currentPoint.line == 1) {
-            this.prevLine = null;
-            this.currentPoint.offset = endOfLine;
-            return this.content.substring(0, endOfLine);
-        }
-        return this.content.substring(endOfLine + 1, endOfNextLine);
+        this._currentPoint.line++;
+        return this.lines[lineIdx];
     }
 
     peekLine(): string | null {
-        const prevPoint = { ...this.currentPoint };
-        const prevLineCpy = this.prevLine;
-        const nextLine = this.nextLine();
-        this.currentPoint = prevPoint;
-        this.prevLine = prevLineCpy;
-        return nextLine;
+        const lineIdx = this._currentPoint.line;
+
+        if (lineIdx >= this.lines.length) {
+            return null;
+        }
+        return this.lines[lineIdx];
+    }
+
+    currentLineSkipWhiteSpace(): [Point, string] {
+        const line = this.currentLine();
+
+        const lineTrimmed = line.trimStart();
+
+        const whitespaceCount = line.length - lineTrimmed.length;
+        const lineWithoutWhitespace = line.slice(whitespaceCount);
+
+        let newPoint = this.currentPoint;
+        newPoint.column += whitespaceCount;
+
+        return [newPoint, lineWithoutWhitespace];
     }
 }

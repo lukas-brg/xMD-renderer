@@ -27,3 +27,7 @@ export function readFile(filePath: string): string | null {
         return null;
     }
 }
+
+export function replaceTabs(input: string): string {
+    return input.replace(/\\t/g, "    ");
+}

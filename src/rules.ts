@@ -32,20 +32,61 @@ export const Heading: BlockRule = {
 
         if (!headingTag) return false;
         state.addBlockToken(
-            new BlockToken(headingTag, remainingLine, input.currentPoint),
+            BlockToken.createWrapped(headingTag, input.currentPoint, remainingLine),
         );
 
         return true;
     },
 };
 
+function isUnorderedList(line: string): boolean {
+    if (line.startsWith("- ") || line.startsWith("* ") || line.startsWith("+ ")) {
+        return true;
+    }
+    return false;
+}
+
 export const UnorderedList: BlockRule = {
     process: (input: MdInput, state: ParsingState) => {
-        const line = input.currentLine();
-        if (!(line.startsWith("-") || line.startsWith("*") || line.startsWith("+"))) {
-            return false;
-        }
+        let [point, firstLine] = input.currentLineSkipWhiteSpace();
+        let prevDepth = Math.floor((point.column - 1) / 2);
+        if (!isUnorderedList(firstLine)) return false;
 
+        state.addBlockToken(
+            BlockToken.createContentless("ul", input.currentPoint, "open", prevDepth),
+        );
+        do {
+            const [point, lineTrimmed] = input.currentLineSkipWhiteSpace();
+            if (!isUnorderedList(lineTrimmed)) break;
+            const spaces = point.column - 1;
+            const depth = Math.floor(spaces / 2);
+            if (depth > prevDepth) {
+                state.addBlockToken(
+                    BlockToken.createContentless(
+                        "ul",
+                        input.currentPoint,
+                        "open",
+                        prevDepth,
+                    ),
+                );
+            } else if (depth < prevDepth) {
+                state.addBlockToken(
+                    BlockToken.createContentless(
+                        "ul",
+                        input.currentPoint,
+                        "close",
+                        prevDepth,
+                    ),
+                );
+            }
+            const content = lineTrimmed.slice(2);
+            state.addBlockToken(BlockToken.createWrapped("li", point, content, depth));
+            prevDepth = depth;
+        } while (input.nextLine());
+
+        state.addBlockToken(
+            BlockToken.createContentless("ul", input.currentPoint, "close", prevDepth),
+        );
         return true;
     },
 };
