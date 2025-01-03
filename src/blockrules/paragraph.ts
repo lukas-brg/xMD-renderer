@@ -34,9 +34,7 @@ export const Paragraph: BlockRule = {
             }
 
             let line = input.currentLine();
-            stateChange.addBlockToken(
-                BlockToken.createWrapped("text", input.currentPoint, line, 1),
-            );
+            stateChange.addBlockToken(BlockToken.createText(input.currentPoint, line, 1));
 
             if (input.trailingWhitespaces() >= 2) {
                 stateChange.addBlockToken(

@@ -6,7 +6,7 @@ export type ContentKind = "block" | "inline" | "text" | "root";
  The goal is to make the handling of these situations easier, 
  so you don't have to create explicitly create the tokens `[<h1>, Heading, </h1>]`
 */
-export type TagKind = "open" | "close" | "selfClosing" | "wrapped";
+export type TagKind = "open" | "close" | "selfClosing" | "wrapped" | "text";
 
 export class Token {
     tag: string;
@@ -79,5 +79,13 @@ export class BlockToken extends Token {
         depth?: number,
     ): BlockToken {
         return new BlockToken(tag, relatedPosition, content, "wrapped", true, depth);
+    }
+
+    static createText(
+        relatedPosition: Point,
+        content: string,
+        depth?: number,
+    ): BlockToken {
+        return new BlockToken("text", relatedPosition, content, "text", true, depth);
     }
 }

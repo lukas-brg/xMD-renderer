@@ -1,14 +1,17 @@
+import { assert } from "console";
 import { BlockToken } from "./token";
 import * as fs from "fs";
 
 function renderHTML(tokens: BlockToken[]): string {
-    const indent = (depth: number) => "  ".repeat(depth); // Two spaces per depth level
+    const indent = (depth: number) => "  ".repeat(depth);
 
     let html = tokens
         .map((token) => {
             const indentation = indent(token.depth);
 
             switch (token.tagKind) {
+                case "text":
+                    return token.content;
                 case "open":
                     return `${indentation}<${token.tag}>`;
                 case "wrapped":

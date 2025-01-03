@@ -23,7 +23,6 @@ export function trailingWhiteSpaces(input: string): number {
 }
 
 import * as fs from "fs";
-import { listenerCount } from "process";
 
 export function readFile(filePath: string): string | null {
     try {
