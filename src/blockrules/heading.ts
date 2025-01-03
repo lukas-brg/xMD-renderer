@@ -1,13 +1,15 @@
-import { MdInput } from "../mdinput";
+import { InputState } from "../input_state";
 import { ParsingState, StateChange } from "../parser";
 import { BlockToken, Token } from "../token";
 import BlockRule from "./blockrule";
 import { leadingWhitespaces, isEmpty } from "../string_utils";
 
 export const Heading: BlockRule = {
-    process: (input: MdInput, state: Readonly<ParsingState>) => {
+    name: "heading",
+
+    process: (input: InputState, state: Readonly<ParsingState>) => {
         let tokens = new Array<Token>();
-        let stateChange = new StateChange(input.currentPoint);
+        let stateChange = new StateChange(input.currentPoint, Heading.name);
         const headingTypes: { [key: string]: string } = {
             "#": "h1",
             "##": "h2",
@@ -16,8 +18,8 @@ export const Heading: BlockRule = {
             "#####": "h5",
             "######": "h6",
         };
-        const prevLine = input.previousLine();
-        if (prevLine != null && !isEmpty(prevLine)) {
+
+        if (input.isEmptyLine(-1)) {
             return null;
         }
         const line = input.currentLine();
@@ -31,7 +33,7 @@ export const Heading: BlockRule = {
         stateChange.addBlockToken(
             BlockToken.createWrapped(headingTag, input.currentPoint, remainingLine),
         );
-
+        stateChange.endPoint = input.currentPoint;
         return stateChange;
     },
 };

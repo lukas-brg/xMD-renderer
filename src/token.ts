@@ -1,4 +1,4 @@
-import { Point } from "./mdinput";
+import { Point } from "./input_state";
 
 export type ContentKind = "block" | "inline" | "text" | "root";
 
@@ -55,6 +55,21 @@ export class BlockToken extends Token {
         depth?: number,
     ): BlockToken {
         return new BlockToken(tag, relatedPosition, undefined, tagKind, false, depth);
+    }
+
+    static createSelfClosing(
+        tag: string,
+        relatedPosition: Point,
+        depth?: number,
+    ): BlockToken {
+        return new BlockToken(
+            tag,
+            relatedPosition,
+            undefined,
+            "selfClosing",
+            false,
+            depth,
+        );
     }
 
     static createWrapped(

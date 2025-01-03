@@ -1,4 +1,4 @@
-import { MdInput, Point } from "./mdinput";
+import { InputState, Point } from "./input_state";
 import { Token, BlockToken } from "./token";
 import BlockRule from "./blockrules/blockrule";
 import { Heading } from "./blockrules/heading";
@@ -44,18 +44,29 @@ export class StateChange extends ParsingState {
     private _startPoint: Point;
     private _endPoint: Point;
     success: boolean;
-    constructor(startPoint: Point, endPoint?: Point, success: boolean = true) {
+    executedBy: string;
+    constructor(
+        startPoint: Point,
+        executedBy: string,
+        endPoint?: Point,
+        success: boolean = true,
+    ) {
         super();
         this._startPoint = startPoint;
         this.success = success;
         this._endPoint = endPoint ?? { ...startPoint };
+        this.executedBy = executedBy;
     }
 
     applyToState(state: ParsingState) {
         state.tokens = state.tokens.concat(this.tokens);
     }
 
-    revertInput(doc: MdInput) {
+    concat(other: StateChange) {
+        other.applyToState(this);
+    }
+
+    revertInput(doc: InputState) {
         doc.currentPoint = this.startPoint;
     }
 
@@ -70,23 +81,26 @@ export class StateChange extends ParsingState {
     }
 }
 
-export function parse(doc: MdInput) {
+export function parse(doc: InputState) {
     let line;
     let state = new ParsingState();
     // let rules = [Heading, UnorderedList];
 
     while ((line = doc.nextLine()) != null) {
         for (let [ruleName, { handlerObj, terminatedBy }] of Object.entries(rules)) {
+            handlerObj.terminatedBy = terminatedBy;
             let stateChange = handlerObj.process(doc, state);
             if (stateChange) {
                 if (!stateChange.success) {
                     stateChange.revertInput(doc);
                 } else {
+                    console.log(stateChange);
                     stateChange.applyToState(state);
+                    break;
                 }
             }
         }
     }
     // console.log(state.tokens.filter((t) => t.tagKind == "open" || t.tagKind == "close"));
-    console.log(state.tokens);
+    // console.log(state.tokens);
 }

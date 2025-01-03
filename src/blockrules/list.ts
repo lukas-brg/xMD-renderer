@@ -1,6 +1,6 @@
 import { leadingWhitespaces, isEmpty } from "../string_utils";
 import { Token, BlockToken } from "../token";
-import { MdInput } from "../mdinput";
+import { InputState } from "../input_state";
 import { ParsingState, StateChange } from "../parser";
 import BlockRule from "./blockrule";
 import { assert } from "console";
@@ -13,7 +13,8 @@ function isUnorderedList(line: string): boolean {
 }
 
 export const UnorderedList: BlockRule = {
-    process: (input: MdInput, state: Readonly<ParsingState>) => {
+    name: "unordered_list",
+    process: (input: InputState, state: Readonly<ParsingState>) => {
         let [point, firstLine] = input.currentLineSkipWhiteSpace();
 
         if (!isUnorderedList(firstLine)) return null;
@@ -22,40 +23,40 @@ export const UnorderedList: BlockRule = {
         const initialDepth = prevDepth;
         let depths = [initialDepth];
 
-        let stateChange = new StateChange(input.currentPoint);
+        let stateChange = new StateChange(input.currentPoint, UnorderedList.name);
 
         stateChange.addBlockToken(
             BlockToken.createContentless("ul", input.currentPoint, "open", prevDepth),
         );
-
+        let line;
         let balance = 1;
         do {
             const [point, lineTrimmed] = input.currentLineSkipWhiteSpace();
-            if (!isUnorderedList(lineTrimmed)) break;
+            if (!isUnorderedList(lineTrimmed)) {
+                console.log(point, lineTrimmed);
+                break;
+            }
             const spaces = point.column - 1;
             const depth = Math.floor(spaces / 2);
 
             if (depth > prevDepth) {
                 stateChange.addBlockToken(
-                    BlockToken.createContentless(
-                        "ul",
-                        input.currentPoint,
-                        "open",
-                        prevDepth,
-                    ),
+                    BlockToken.createContentless("ul", input.currentPoint, "open", depth),
                 );
                 balance++;
                 depths.push(depth);
             } else if (depth < prevDepth) {
                 while (depths.length > 1) {
-                    let topDepth = depths.pop() ?? 0; // 0 case should be unreachable
+                    const poppedDepth = depths.pop();
+                    assert(poppedDepth != undefined);
+                    const topDepth = poppedDepth ?? 0; // 0 case should be unreachable
                     if (topDepth >= depth) {
                         stateChange.addBlockToken(
                             BlockToken.createContentless(
                                 "ul",
                                 input.currentPoint,
                                 "close",
-                                prevDepth,
+                                topDepth,
                             ),
                         );
                         balance--;
@@ -69,7 +70,8 @@ export const UnorderedList: BlockRule = {
                 BlockToken.createWrapped("li", point, content, depth),
             );
             prevDepth = depth;
-        } while (input.nextLine());
+            console.log("list, ", input.currentLine());
+        } while ((line = input.nextLine()) != null);
 
         assert(balance == 1);
         for (let i = 0; i < depths.length; i++) {
@@ -84,7 +86,7 @@ export const UnorderedList: BlockRule = {
             balance--;
         }
         assert(balance == 0, balance);
-
+        stateChange.endPoint = input.currentPoint;
         return stateChange;
     },
 };

@@ -1,4 +1,4 @@
-import { readFile, replaceTabs } from "./string_utils";
+import { readFile, replaceTabs, isEmpty } from "./string_utils";
 
 export interface Point {
     line: number;
@@ -6,7 +6,7 @@ export interface Point {
     offset: number;
 }
 
-export class MdInput {
+export class InputState {
     readonly lines: string[];
     readonly content: string;
     private _currentPoint: Point;
@@ -16,12 +16,12 @@ export class MdInput {
         this._currentPoint = { line: 0, column: 1, offset: 0 };
     }
 
-    static fromFile(filePath: string): MdInput {
+    static fromFile(filePath: string): InputState {
         const fileContent = readFile(filePath);
         if (!fileContent) {
             throw new Error(`File ${filePath} could not be loaded`);
         }
-        return new MdInput(fileContent);
+        return new InputState(fileContent);
     }
 
     get currentPoint(): Point {
@@ -47,6 +47,10 @@ export class MdInput {
     currentLine(): string {
         const lineIdx = Math.max(this._currentPoint.line - 1, 0);
         return this.lines[lineIdx];
+    }
+
+    isAtEof(): boolean {
+        return this.currentPoint.line > this.lines.length;
     }
 
     nextLine(): string | null {
@@ -82,12 +86,20 @@ export class MdInput {
         const lineTrimmed = line.trimStart();
 
         const whitespaceCount = line.length - lineTrimmed.length;
-        const lineWithoutWhitespace = line.slice(whitespaceCount);
 
         let newPoint = this.currentPoint;
         newPoint.column += whitespaceCount;
         newPoint.offset += whitespaceCount;
 
-        return [newPoint, lineWithoutWhitespace];
+        return [newPoint, lineTrimmed];
+    }
+
+    isEmptyLine(relativeIndex?: number): boolean {
+        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        if (absIdx < 0 || absIdx >= this.lines.length) {
+            return true;
+        }
+
+        return isEmpty(this.lines[absIdx]);
     }
 }

@@ -1,11 +1,41 @@
 import { leadingWhitespaces, isEmpty } from "../string_utils";
 import { Token, BlockToken } from "../token";
-import { MdInput } from "../mdinput";
-import { ParsingState } from "../parser";
+import { InputState } from "../input_state";
+import { ParsingState, StateChange } from "../parser";
 import BlockRule from "./blockrule";
 
 export const Paragraph: BlockRule = {
-    process: (input: MdInput, state: Readonly<ParsingState>) => {
-        return null;
+    name: "paragraph",
+    process: (input: InputState, state: Readonly<ParsingState>) => {
+        let stateChange = new StateChange(input.currentPoint, Paragraph.name);
+
+        let line = input.currentLine();
+        stateChange.addBlockToken(
+            BlockToken.createContentless("p", input.currentPoint, "open"),
+        );
+
+        do {
+            for (const ruleObj of Paragraph.terminatedBy ?? []) {
+                const stateChange = ruleObj.process(input, state);
+                if (stateChange) {
+                    return stateChange;
+                }
+            }
+            while (input.isEmptyLine()) {
+                let _ = input.nextLine();
+            }
+            let line = input.currentLine();
+            stateChange.addBlockToken(
+                BlockToken.createWrapped("text", input.currentPoint, line, 1),
+            );
+            stateChange.addBlockToken(
+                BlockToken.createSelfClosing("br", input.currentPoint),
+            );
+        } while (input.nextLine() != null);
+        stateChange.addBlockToken(
+            BlockToken.createContentless("p", input.currentPoint, "close"),
+        );
+        stateChange.endPoint = input.currentPoint;
+        return stateChange;
     },
 };
