@@ -1,4 +1,4 @@
-import { readFile, replaceTabs } from "./string_util";
+import { readFile, replaceTabs } from "./string_utils";
 
 export interface Point {
     line: number;
@@ -8,11 +8,11 @@ export interface Point {
 
 export class MdInput {
     readonly lines: string[];
-    private content: string;
+    readonly content: string;
     private _currentPoint: Point;
     constructor(content: string) {
         this.content = replaceTabs(content);
-        this.lines = content.split("\n");
+        this.lines = this.content.split("\n");
         this._currentPoint = { line: 0, column: 1, offset: 0 };
     }
 
@@ -27,6 +27,9 @@ export class MdInput {
     get currentPoint(): Point {
         return { ...this._currentPoint };
     }
+    set currentPoint(p: Point) {
+        this.currentPoint = p;
+    }
 
     reset() {
         this._currentPoint = { line: 0, column: 1, offset: 0 };
@@ -35,10 +38,10 @@ export class MdInput {
     previousLine(): string | null {
         const lineIdx = this._currentPoint.line - 1;
 
-        if (lineIdx == 0) {
+        if (lineIdx < 0) {
             return null;
         }
-        return this.lines[lineIdx - 1];
+        return this.lines[lineIdx];
     }
 
     currentLine(): string {
@@ -52,6 +55,10 @@ export class MdInput {
         if (lineIdx >= this.lines.length) {
             return null;
         }
+
+        let dOffset = this.previousLine()?.length ?? 0;
+
+        this._currentPoint.offset += dOffset;
         this._currentPoint.line++;
         return this.lines[lineIdx];
     }
@@ -65,6 +72,10 @@ export class MdInput {
         return this.lines[lineIdx];
     }
 
+    /** Strips leading whitespaces from the current line, 
+            returns the `Point` marking the stripped line's beginning 
+            and the stripped line without advancing to the new Point 
+    */
     currentLineSkipWhiteSpace(): [Point, string] {
         const line = this.currentLine();
 
@@ -75,6 +86,7 @@ export class MdInput {
 
         let newPoint = this.currentPoint;
         newPoint.column += whitespaceCount;
+        newPoint.offset += whitespaceCount;
 
         return [newPoint, lineWithoutWhitespace];
     }

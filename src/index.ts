@@ -1,11 +1,11 @@
 import { MdInput, Point } from "./mdinput";
 import { parse } from "./parser";
-import { Heading, UnorderedList } from "./rules";
+import { Heading } from "./blockrules/heading";
+import { UnorderedList } from "./blockrules/list";
 
 function renderFile(filePath: string) {
-    let rules = [Heading, UnorderedList];
     let doc = MdInput.fromFile(filePath);
-    parse(doc, rules);
+    parse(doc);
 }
 
 renderFile("test.md");

@@ -1,17 +1,8 @@
-# markdown
-
-## markdown 2
-
-### markdown 3
-
-#### markdown 4
-
-## block content
-
-- Headings
-  - h1
-  - h2
-  - ...
-  - h6
-- Lists
-- Code Blocks
++ Create a list by starting a line with `+`, `-`, or `*`
++ Sub-lists are made by indenting 2 spaces:
+  - Marker character change forces new list start:
+    * Ac tristique libero volutpat at
+    + Facilisis in pretium nisl aliquet
+    - Nulla volutpat aliquam velit
+      - Test
++ Very easy!
