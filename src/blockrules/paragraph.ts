@@ -14,23 +14,35 @@ export const Paragraph: BlockRule = {
             BlockToken.createContentless("p", input.currentPoint, "open"),
         );
 
+        while (input.isEmptyLine()) {
+            let _ = input.nextLine();
+        }
         do {
             for (const ruleObj of Paragraph.terminatedBy ?? []) {
-                const stateChange = ruleObj.process(input, state);
-                if (stateChange) {
+                const otherStateChange = ruleObj.process(input, state);
+                if (otherStateChange) {
+                    stateChange.addBlockToken(
+                        BlockToken.createContentless("p", input.currentPoint, "close"),
+                    );
+                    stateChange.merge(otherStateChange);
                     return stateChange;
                 }
             }
-            while (input.isEmptyLine()) {
-                let _ = input.nextLine();
+
+            if (input.isEmptyLine()) {
+                break;
             }
+
             let line = input.currentLine();
             stateChange.addBlockToken(
                 BlockToken.createWrapped("text", input.currentPoint, line, 1),
             );
-            stateChange.addBlockToken(
-                BlockToken.createSelfClosing("br", input.currentPoint),
-            );
+
+            if (input.trailingWhitespaces() >= 2) {
+                stateChange.addBlockToken(
+                    BlockToken.createSelfClosing("br", input.currentPoint),
+                );
+            }
         } while (input.nextLine() != null);
         stateChange.addBlockToken(
             BlockToken.createContentless("p", input.currentPoint, "close"),

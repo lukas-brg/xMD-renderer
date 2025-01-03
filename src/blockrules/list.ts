@@ -1,4 +1,3 @@
-import { leadingWhitespaces, isEmpty } from "../string_utils";
 import { Token, BlockToken } from "../token";
 import { InputState } from "../input_state";
 import { ParsingState, StateChange } from "../parser";
@@ -33,7 +32,6 @@ export const UnorderedList: BlockRule = {
         do {
             const [point, lineTrimmed] = input.currentLineSkipWhiteSpace();
             if (!isUnorderedList(lineTrimmed)) {
-                console.log(point, lineTrimmed);
                 break;
             }
             const spaces = point.column - 1;
@@ -70,7 +68,6 @@ export const UnorderedList: BlockRule = {
                 BlockToken.createWrapped("li", point, content, depth),
             );
             prevDepth = depth;
-            console.log("list, ", input.currentLine());
         } while ((line = input.nextLine()) != null);
 
         assert(balance == 1);

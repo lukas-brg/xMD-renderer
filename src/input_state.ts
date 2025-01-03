@@ -1,4 +1,10 @@
-import { readFile, replaceTabs, isEmpty } from "./string_utils";
+import {
+    readFile,
+    replaceTabs,
+    isEmpty,
+    leadingWhitespaces,
+    trailingWhiteSpaces,
+} from "./string_utils";
 
 export interface Point {
     line: number;
@@ -101,5 +107,23 @@ export class InputState {
         }
 
         return isEmpty(this.lines[absIdx]);
+    }
+
+    leadingWhitespaces(relativeIndex?: number): number {
+        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        if (absIdx < 0 || absIdx >= this.lines.length) {
+            return 0;
+        }
+
+        return leadingWhitespaces(this.lines[absIdx]);
+    }
+
+    trailingWhitespaces(relativeIndex?: number): number {
+        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        if (absIdx < 0 || absIdx >= this.lines.length) {
+            return 0;
+        }
+
+        return trailingWhiteSpaces(this.lines[absIdx]);
     }
 }

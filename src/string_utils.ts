@@ -16,7 +16,14 @@ export function leadingWhitespaces(input: string): number {
     return count;
 }
 
+export function trailingWhiteSpaces(input: string): number {
+    const trimmed = input.trimEnd();
+    const count = input.length - trimmed.length;
+    return count;
+}
+
 import * as fs from "fs";
+import { listenerCount } from "process";
 
 export function readFile(filePath: string): string | null {
     try {

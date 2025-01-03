@@ -62,8 +62,10 @@ export class StateChange extends ParsingState {
         state.tokens = state.tokens.concat(this.tokens);
     }
 
-    concat(other: StateChange) {
-        other.applyToState(this);
+    merge(other: StateChange) {
+        this.tokens = this.tokens.concat(other.tokens);
+        this.endPoint = other.endPoint;
+        this.executedBy += ", " + other.executedBy;
     }
 
     revertInput(doc: InputState) {
@@ -94,13 +96,15 @@ export function parse(doc: InputState) {
                 if (!stateChange.success) {
                     stateChange.revertInput(doc);
                 } else {
-                    console.log(stateChange);
+                    // console.log(stateChange);
                     stateChange.applyToState(state);
                     break;
                 }
             }
         }
     }
+
+    return state;
     // console.log(state.tokens.filter((t) => t.tagKind == "open" || t.tagKind == "close"));
     // console.log(state.tokens);
 }
