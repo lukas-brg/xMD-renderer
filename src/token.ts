@@ -94,6 +94,8 @@ export class BlockToken extends Token {
 }
 
 export class InlineToken extends Token {
+    positionStart: number;
+    positionEnd: number;
     constructor(
         tag: string,
         position: number,
@@ -101,17 +103,29 @@ export class InlineToken extends Token {
         content?: string,
         parseContent?: boolean,
         depth?: number,
+        positionEnd?: number,
     ) {
         super(tag, "inline", content, tagKind, parseContent, depth);
+        this.positionStart = position;
+        this.positionEnd = positionEnd ?? position + 1;
     }
 
     static createContentless(
         tag: string,
         position: number,
         tagKind?: TagKind,
+        positionEnd?: number,
         depth?: number,
     ): InlineToken {
-        return new InlineToken(tag, position, undefined, tagKind, false, depth);
+        return new InlineToken(
+            tag,
+            position,
+            undefined,
+            tagKind,
+            false,
+            depth,
+            positionEnd,
+        );
     }
 
     static createSelfClosing(tag: string, position: number, depth?: number): InlineToken {
@@ -122,12 +136,34 @@ export class InlineToken extends Token {
         tag: string,
         position: number,
         content: string,
+        positionEnd?: number,
         depth?: number,
     ): InlineToken {
-        return new InlineToken(tag, position, "wrapped", content, true, depth);
+        return new InlineToken(
+            tag,
+            position,
+            "wrapped",
+            content,
+            true,
+            depth,
+            positionEnd,
+        );
     }
 
-    static createText(position: number, content: string, depth?: number): InlineToken {
-        return new InlineToken("text", position, "text", content, true, depth);
+    static createText(
+        position: number,
+        content: string,
+        positionEnd?: number,
+        depth?: number,
+    ): InlineToken {
+        return new InlineToken(
+            "text",
+            position,
+            "text",
+            content,
+            true,
+            depth,
+            positionEnd,
+        );
     }
 }

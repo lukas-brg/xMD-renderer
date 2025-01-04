@@ -13,4 +13,4 @@ This should be a new line
 - Here the paragraph should be terminated by the list
 - List item 2
   
-Test \*text\*
+Text \*text\*

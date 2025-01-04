@@ -193,16 +193,13 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
 }
 
 function parseInline(state: ParsingStateBlock) {
-    // console.log(state);
-
     for (let blockTok of state.blockTokens) {
         const line = blockTok.content;
         if (line) {
             if (blockTok.parseContent) {
                 let inlineState = new ParsingStateInline(line, blockTok.relatedPosition);
-                let char;
-
                 let anyRuleApplies = false;
+
                 for (let [ruleName, rule] of Object.entries(inlineRules)) {
                     let success = rule.handlerObj.process(inlineState);
                     anyRuleApplies = anyRuleApplies || success;
@@ -217,7 +214,9 @@ function parseInline(state: ParsingStateBlock) {
 
                 let continousText = "";
                 let textStart = 0;
-                for (let i = 0; i < line.length; i++) {
+                let i = 0;
+
+                while (i < line.length) {
                     const tok = inlineState.tokens.get(i);
                     if (tok) {
                         if (continousText.length > 0) {
@@ -225,10 +224,13 @@ function parseInline(state: ParsingStateBlock) {
                                 InlineToken.createText(textStart, continousText),
                             );
                         }
+                        inlineTokens.push(tok);
+                        i = tok.positionEnd;
                         continousText = "";
                         textStart = i;
                     } else {
                         continousText += line.charAt(i);
+                        i++;
                     }
                 }
 

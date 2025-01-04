@@ -33,16 +33,20 @@ export const Escape: InlineRule = {
         let didEscape = false;
         for (let backslashPos of matches) {
             if (matches.has(backslashPos - 1)) continue; // When a backslash is escaped
+
             const charPos = backslashPos + 1;
             const escapedChar = line.charAt(charPos);
+
             if (!ESCAPABLE.has(escapedChar)) continue;
+
             state.escapedPositions.add(charPos);
             state.tokens.set(
                 backslashPos,
-                InlineToken.createWrapped("escape", backslashPos, escapedChar),
+                InlineToken.createText(backslashPos, escapedChar, backslashPos + 2),
             );
             didEscape = true;
         }
+
         return didEscape;
     },
 };
