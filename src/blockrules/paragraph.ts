@@ -15,7 +15,9 @@ export const Paragraph: BlockRule = {
         );
 
         while (input.isEmptyLine()) {
-            let _ = input.nextLine();
+            if (input.nextLine() === null) {
+                break;
+            }
         }
         do {
             for (const ruleObj of Paragraph.terminatedBy ?? []) {

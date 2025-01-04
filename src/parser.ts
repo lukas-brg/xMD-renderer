@@ -6,6 +6,7 @@ import { Heading } from "./blockrules/heading";
 import { Emphasis } from "./inline_rules/emphasis";
 import { UnorderedList } from "./blockrules/list";
 import { Paragraph } from "./blockrules/paragraph";
+import { Escape } from "./inline_rules/escape";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";
 
@@ -19,7 +20,6 @@ type BlockRuleList = { [name: string]: BlockRuleEntry };
 
 type InlineRuleEntry = {
     handlerObj: InlineRule;
-    failureMode: FailureMode;
 };
 
 type InlineRuleList = { [name: string]: InlineRuleEntry };
@@ -43,9 +43,11 @@ const blockRules: BlockRuleList = {
 };
 
 const inlineRules: InlineRuleList = {
+    escape: {
+        handlerObj: Escape,
+    },
     emphasis: {
         handlerObj: Emphasis,
-        failureMode: "plaintext",
     },
 };
 
@@ -67,6 +69,7 @@ export class ParsingStateInline {
     currentPos: number;
     stack: InlineToken[];
     tokens: Map<number, InlineToken>;
+    escapedPositions: Set<number>;
 
     constructor(line: string, point: Point) {
         this.tokenList = [];
@@ -75,29 +78,38 @@ export class ParsingStateInline {
         this.currentPos = 0;
         this.stack = [];
         this.tokens = new Map<number, InlineToken>();
+        this.escapedPositions = new Set();
     }
 
     addInlineToken(token: InlineToken) {
         this.tokenList.push(token);
     }
 
+    charAt(pos: number): string {
+        const char = this.line.charAt(pos);
+        if (this.escapedPositions.has(pos)) {
+            return "\\" + char;
+        }
+        return char;
+    }
+
     currentChar(): string {
         const idx = Math.max(0, this.currentPos - 1);
-        return this.line.charAt(idx);
+        return this.charAt(idx);
     }
 
     peek(): string | null {
         if (this.currentPos >= this.line.length) {
             return null;
         }
-        return this.line.charAt(this.currentPos);
+        return this.charAt(this.currentPos);
     }
 
     advance(): string | null {
         if (this.currentPos >= this.line.length) {
             return null;
         }
-        return this.line.charAt(this.currentPos++);
+        return this.charAt(this.currentPos++);
     }
 }
 
@@ -154,7 +166,6 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
     let line;
 
     // let rules = [Heading, UnorderedList];
-
     while ((line = doc.nextLine()) != null) {
         for (let [ruleName, rule] of Object.entries(blockRules)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
@@ -182,29 +193,52 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
 }
 
 function parseInline(state: ParsingStateBlock) {
+    // console.log(state);
+
     for (let blockTok of state.blockTokens) {
         const line = blockTok.content;
         if (line) {
             if (blockTok.parseContent) {
                 let inlineState = new ParsingStateInline(line, blockTok.relatedPosition);
                 let char;
-                while ((char = inlineState.advance()) != null) {
-                    let success = false;
-                    for (let [ruleName, rule] of Object.entries(inlineRules)) {
-                        success = rule.handlerObj.process(inlineState);
-                        if (success) break;
-                    }
-                    if (!success) {
-                        let point = blockTok.relatedPosition;
-                        point.column += inlineState.currentPos;
-                        inlineState.addInlineToken(InlineToken.createText(point, char));
+
+                let anyRuleApplies = false;
+                for (let [ruleName, rule] of Object.entries(inlineRules)) {
+                    let success = rule.handlerObj.process(inlineState);
+                    anyRuleApplies = anyRuleApplies || success;
+                }
+
+                if (!anyRuleApplies) {
+                    blockTok.inlineTokens.push(InlineToken.createText(0, line));
+                    continue;
+                }
+
+                let inlineTokens: InlineToken[] = [];
+
+                let continousText = "";
+                let textStart = 0;
+                for (let i = 0; i < line.length; i++) {
+                    const tok = inlineState.tokens.get(i);
+                    if (tok) {
+                        if (continousText.length > 0) {
+                            inlineTokens.push(
+                                InlineToken.createText(textStart, continousText),
+                            );
+                        }
+                        continousText = "";
+                        textStart = i;
+                    } else {
+                        continousText += line.charAt(i);
                     }
                 }
-                console.log("A", inlineState.tokenList);
-                blockTok.inlineTokens = inlineState.tokenList;
+
+                if (continousText.length > 0) {
+                    inlineTokens.push(InlineToken.createText(textStart, continousText));
+                }
+                blockTok.inlineTokens = inlineTokens;
             } else {
                 blockTok.inlineTokens.push(
-                    InlineToken.createText(blockTok.relatedPosition, line),
+                    InlineToken.createText(blockTok.relatedPosition.column, line),
                 );
             }
         }
