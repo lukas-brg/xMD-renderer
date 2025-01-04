@@ -1,5 +1,5 @@
 import { InputState } from "../input_state";
-import { ParsingState, StateChange } from "../parser";
+import { ParsingStateBlock, StateChange } from "../parser";
 import { BlockToken, Token } from "../token";
 import BlockRule from "./blockrule";
 import { leadingWhitespaces, isEmpty } from "../string_utils";
@@ -7,7 +7,7 @@ import { leadingWhitespaces, isEmpty } from "../string_utils";
 export const Heading: BlockRule = {
     name: "heading",
 
-    process: (input: InputState, state: Readonly<ParsingState>) => {
+    process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
         let tokens = new Array<Token>();
         let stateChange = new StateChange(input.currentPoint, Heading.name);
         const headingTypes: { [key: string]: string } = {

@@ -5,7 +5,7 @@ import { renderToFile } from "./renderer";
 function renderFile(filePath: string) {
     let doc = InputState.fromFile(filePath);
     let state = parse(doc);
-    renderToFile(state.tokens, "test.html");
+    renderToFile(state.blockTokens, "test.html");
 }
 
 renderFile("test.md");

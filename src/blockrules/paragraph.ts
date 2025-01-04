@@ -1,12 +1,12 @@
 import { leadingWhitespaces, isEmpty } from "../string_utils";
 import { Token, BlockToken } from "../token";
 import { InputState } from "../input_state";
-import { ParsingState, StateChange } from "../parser";
+import { ParsingStateBlock, StateChange } from "../parser";
 import BlockRule from "./blockrule";
 
 export const Paragraph: BlockRule = {
     name: "paragraph",
-    process: (input: InputState, state: Readonly<ParsingState>) => {
+    process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
         let stateChange = new StateChange(input.currentPoint, Paragraph.name);
 
         let line = input.currentLine();

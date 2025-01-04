@@ -1,5 +1,5 @@
 import { InputState } from "../input_state";
-import { ParsingState, StateChange } from "../parser";
+import { ParsingStateBlock, StateChange } from "../parser";
 
 export default interface BlockRule {
     /**
@@ -9,7 +9,10 @@ export default interface BlockRule {
      * - If the rule is immediately determined to not apply, the method returns `null`, avoiding unnecessary overhead.
      * - If the rule fails midway it returns a `StateChange` object inidcating the failure and including all the state changes up to the point of failure.
      */
-    process: (input: InputState, state: Readonly<ParsingState>) => StateChange | null;
+    process: (
+        input: InputState,
+        state: Readonly<ParsingStateBlock>,
+    ) => StateChange | null;
     before?: (input: InputState) => void;
     after?: (input: InputState) => void;
     name: string;

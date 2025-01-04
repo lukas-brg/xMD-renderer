@@ -1,6 +1,29 @@
 import { assert } from "console";
 import { BlockToken } from "./token";
+import { InlineToken } from "./token";
 import * as fs from "fs";
+
+function renderInline(tokens: InlineToken[]) {
+    let html = tokens
+        .map((token) => {
+            switch (token.tagKind) {
+                case "text":
+                    return `${token.content}`;
+                case "open":
+                    return `<${token.tag}>`;
+                case "wrapped":
+                    return `<${token.tag}>${token.content}</${token.tag}>`;
+                case "selfClosing":
+                    return `<${token.tag}/>`;
+                case "close":
+                    return `</${token.tag}>`;
+                default:
+                    return "";
+            }
+        })
+        .join("");
+    return html;
+}
 
 function renderHTML(tokens: BlockToken[]): string {
     const indent = (depth: number) => "  ".repeat(depth);
@@ -8,16 +31,16 @@ function renderHTML(tokens: BlockToken[]): string {
     let html = tokens
         .map((token) => {
             const indentation = indent(token.depth);
-
+            let content = renderInline(token.inlineTokens);
             switch (token.tagKind) {
                 case "text":
-                    return token.content;
+                    return `${content}`;
                 case "open":
                     return `${indentation}<${token.tag}>`;
                 case "wrapped":
-                    return `${indentation}<${token.tag}>${token.content}</${token.tag}>`;
+                    return `${indentation}<${token.tag}>${content}</${token.tag}>`;
                 case "selfClosing":
-                    return `${indentation}<${token.tag} />`;
+                    return `${indentation}<${token.tag}/>`;
                 case "close":
                     return `${indentation}</${token.tag}>`;
                 default:

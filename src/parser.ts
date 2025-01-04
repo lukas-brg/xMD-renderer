@@ -1,50 +1,117 @@
 import { InputState, Point } from "./input_state";
-import { Token, BlockToken } from "./token";
+import { Token, BlockToken, InlineToken } from "./token";
 import BlockRule from "./blockrules/blockrule";
+import InlineRule from "./inline_rules/inline_rule";
 import { Heading } from "./blockrules/heading";
+import { Emphasis } from "./inline_rules/emphasis";
 import { UnorderedList } from "./blockrules/list";
 import { Paragraph } from "./blockrules/paragraph";
 
-type Rule = {
+type FailureMode = "plaintext" | "applyPartially" | "ignore";
+
+type BlockRuleEntry = {
     handlerObj: BlockRule;
     terminatedBy: BlockRule[];
+    failureMode: FailureMode;
 };
 
-type RuleList = { [name: string]: Rule };
+type BlockRuleList = { [name: string]: BlockRuleEntry };
 
-const rules: RuleList = {
-    unordered_list: {
-        handlerObj: UnorderedList,
-        terminatedBy: [],
-    },
+type InlineRuleEntry = {
+    handlerObj: InlineRule;
+    failureMode: FailureMode;
+};
 
+type InlineRuleList = { [name: string]: InlineRuleEntry };
+
+const blockRules: BlockRuleList = {
     heading: {
         handlerObj: Heading,
         terminatedBy: [],
+        failureMode: "applyPartially",
     },
-
+    unordered_list: {
+        handlerObj: UnorderedList,
+        terminatedBy: [],
+        failureMode: "applyPartially",
+    },
     paragraph: {
         handlerObj: Paragraph,
         terminatedBy: [Heading, UnorderedList],
+        failureMode: "applyPartially",
     },
 };
 
-export class ParsingState {
-    tokens: Array<Token>;
+const inlineRules: InlineRuleList = {
+    emphasis: {
+        handlerObj: Emphasis,
+        failureMode: "plaintext",
+    },
+};
+
+export class ParsingStateBlock {
+    blockTokens: BlockToken[];
     constructor() {
-        this.tokens = new Array<Token>();
+        this.blockTokens = [];
     }
 
-    addBlockToken(token: Token) {
-        this.tokens.push(token);
+    addBlockToken(token: BlockToken) {
+        this.blockTokens.push(token);
     }
 }
 
-export class StateChange extends ParsingState {
+export class ParsingStateInline {
+    tokenList: InlineToken[];
+    relatedPoint: Point;
+    line: string;
+    currentPos: number;
+    stack: InlineToken[];
+    tokens: Map<number, InlineToken>;
+
+    constructor(line: string, point: Point) {
+        this.tokenList = [];
+        this.relatedPoint = point;
+        this.line = line;
+        this.currentPos = 0;
+        this.stack = [];
+        this.tokens = new Map<number, InlineToken>();
+    }
+
+    addInlineToken(token: InlineToken) {
+        this.tokenList.push(token);
+    }
+
+    currentChar(): string {
+        const idx = Math.max(0, this.currentPos - 1);
+        return this.line.charAt(idx);
+    }
+
+    peek(): string | null {
+        if (this.currentPos >= this.line.length) {
+            return null;
+        }
+        return this.line.charAt(this.currentPos);
+    }
+
+    advance(): string | null {
+        if (this.currentPos >= this.line.length) {
+            return null;
+        }
+        return this.line.charAt(this.currentPos++);
+    }
+}
+
+/** Rules don't mutate state directly. This class represents the change of state a rule wants to apply.
+ * Once applied, the state is considered immutable, so there are only positive state changes
+ * (i.e. a `StateChange` cannot remove tokens)
+ */
+export class StateChange extends ParsingStateBlock {
     private _startPoint: Point;
     private _endPoint: Point;
     success: boolean;
     executedBy: string;
+    subStateChanges: StateChange[] = [];
+
     constructor(
         startPoint: Point,
         executedBy: string,
@@ -58,12 +125,12 @@ export class StateChange extends ParsingState {
         this.executedBy = executedBy;
     }
 
-    applyToState(state: ParsingState) {
-        state.tokens = state.tokens.concat(this.tokens);
+    applyToState(state: ParsingStateBlock) {
+        state.blockTokens = state.blockTokens.concat(this.blockTokens);
     }
 
     merge(other: StateChange) {
-        this.tokens = this.tokens.concat(other.tokens);
+        this.blockTokens = this.blockTokens.concat(other.blockTokens);
         this.endPoint = other.endPoint;
         this.executedBy += ", " + other.executedBy;
     }
@@ -83,18 +150,27 @@ export class StateChange extends ParsingState {
     }
 }
 
-export function parse(doc: InputState) {
+function parseBlocks(doc: InputState, state: ParsingStateBlock) {
     let line;
-    let state = new ParsingState();
+
     // let rules = [Heading, UnorderedList];
 
     while ((line = doc.nextLine()) != null) {
-        for (let [ruleName, { handlerObj, terminatedBy }] of Object.entries(rules)) {
-            handlerObj.terminatedBy = terminatedBy;
-            let stateChange = handlerObj.process(doc, state);
+        for (let [ruleName, rule] of Object.entries(blockRules)) {
+            rule.handlerObj.terminatedBy = rule.terminatedBy;
+            let stateChange = rule.handlerObj.process(doc, state);
             if (stateChange) {
                 if (!stateChange.success) {
-                    stateChange.revertInput(doc);
+                    switch (rule.failureMode) {
+                        case "applyPartially":
+                            stateChange.applyToState(state);
+                            break;
+                        case "plaintext":
+                            stateChange.revertInput(doc);
+                            break;
+                        case "ignore":
+                            break;
+                    }
                 } else {
                     // console.log(stateChange);
                     stateChange.applyToState(state);
@@ -103,7 +179,42 @@ export function parse(doc: InputState) {
             }
         }
     }
+}
 
+function parseInline(state: ParsingStateBlock) {
+    for (let blockTok of state.blockTokens) {
+        const line = blockTok.content;
+        if (line) {
+            if (blockTok.parseContent) {
+                let inlineState = new ParsingStateInline(line, blockTok.relatedPosition);
+                let char;
+                while ((char = inlineState.advance()) != null) {
+                    let success = false;
+                    for (let [ruleName, rule] of Object.entries(inlineRules)) {
+                        success = rule.handlerObj.process(inlineState);
+                        if (success) break;
+                    }
+                    if (!success) {
+                        let point = blockTok.relatedPosition;
+                        point.column += inlineState.currentPos;
+                        inlineState.addInlineToken(InlineToken.createText(point, char));
+                    }
+                }
+                console.log("A", inlineState.tokenList);
+                blockTok.inlineTokens = inlineState.tokenList;
+            } else {
+                blockTok.inlineTokens.push(
+                    InlineToken.createText(blockTok.relatedPosition, line),
+                );
+            }
+        }
+    }
+}
+
+export function parse(doc: InputState) {
+    let state = new ParsingStateBlock();
+    parseBlocks(doc, state);
+    parseInline(state);
     return state;
     // console.log(state.tokens.filter((t) => t.tagKind == "open" || t.tagKind == "close"));
     // console.log(state.tokens);

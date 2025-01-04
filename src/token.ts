@@ -37,15 +37,17 @@ export class Token {
 }
 
 export class BlockToken extends Token {
+    inlineTokens: InlineToken[];
     constructor(
         tag: string,
         relatedPosition: Point,
-        content?: string,
         tagKind?: TagKind,
+        content?: string,
         parseContent?: boolean,
         depth?: number,
     ) {
         super(tag, relatedPosition, "block", content, tagKind, parseContent, depth);
+        this.inlineTokens = [];
     }
 
     static createContentless(
@@ -54,7 +56,7 @@ export class BlockToken extends Token {
         tagKind?: TagKind,
         depth?: number,
     ): BlockToken {
-        return new BlockToken(tag, relatedPosition, undefined, tagKind, false, depth);
+        return new BlockToken(tag, relatedPosition, tagKind, undefined, false, depth);
     }
 
     static createSelfClosing(
@@ -78,7 +80,7 @@ export class BlockToken extends Token {
         content: string,
         depth?: number,
     ): BlockToken {
-        return new BlockToken(tag, relatedPosition, content, "wrapped", true, depth);
+        return new BlockToken(tag, relatedPosition, "wrapped", content, true, depth);
     }
 
     static createText(
@@ -86,6 +88,60 @@ export class BlockToken extends Token {
         content: string,
         depth?: number,
     ): BlockToken {
-        return new BlockToken("text", relatedPosition, content, "text", true, depth);
+        return new BlockToken("text", relatedPosition, "text", content, true, depth);
+    }
+}
+
+export class InlineToken extends Token {
+    constructor(
+        tag: string,
+        relatedPosition: Point,
+        tagKind?: TagKind,
+        content?: string,
+        parseContent?: boolean,
+        depth?: number,
+    ) {
+        super(tag, relatedPosition, "inline", content, tagKind, parseContent, depth);
+    }
+
+    static createContentless(
+        tag: string,
+        relatedPosition: Point,
+        tagKind?: TagKind,
+        depth?: number,
+    ): InlineToken {
+        return new InlineToken(tag, relatedPosition, undefined, tagKind, false, depth);
+    }
+
+    static createSelfClosing(
+        tag: string,
+        relatedPosition: Point,
+        depth?: number,
+    ): InlineToken {
+        return new InlineToken(
+            tag,
+            relatedPosition,
+            undefined,
+            "selfClosing",
+            false,
+            depth,
+        );
+    }
+
+    static createWrapped(
+        tag: string,
+        relatedPosition: Point,
+        content: string,
+        depth?: number,
+    ): InlineToken {
+        return new InlineToken(tag, relatedPosition, "wrapped", content, true, depth);
+    }
+
+    static createText(
+        relatedPosition: Point,
+        content: string,
+        depth?: number,
+    ): InlineToken {
+        return new InlineToken("text", relatedPosition, "text", content, true, depth);
     }
 }
