@@ -7,6 +7,7 @@ import { Emphasis } from "./inline_rules/emphasis";
 import { UnorderedList } from "./blockrules/list";
 import { Paragraph } from "./blockrules/paragraph";
 import { Escape } from "./inline_rules/escape";
+import { Code } from "./inline_rules/code";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";
 
@@ -48,6 +49,9 @@ const inlineRules: InlineRuleList = {
     },
     emphasis: {
         handlerObj: Emphasis,
+    },
+    code: {
+        handlerObj: Code,
     },
 };
 

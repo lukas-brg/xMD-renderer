@@ -1,8 +1,7 @@
 import { ParsingStateInline } from "../parser";
 import InlineRule from "./inline_rule";
 import { InlineToken } from "../token";
-
-type Dict<T> = { [key: string]: T };
+import { Dict } from "../util";
 
 export const Emphasis: InlineRule = {
     name: "emphasis",
