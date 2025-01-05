@@ -8,6 +8,7 @@ import { UnorderedList } from "./blockrules/list";
 import { Paragraph } from "./blockrules/paragraph";
 import { Escape } from "./inline_rules/escape";
 import { Code } from "./inline_rules/code";
+import { CodeblockFenced } from "./blockrules/codeblock";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";
 
@@ -26,6 +27,11 @@ type InlineRuleEntry = {
 type InlineRuleList = { [name: string]: InlineRuleEntry };
 
 const blockRules: BlockRuleList = {
+    codeblock_fenced: {
+        handlerObj: CodeblockFenced,
+        terminatedBy: [],
+        failureMode: "plaintext",
+    },
     heading: {
         handlerObj: Heading,
         terminatedBy: [],
@@ -38,7 +44,7 @@ const blockRules: BlockRuleList = {
     },
     paragraph: {
         handlerObj: Paragraph,
-        terminatedBy: [Heading, UnorderedList],
+        terminatedBy: [Heading, UnorderedList, CodeblockFenced],
         failureMode: "applyPartially",
     },
 };

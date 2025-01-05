@@ -49,3 +49,13 @@ This should be a new line
 `*\*text\**`   *\*text\**
 
 `**\*text\***`   **\*text\***
+
+## Codeblock
+
+### Fenced
+
+```js
+var foo = function (bar) {
+  return bar++;
+};
+```

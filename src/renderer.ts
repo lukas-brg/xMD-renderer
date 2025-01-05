@@ -30,24 +30,30 @@ function renderHTML(tokens: BlockToken[]): string {
     const indent = (depth: number) => "  ".repeat(depth);
     let html = tokens
         .map((token) => {
-            const indentation = indent(token.depth + 1); // every element is child of body
+            let inCodeBlock = token.tag == "pre" || token.tag == "code";
+            let indentation = indent(token.depth + 1); // every element is child of body
+            let sep = "\n";
             let content = renderInline(token.inlineTokens);
+            if (inCodeBlock) {
+                indentation = "";
+                sep = "";
+            }
             switch (token.tagKind) {
                 case "text":
-                    return `${indentation}${content}`;
+                    return `${content}` + sep;
                 case "open":
-                    return `${indentation}<${token.tag}>`;
+                    return `${indentation}<${token.tag}>` + sep;
                 case "wrapped":
-                    return `${indentation}<${token.tag}>${content}</${token.tag}>`;
+                    return `${indentation}<${token.tag}>${content}</${token.tag}>` + sep;
                 case "selfClosing":
-                    return `${indentation}<${token.tag}/>`;
+                    return `${indentation}<${token.tag}/>` + sep;
                 case "close":
-                    return `${indentation}</${token.tag}>`;
+                    return `${indentation}</${token.tag}>` + sep;
                 default:
                     return "";
             }
         })
-        .join("\n");
+        .join("");
 
     return html;
 }
