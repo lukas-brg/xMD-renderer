@@ -22,3 +22,11 @@ Text **text**
 Text _text_
 
 Text __text__
+
+Text ***text***
+
+***text***
+
+_**text**_
+
+**_text_**

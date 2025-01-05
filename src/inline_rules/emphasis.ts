@@ -14,26 +14,38 @@ export const Emphasis: InlineRule = {
             _: [],
             __: [],
         };
+        let stack: string[] = [];
 
-        for (let i = 0; i < state.line.length - 1; ) {
+        for (let i = 0; i < state.line.length; ) {
             const char = state.charAt(i);
             if (char == "_" || char == "*") {
+                if (stack[stack.length - 1] == char) {
+                    tokenPositions[char].push(i);
+                    stack.pop();
+                    i += 1;
+                    continue;
+                }
+
                 if (state.charAt(i + 1) == char) {
+                    if (stack[stack.length - 1] == char + char) {
+                        tokenPositions[char + char].push(i);
+                        stack.pop();
+                        i += 2;
+                        continue;
+                    }
                     tokenPositions[char + char].push(i);
+                    stack.push(char + char);
                     i += 2;
                     continue;
-                } else {
-                    tokenPositions[char].push(i);
                 }
+                tokenPositions[char].push(i);
+                stack.push(char);
+                i += 1;
+                continue;
             }
             i++;
         }
 
-        const lastIdx = state.line.length - 1;
-        const char = state.charAt(lastIdx);
-        if (char == "_" || char == "*") {
-            tokenPositions[char].push(lastIdx);
-        }
         let madeChange = false;
 
         for (let [tok, positions] of Object.entries(tokenPositions)) {
