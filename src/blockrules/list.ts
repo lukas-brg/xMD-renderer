@@ -46,7 +46,7 @@ export const UnorderedList: BlockRule = {
             } else if (depth < prevDepth) {
                 while (depths.length > 1) {
                     const poppedDepth = depths.pop();
-                    assert(poppedDepth != undefined);
+                    assert(poppedDepth != undefined, "list.ts: undefined item on stack");
                     const topDepth = poppedDepth ?? 0; // 0 case should be unreachable
                     if (topDepth >= depth) {
                         stateChange.addBlockToken(
@@ -70,7 +70,10 @@ export const UnorderedList: BlockRule = {
             prevDepth = depth;
         } while ((line = input.nextLine()) != null);
 
-        assert(balance == 1);
+        assert(
+            balance == 1,
+            `list.ts: balance should be 1 is ${balance}  line: ${input.currentPoint.line}`,
+        );
         for (let i = 0; i < depths.length; i++) {
             stateChange.addBlockToken(
                 BlockToken.createContentless(
@@ -82,7 +85,7 @@ export const UnorderedList: BlockRule = {
             );
             balance--;
         }
-        assert(balance == 0, balance);
+        assert(balance == 0, balance, `list.ts: ul open/close balance uneven ${balance}`);
         stateChange.endPoint = input.currentPoint;
         return stateChange;
     },

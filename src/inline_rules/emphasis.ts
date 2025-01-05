@@ -51,7 +51,7 @@ export const Emphasis: InlineRule = {
             const num = positions.length;
             if (num % 2 != 0) continue;
             const tokLen = tok.length;
-            const tag = tokLen == 2 ? "strong" : "emph";
+            const tag = tokLen == 2 ? "strong" : "em";
             let even = true;
             for (let pos of positions) {
                 const tagKind = even ? "open" : "close";

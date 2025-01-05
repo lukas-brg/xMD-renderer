@@ -19,7 +19,7 @@ export const Heading: BlockRule = {
             "######": "h6",
         };
 
-        if (input.isEmptyLine(-1)) {
+        if (!input.isEmptyLine(-1)) {
             return null;
         }
         const line = input.currentLine();
