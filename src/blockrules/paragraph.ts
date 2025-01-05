@@ -1,4 +1,3 @@
-import { leadingWhitespaces, isEmpty } from "../string_utils";
 import { Token, BlockToken } from "../token";
 import { InputState } from "../input_state";
 import { ParsingStateBlock, StateChange } from "../parser";
@@ -9,7 +8,6 @@ export const Paragraph: BlockRule = {
     process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
         let stateChange = new StateChange(input.currentPoint, Paragraph.name);
 
-        let line = input.currentLine();
         stateChange.addBlockToken(
             BlockToken.createContentless("p", input.currentPoint, "open"),
         );

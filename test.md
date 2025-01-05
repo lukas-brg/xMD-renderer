@@ -14,3 +14,11 @@ This should be a new line
 - List item 2
   
 Text \*text\*
+
+Text *text*
+
+Text **text**
+
+Text _text_
+
+Text __text__

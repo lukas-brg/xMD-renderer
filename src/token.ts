@@ -120,8 +120,8 @@ export class InlineToken extends Token {
         return new InlineToken(
             tag,
             position,
-            undefined,
             tagKind,
+            undefined,
             false,
             depth,
             positionEnd,
