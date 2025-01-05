@@ -1,7 +1,7 @@
-import { Token, BlockToken } from "../token";
-import { InputState } from "../input_state";
-import { ParsingStateBlock, StateChange } from "../parser";
-import BlockRule from "./blockrule";
+import { Token, BlockToken } from "../token.js";
+import { InputState } from "../input_state.js";
+import { ParsingStateBlock, StateChange } from "../parser.js";
+import BlockRule from "./blockrule.js";
 import { assert } from "console";
 
 function isUnorderedList(line: string): boolean {

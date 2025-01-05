@@ -1,6 +1,6 @@
-import { ParsingStateInline } from "../parser";
-import InlineRule from "./inline_rule";
-import { InlineToken } from "../token";
+import { ParsingStateInline } from "../parser.js";
+import InlineRule from "./inline_rule.js";
+import { InlineToken } from "../token.js";
 
 const ESCAPABLE: Set<string> = new Set([
     "\\",

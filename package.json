@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node --require ts-node/register src/index.ts",
     "debug": "node --require ts-node/register src/index.ts"
@@ -12,6 +13,10 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^22.10.4",
+    "@wooorm/starry-night": "^3.6.0",
+    "hast-util-to-html": "^9.0.4",
+    "install": "^0.13.0",
+    "npm": "^11.0.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.2"
   },

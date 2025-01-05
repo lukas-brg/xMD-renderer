@@ -1,8 +1,11 @@
-import { InputState } from "../input_state";
-import { ParsingStateBlock, StateChange } from "../parser";
-import { BlockToken, Token } from "../token";
-import BlockRule from "./blockrule";
-import { leadingWhitespaces, isEmpty } from "../string_utils";
+import { InputState } from "../input_state.js";
+import { ParsingStateBlock, StateChange } from "../parser.js";
+import { BlockToken, Token } from "../token.js";
+import BlockRule from "./blockrule.js";
+import { toHtml } from "hast-util-to-html";
+import { common, createStarryNight } from "@wooorm/starry-night";
+
+const starryNight = await createStarryNight(common);
 
 export const CodeblockFenced: BlockRule = {
     name: "codeblock_fenced",
@@ -11,21 +14,38 @@ export const CodeblockFenced: BlockRule = {
         let stateChange = new StateChange(input.currentPoint, CodeblockFenced.name);
         const line = input.currentLine();
         if (!line.startsWith("```")) return null;
+        let langStr = line.substring(3).trim();
+
         stateChange.addBlockToken(
             BlockToken.createContentless("pre", input.currentPoint, "open", 1),
         );
+
         stateChange.addBlockToken(
-            BlockToken.createContentless("code", input.currentPoint, "open"),
+            BlockToken.createContentless(
+                "code",
+                input.currentPoint,
+                "open",
+            ).withAttribute("class", `${langStr}`),
         );
+
+        let codeLines: string[] = [];
         while (!input.nextLine()?.startsWith("```")) {
-            stateChange.addBlockToken(
-                BlockToken.createPreservedText(
-                    input.currentPoint,
-                    input.currentLine(),
-                    2,
-                ),
-            );
+            codeLines.push(input.currentLine());
         }
+        let codeContent = codeLines.join("\n");
+
+        if (langStr != "") {
+            try {
+                const scope = starryNight.flagToScope(langStr);
+                // @ts-ignore
+                const tree = starryNight.highlight(codeContent, scope);
+                codeContent = toHtml(tree);
+            } catch {}
+        }
+
+        stateChange.addBlockToken(
+            BlockToken.createPreservedText(input.currentPoint, codeContent),
+        );
 
         stateChange.addBlockToken(
             BlockToken.createContentless("code", input.currentPoint, "close"),
@@ -36,5 +56,3 @@ export const CodeblockFenced: BlockRule = {
         return stateChange;
     },
 };
-
-// export default Heading;

@@ -1,12 +1,13 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",        
+    "module": "NodeNext",        
     "target": "ESNext",          
     "esModuleInterop": true,   
     "skipLibCheck": true,     
     "strict": true,             
     "outDir": "./dist",
-    "sourceMap": true
+    "sourceMap": true,
+    "moduleResolution": "nodenext"
   },
   "include": [
     "src/**/*.ts"

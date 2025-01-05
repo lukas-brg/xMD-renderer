@@ -1,7 +1,7 @@
-import { ParsingStateInline } from "../parser";
-import InlineRule from "./inline_rule";
-import { InlineToken } from "../token";
-import { pairs } from "../util";
+import { ParsingStateInline } from "../parser.js";
+import InlineRule from "./inline_rule.js";
+import { InlineToken } from "../token.js";
+import { pairs } from "../util.js";
 
 export const Code: InlineRule = {
     name: "code",

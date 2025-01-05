@@ -1,4 +1,4 @@
-import { ParsingStateInline } from "../parser";
+import { ParsingStateInline } from "../parser.js";
 
 export default interface InlineRule {
     process: (state: ParsingStateInline) => boolean;

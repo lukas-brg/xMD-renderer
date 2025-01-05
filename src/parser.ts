@@ -1,14 +1,14 @@
-import { InputState, Point } from "./input_state";
-import { Token, BlockToken, InlineToken } from "./token";
-import BlockRule from "./blockrules/blockrule";
-import InlineRule from "./inline_rules/inline_rule";
-import { Heading } from "./blockrules/heading";
-import { Emphasis } from "./inline_rules/emphasis";
-import { UnorderedList } from "./blockrules/list";
-import { Paragraph } from "./blockrules/paragraph";
-import { Escape } from "./inline_rules/escape";
-import { Code } from "./inline_rules/code";
-import { CodeblockFenced } from "./blockrules/codeblock";
+import { InputState, Point } from "./input_state.js";
+import { Token, BlockToken, InlineToken } from "./token.js";
+import BlockRule from "./blockrules/blockrule.js";
+import InlineRule from "./inline_rules/inline_rule.js";
+import { Heading } from "./blockrules/heading.js";
+import { Emphasis } from "./inline_rules/emphasis.js";
+import { UnorderedList } from "./blockrules/list.js";
+import { Paragraph } from "./blockrules/paragraph.js";
+import { Escape } from "./inline_rules/escape.js";
+import { Code } from "./inline_rules/code.js";
+import { CodeblockFenced } from "./blockrules/codeblock.js";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";
 

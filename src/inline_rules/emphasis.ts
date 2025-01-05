@@ -1,8 +1,8 @@
-import { ParsingStateInline } from "../parser";
-import InlineRule from "./inline_rule";
-import { InlineToken } from "../token";
-import { Dict } from "../util";
-import { pairs } from "../util";
+import { ParsingStateInline } from "../parser.js";
+import InlineRule from "./inline_rule.js";
+import { InlineToken } from "../token.js";
+import { Dict } from "../util.js";
+import { pairs } from "../util.js";
 
 export const Emphasis: InlineRule = {
     name: "emphasis",

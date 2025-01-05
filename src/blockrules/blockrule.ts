@@ -1,5 +1,5 @@
-import { InputState } from "../input_state";
-import { ParsingStateBlock, StateChange } from "../parser";
+import { InputState } from "../input_state.js";
+import { ParsingStateBlock, StateChange } from "../parser.js";
 
 export default interface BlockRule {
     /**

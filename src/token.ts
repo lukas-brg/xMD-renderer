@@ -1,4 +1,5 @@
-import { Point } from "./input_state";
+import { Point } from "./input_state.js";
+import { Dict } from "./util.js";
 
 export type ContentKind = "block" | "inline" | "text" | "root";
 
@@ -21,6 +22,10 @@ export class Token {
     parseContent: boolean;
     depth: number = 0;
     tagKind: TagKind = "selfClosing";
+    attributes: Map<string, string>;
+
+    /**  The annotat */
+    annotation: string = "";
 
     constructor(
         tag: string,
@@ -35,7 +40,17 @@ export class Token {
         this.kind = kind;
         this.parseContent = parseContent ?? true;
         this.depth = depth ?? 0;
+        this.attributes = new Map();
         this.tagKind = tagKind ?? "selfClosing";
+    }
+
+    addAttribute(key: string, value: string) {
+        this.attributes.set(key, value);
+    }
+
+    withAttribute(key: string, value: string): this {
+        this.attributes.set(key, value);
+        return this;
     }
 }
 

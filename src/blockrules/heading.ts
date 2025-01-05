@@ -1,8 +1,8 @@
-import { InputState } from "../input_state";
-import { ParsingStateBlock, StateChange } from "../parser";
-import { BlockToken, Token } from "../token";
-import BlockRule from "./blockrule";
-import { leadingWhitespaces, isEmpty } from "../string_utils";
+import { InputState } from "../input_state.js";
+import { ParsingStateBlock, StateChange } from "../parser.js";
+import { BlockToken, Token } from "../token.js";
+import BlockRule from "./blockrule.js";
+import { leadingWhitespaces, isEmpty } from "../string_utils.js";
 
 export const Heading: BlockRule = {
     name: "heading",

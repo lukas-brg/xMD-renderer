@@ -4,7 +4,7 @@ import {
     isEmpty,
     leadingWhitespaces,
     trailingWhiteSpaces,
-} from "./string_utils";
+} from "./string_utils.js";
 
 export interface Point {
     line: number;

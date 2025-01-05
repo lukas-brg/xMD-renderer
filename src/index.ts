@@ -1,6 +1,6 @@
-import { InputState } from "./input_state";
-import { parse } from "./parser";
-import { renderToFile } from "./renderer";
+import { InputState } from "./input_state.js";
+import { parse } from "./parser.js";
+import { renderToFile } from "./renderer.js";
 
 function renderFile(filePath: string) {
     let doc = InputState.fromFile(filePath);
