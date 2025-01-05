@@ -8,7 +8,6 @@ export const Heading: BlockRule = {
     name: "heading",
 
     process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
-        let tokens = new Array<Token>();
         let stateChange = new StateChange(input.currentPoint, Heading.name);
         const headingTypes: { [key: string]: string } = {
             "#": "h1",

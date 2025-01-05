@@ -2,6 +2,7 @@ import { ParsingStateInline } from "../parser";
 import InlineRule from "./inline_rule";
 import { InlineToken } from "../token";
 import { Dict } from "../util";
+import { pairs } from "../util";
 
 export const Emphasis: InlineRule = {
     name: "emphasis",
@@ -48,19 +49,19 @@ export const Emphasis: InlineRule = {
         let madeChange = false;
 
         for (let [tok, positions] of Object.entries(tokenPositions)) {
-            const num = positions.length;
-            if (num % 2 != 0) continue;
+            if (positions.length % 2 != 0) continue;
             const tokLen = tok.length;
             const tag = tokLen == 2 ? "strong" : "em";
-            let even = true;
-            for (let pos of positions) {
-                const tagKind = even ? "open" : "close";
+            for (let [start, end] of pairs(positions)) {
                 state.addInlineToken(
-                    pos,
-                    InlineToken.createContentless(tag, pos, tagKind, pos + tokLen),
+                    start,
+                    InlineToken.createContentless(tag, start, "open", start + tokLen),
+                );
+                state.addInlineToken(
+                    end,
+                    InlineToken.createContentless(tag, end, "close", end + tokLen),
                 );
                 madeChange = true;
-                even = !even;
             }
         }
 

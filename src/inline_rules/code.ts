@@ -10,7 +10,7 @@ export const Code: InlineRule = {
         const line = state.line;
         const matches: number[] = [...line.matchAll(/`/g)]
             .map((match) => match.index)
-            .filter((i) => !state.escapedPositions.has(i));
+            .filter((i) => !state.isEscaped(i));
 
         if (matches.length == 0) return false;
 

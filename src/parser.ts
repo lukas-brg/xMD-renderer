@@ -67,29 +67,24 @@ export class ParsingStateBlock {
 }
 
 export class ParsingStateInline {
-    tokenList: InlineToken[];
-    relatedPoint: Point;
-    line: string;
-    currentPos: number;
-    stack: InlineToken[];
+    readonly relatedPoint: Point;
+    readonly line: string;
     private _tokens: Map<number, InlineToken>;
-    escapedPositions: Set<number>;
+    private escapedPositions: Set<number>;
     private _noParseIndices: Map<number, string>;
 
     constructor(line: string, point: Point) {
-        this.tokenList = [];
         this.relatedPoint = point;
         this.line = line;
-        this.currentPos = 0;
-        this.stack = [];
         this._tokens = new Map<number, InlineToken>();
         this.escapedPositions = new Set();
         this._noParseIndices = new Map();
     }
 
     addInlineToken(startPos: number, token: InlineToken) {
-        if (!token.parseContent) {
+        if (!token.parseContent || token.tag) {
             let [start, end, tag] = [startPos, token.positionEnd, token.tag];
+
             for (let i = start; i < end; i++) {
                 this._noParseIndices.set(i, tag);
             }
@@ -101,38 +96,22 @@ export class ParsingStateInline {
         return this._tokens;
     }
 
-    charAt(pos: number): string {
-        const char = this.line.charAt(pos);
-        if (this.escapedPositions.has(pos)) {
-            return "\\" + char;
-        }
+    escape(pos: number) {
+        this.escapedPositions.add(pos);
+        this._noParseIndices.set(pos, `\\${this.line.charAt(pos)}`);
+    }
 
+    isEscaped(pos: number): boolean {
+        return this.escapedPositions.has(pos);
+    }
+
+    charAt(pos: number): string {
         let noParseTag = this._noParseIndices.get(pos);
 
         if (noParseTag) {
             return noParseTag;
         }
-
-        return char;
-    }
-
-    currentChar(): string {
-        const idx = Math.max(0, this.currentPos - 1);
-        return this.charAt(idx);
-    }
-
-    peek(): string | null {
-        if (this.currentPos >= this.line.length) {
-            return null;
-        }
-        return this.charAt(this.currentPos);
-    }
-
-    advance(): string | null {
-        if (this.currentPos >= this.line.length) {
-            return null;
-        }
-        return this.charAt(this.currentPos++);
+        return this.line.charAt(pos);
     }
 }
 
