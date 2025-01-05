@@ -137,6 +137,7 @@ export class InlineToken extends Token {
         position: number,
         content: string,
         positionEnd?: number,
+        parseContent?: boolean,
         depth?: number,
     ): InlineToken {
         return new InlineToken(
@@ -144,7 +145,7 @@ export class InlineToken extends Token {
             position,
             "wrapped",
             content,
-            true,
+            parseContent,
             depth,
             positionEnd,
         );

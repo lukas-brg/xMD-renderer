@@ -28,14 +28,13 @@ function renderInline(tokens: InlineToken[]) {
 
 function renderHTML(tokens: BlockToken[]): string {
     const indent = (depth: number) => "  ".repeat(depth);
-
     let html = tokens
         .map((token) => {
-            const indentation = indent(token.depth);
+            const indentation = indent(token.depth + 1); // every element is child of body
             let content = renderInline(token.inlineTokens);
             switch (token.tagKind) {
                 case "text":
-                    return `${content}`;
+                    return `${indentation}${content}`;
                 case "open":
                     return `${indentation}<${token.tag}>`;
                 case "wrapped":

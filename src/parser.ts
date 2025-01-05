@@ -47,11 +47,11 @@ const inlineRules: InlineRuleList = {
     escape: {
         handlerObj: Escape,
     },
-    emphasis: {
-        handlerObj: Emphasis,
-    },
     code: {
         handlerObj: Code,
+    },
+    emphasis: {
+        handlerObj: Emphasis,
     },
 };
 
@@ -72,8 +72,9 @@ export class ParsingStateInline {
     line: string;
     currentPos: number;
     stack: InlineToken[];
-    tokens: Map<number, InlineToken>;
+    private _tokens: Map<number, InlineToken>;
     escapedPositions: Set<number>;
+    private _noParseIndices: Map<number, string>;
 
     constructor(line: string, point: Point) {
         this.tokenList = [];
@@ -81,12 +82,23 @@ export class ParsingStateInline {
         this.line = line;
         this.currentPos = 0;
         this.stack = [];
-        this.tokens = new Map<number, InlineToken>();
+        this._tokens = new Map<number, InlineToken>();
         this.escapedPositions = new Set();
+        this._noParseIndices = new Map();
     }
 
-    addInlineToken(token: InlineToken) {
-        this.tokenList.push(token);
+    addInlineToken(startPos: number, token: InlineToken) {
+        if (!token.parseContent) {
+            let [start, end, tag] = [startPos, token.positionEnd, token.tag];
+            for (let i = start; i < end; i++) {
+                this._noParseIndices.set(i, tag);
+            }
+        }
+        this._tokens.set(startPos, token);
+    }
+
+    get tokens() {
+        return this._tokens;
     }
 
     charAt(pos: number): string {
@@ -94,6 +106,13 @@ export class ParsingStateInline {
         if (this.escapedPositions.has(pos)) {
             return "\\" + char;
         }
+
+        let noParseTag = this._noParseIndices.get(pos);
+
+        if (noParseTag) {
+            return noParseTag;
+        }
+
         return char;
     }
 

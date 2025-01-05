@@ -65,7 +65,7 @@ export const UnorderedList: BlockRule = {
             }
             const content = lineTrimmed.slice(2);
             stateChange.addBlockToken(
-                BlockToken.createWrapped("li", point, content, depth),
+                BlockToken.createWrapped("li", point, content, depth + 1),
             );
             prevDepth = depth;
         } while ((line = input.nextLine()) != null);

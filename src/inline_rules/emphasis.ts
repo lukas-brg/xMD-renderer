@@ -55,7 +55,7 @@ export const Emphasis: InlineRule = {
             let even = true;
             for (let pos of positions) {
                 const tagKind = even ? "open" : "close";
-                state.tokens.set(
+                state.addInlineToken(
                     pos,
                     InlineToken.createContentless(tag, pos, tagKind, pos + tokLen),
                 );

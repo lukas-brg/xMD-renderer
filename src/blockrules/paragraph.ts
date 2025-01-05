@@ -7,7 +7,7 @@ export const Paragraph: BlockRule = {
     name: "paragraph",
     process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
         let stateChange = new StateChange(input.currentPoint, Paragraph.name);
-
+        let containsText = false;
         stateChange.addBlockToken(
             BlockToken.createContentless("p", input.currentPoint, "open"),
         );
@@ -24,6 +24,9 @@ export const Paragraph: BlockRule = {
                     stateChange.addBlockToken(
                         BlockToken.createContentless("p", input.currentPoint, "close"),
                     );
+                    if (!containsText) {
+                        return otherStateChange;
+                    }
                     stateChange.merge(otherStateChange);
                     return stateChange;
                 }
@@ -35,7 +38,7 @@ export const Paragraph: BlockRule = {
 
             let line = input.currentLine();
             stateChange.addBlockToken(BlockToken.createText(input.currentPoint, line, 1));
-
+            containsText = true;
             if (input.trailingWhitespaces() >= 2) {
                 stateChange.addBlockToken(
                     BlockToken.createSelfClosing("br", input.currentPoint),

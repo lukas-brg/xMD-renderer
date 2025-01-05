@@ -40,7 +40,7 @@ export const Escape: InlineRule = {
             if (!ESCAPABLE.has(escapedChar)) continue;
 
             state.escapedPositions.add(charPos);
-            state.tokens.set(
+            state.addInlineToken(
                 backslashPos,
                 InlineToken.createText(backslashPos, escapedChar, backslashPos + 2),
             );

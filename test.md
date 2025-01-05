@@ -1,5 +1,7 @@
 # Markdown
 
+## Lists
+
 + Create a list by starting a line with `+`, `-`, or `*`
 + Sub-lists are made by indenting 2 spaces:
   - Marker character change forces new list start:
@@ -8,27 +10,42 @@
     - Nulla volutpat aliquam velit
       - Test
 + Very easy!
-  
+
+## Paragraph  
+
 This is a paragraph of text.
 This should still be on the same line  
 This should be a new line 
 - Here the paragraph should be terminated by the list
 - List item 2
+
+## Emphasis
   
-Text \*text\*
 
-Text *text*
+`*text*`   *text*
 
-Text **text**
+`**text**`   **text**
 
-Text _text_
+`_text_`   _text_
 
-Text __text__
+`__text__`   __text__
 
-Text ***text***
+`***text***`   ***text***
 
-***text***
+`_**text**_`   _**text**_
 
-_**text**_
+`**_text_**`    **_text_**
 
-**_text_**
+## Escaping
+
+`\*text*`   \*text\*
+
+`\*\*text\*\*`   \*\*text\*\*
+
+`\_text\_`   \_text\_
+
+`\**text\**`   \**text\**
+
+`*\*text\**`   *\*text\**
+
+`**\*text\***`   **\*text\***

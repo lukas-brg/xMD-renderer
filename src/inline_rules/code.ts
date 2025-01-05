@@ -16,13 +16,14 @@ export const Code: InlineRule = {
 
         for (let [start, end] of pairs(matches)) {
             if (end - start < 2) continue;
-            state.tokens.set(
+            state.addInlineToken(
                 start,
                 InlineToken.createWrapped(
                     "code",
                     start,
                     line.substring(start + 1, end),
                     end + 1,
+                    false,
                 ),
             );
         }
