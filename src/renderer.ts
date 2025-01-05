@@ -2,6 +2,7 @@ import { assert } from "console";
 import { BlockToken } from "./token";
 import { InlineToken } from "./token";
 import * as fs from "fs";
+import { readFile } from "./string_utils";
 
 function renderInline(tokens: InlineToken[]) {
     let html = tokens
@@ -54,7 +55,8 @@ function renderHTML(tokens: BlockToken[]): string {
 
 export function renderToFile(tokens: BlockToken[], filePath: string) {
     const htmlContent = renderHTML(tokens);
-
+    const theme = readFile("./src/static/github-markdown.css");
+    const marginStyle = readFile("./src/static/margin.css");
     const htmlSkeleton = `
 <!DOCTYPE html>
 <html lang="en">
@@ -63,8 +65,12 @@ export function renderToFile(tokens: BlockToken[], filePath: string) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Markdown Output</title>
 </head>
-<body>
-    ${htmlContent}
+<body class="markdown-body">
+${htmlContent}
+<style>
+${theme}
+${marginStyle}
+</style>
 </body>
 </html>
     `;
