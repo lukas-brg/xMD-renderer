@@ -140,3 +140,18 @@ var foo = function (bar) {
 [Link](#this-is-a-heading)
 
 [Link to duplicate heading](#this-is-a-heading-1)
+
+### Auto Links
+
+www.google.com
+
+google.com
+
+https://github.com/
+
+github.com/
+
+github.com
+
+test@email.com
+

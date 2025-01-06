@@ -7,7 +7,7 @@ import { Code } from "./inline_rules/code.js";
 import { Emphasis } from "./inline_rules/emphasis.js";
 import { Escape } from "./inline_rules/escape.js";
 import InlineRule from "./inline_rules/inline_rule.js";
-import { Link } from "./inline_rules/link.js";
+import { AutoLink, Link } from "./inline_rules/link.js";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";
 
@@ -58,6 +58,9 @@ const inlineRules: InlineRuleList = {
     },
     link: {
         handlerObj: Link,
+    },
+    autolink: {
+        handlerObj: AutoLink,
     },
     emphasis: {
         handlerObj: Emphasis,
