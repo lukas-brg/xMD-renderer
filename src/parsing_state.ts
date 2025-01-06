@@ -1,6 +1,7 @@
 import { Point, InputState } from "./input_state.js";
 import { BlockToken, InlineToken, Token } from "./token.js";
 import { makeIdString } from "./string_utils.js";
+import { ReferenceManager } from "./references.js";
 
 export type HeadingForm = {
     text: string;
@@ -31,25 +32,45 @@ export class ParsingStateInline {
     readonly line: string;
     private _tokens: Map<number, InlineToken>;
     private escapedPositions: Set<number>;
-    private _noParseIndices: Map<number, string>;
+    private _consumedIndices: Map<number, string>;
 
-    constructor(line: string, point: Point) {
+    private references: ReferenceManager;
+
+    constructor(line: string, point: Point, references: ReferenceManager) {
         this.relatedPoint = point;
         this.line = line;
         this._tokens = new Map<number, InlineToken>();
         this.escapedPositions = new Set();
-        this._noParseIndices = new Map();
+        this._consumedIndices = new Map();
+        this.references = references;
     }
 
     addInlineToken(startPos: number, token: InlineToken) {
         if (!token.parseContent) {
             let [start, end, tag] = [startPos, token.positionEnd, token.tag];
-
+            if (tag.length < 2) {
+                tag += tag;
+            }
             for (let i = start; i < end; i++) {
-                this._noParseIndices.set(i, tag);
+                this._consumedIndices.set(i, tag);
             }
         }
         this._tokens.set(startPos, token);
+    }
+
+    registerReference(label: string, url: string, title?: string) {
+        this.references.registerReference(label, url, title);
+    }
+
+    resolveReference(label: string, token: InlineToken) {
+        this.references.resolveReference(label, token);
+    }
+
+    consume(start: number, end?: number) {
+        end = end ?? start + 1;
+        for (let i = start; i < end; i++) {
+            this._consumedIndices.set(i, "consumed");
+        }
     }
 
     get tokens() {
@@ -62,7 +83,7 @@ export class ParsingStateInline {
 
     escape(pos: number) {
         this.escapedPositions.add(pos);
-        this._noParseIndices.set(pos, `\\${this.line.charAt(pos)}`);
+        this._consumedIndices.set(pos, `\\${this.line.charAt(pos)}`);
     }
 
     isEscaped(pos: number): boolean {
@@ -70,12 +91,27 @@ export class ParsingStateInline {
     }
 
     charAt(pos: number): string {
-        let noParseTag = this._noParseIndices.get(pos);
+        let noParseTag = this._consumedIndices.get(pos);
 
         if (noParseTag) {
             return noParseTag;
         }
         return this.line.charAt(pos);
+    }
+
+    matchAll(regex: RegExp): RegExpStringIterator<RegExpExecArray> {
+        let matches = this.line.matchAll(regex).filter((m) => {
+            const start = m.index;
+            const end = start + m[0].length;
+            for (let i = start; i < end; i++) {
+                if (this._consumedIndices.has(i)) {
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        return matches;
     }
 }
 

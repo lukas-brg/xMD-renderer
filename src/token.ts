@@ -53,6 +53,12 @@ export class Token {
         this.attributes.set(key, value);
     }
 
+    addAttributes(attributes: Dict<string>) {
+        for (let [key, value] of Object.entries(attributes)) {
+            this.attributes.set(key, value);
+        }
+    }
+
     withAttribute(key: string, value: string): this {
         this.attributes.set(key, value);
         return this;

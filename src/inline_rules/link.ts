@@ -8,12 +8,14 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const urlRegex =
     /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
 
+const headingLinkRegex = /#\w+/;
+
 function processUrl(url: string): string {
     if (emailRegex.test(url)) {
         return `mailto:${url}`;
     }
 
-    if (url.startsWith("#")) return url;
+    if (headingLinkRegex.test(url)) return url;
 
     let cleanUrl = normalizeUrl(url);
     return cleanUrl;
@@ -63,7 +65,7 @@ export const AutoLink: InlineRule = {
 
     process: (state: ParsingStateInline) => {
         let didAddLink = false;
-        state.line.matchAll(urlRegex).forEach((match) => {
+        state.matchAll(urlRegex).forEach((match) => {
             const linkText = match[0];
             const url = processUrl(linkText);
 
@@ -76,6 +78,60 @@ export const AutoLink: InlineRule = {
                     match.index + url.length + 1,
                 ).withAttribute("href", url),
             );
+            didAddLink = true;
+        });
+        return didAddLink;
+    },
+};
+
+const refRegex = /\[(\w+.*)\]\s?\[(\w+)\]/g;
+
+export const ReferenceLink: InlineRule = {
+    name: "reference_link",
+
+    process: (state: ParsingStateInline) => {
+        let didAddLink = false;
+        state.matchAll(refRegex).forEach((match) => {
+            const [wholeMatch, text, label] = match;
+            const start = match.index;
+            const afterContentStart = start + 1 + text.length;
+            const end = start + wholeMatch.length;
+            let linkTokenOpen = InlineToken.createContentless("a", start, "open");
+            let linkTokenClose = InlineToken.createContentless(
+                "a",
+                afterContentStart,
+                "close",
+                end,
+            );
+            state.addInlineToken(start, linkTokenOpen);
+            state.addInlineToken(afterContentStart, linkTokenClose);
+            state.resolveReference(label, linkTokenOpen);
+            didAddLink = true;
+        });
+        return didAddLink;
+    },
+};
+
+const defRegex = /\[(\w+)\]:\s+/g;
+
+const referenceDefRegex = new RegExp(
+    `${defRegex.source}(${urlRegex.source})(?:.*"(.*)")?`,
+    "g",
+);
+
+export const ReferenceLinkDefinition: InlineRule = {
+    name: "reference_link_definition",
+
+    process: (state: ParsingStateInline) => {
+        let didAddLink = false;
+        state.matchAll(referenceDefRegex).forEach((match) => {
+            const [wholeMatch, label, urlText] = match;
+            const title = match[6];
+            const url = processUrl(urlText);
+            const start = match.index;
+            const end = match.index + wholeMatch.length + 1;
+            state.consume(start, end);
+            state.registerReference(label, url, title);
             didAddLink = true;
         });
         return didAddLink;

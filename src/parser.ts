@@ -2,6 +2,7 @@ import { InputState, Point } from "./input_state.js";
 import { rules } from "./rules.js";
 import { ParsingStateBlock, ParsingStateInline } from "./parsing_state.js";
 import { InlineToken } from "./token.js";
+import { ReferenceManager } from "./references.js";
 
 function parseBlocks(doc: InputState, state: ParsingStateBlock) {
     let line;
@@ -10,7 +11,6 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
         for (let [ruleName, rule] of Object.entries(rules.block)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
             let stateChange = rule.handlerObj.process(doc, state);
-            //console.log(line);
             if (stateChange) {
                 if (!stateChange.success) {
                     switch (rule.failureMode) {
@@ -33,11 +33,16 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
 }
 
 function parseInline(state: ParsingStateBlock) {
+    let references = new ReferenceManager();
     for (let blockTok of state.blockTokens) {
         const line = blockTok.content;
         if (line) {
             if (blockTok.parseContent) {
-                let inlineState = new ParsingStateInline(line, blockTok.relatedPosition);
+                let inlineState = new ParsingStateInline(
+                    line,
+                    blockTok.relatedPosition,
+                    references,
+                );
                 let anyRuleApplies = false;
 
                 for (let [ruleName, rule] of Object.entries(rules.inline)) {
@@ -72,7 +77,9 @@ function parseInline(state: ParsingStateBlock) {
                         continousText = "";
                         textStart = i;
                     } else {
-                        continousText += line.charAt(i);
+                        const c = inlineState.charAt(i);
+
+                        continousText += c.length == 1 ? c : "";
                         i++;
                     }
                 }

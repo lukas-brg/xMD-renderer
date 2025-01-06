@@ -155,3 +155,23 @@ github.com
 
 test@email.com
 
+### Reference Links
+
+
+```
+[link to github][github]
+
+The following definition should not be visible.
+
+[github]: github.com/
+
+Here is another link to [github] [github]
+```
+
+[link to github][github]
+
+The following definition should not be visible.
+
+[github]: github.com/ "GitHub link"
+
+Here is another link to [github] [github]
