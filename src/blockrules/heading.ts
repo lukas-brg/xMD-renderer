@@ -1,5 +1,5 @@
 import { InputState } from "../input_state.js";
-import { ParsingStateBlock, StateChange } from "../parser.js";
+import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import { BlockToken, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
 import { leadingWhitespaces, isEmpty } from "../string_utils.js";

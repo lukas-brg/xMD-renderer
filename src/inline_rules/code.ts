@@ -1,4 +1,4 @@
-import { ParsingStateInline } from "../parser.js";
+import { ParsingStateInline } from "../parsing_state.js";
 import InlineRule from "./inline_rule.js";
 import { InlineToken } from "../token.js";
 import { pairs } from "../util.js";

@@ -21,34 +21,65 @@ This should be a new line
 
 ## Emphasis
   
+```
+*text*
 
-`*text*`   *text*
+**text**
 
-`**text**`   **text**
+_text_
 
-`_text_`   _text_
+__text__
 
-`__text__`   __text__
+***text***
 
-`***text***`   ***text***
+_**text**_
 
-`_**text**_`   _**text**_
+**_text_**
+```
 
-`**_text_**`    **_text_**
+*text*
+
+**text**
+
+ _text_
+
+__text__
+
+***text***
+
+_**text**_
+
+**_text_**
+
 
 ## Escaping
 
-`\*text*`   \*text\*
+```
+\*text*
 
-`\*\*text\*\*`   \*\*text\*\*
+\*\*text\*\*   
 
-`\_text\_`   \_text\_
+\_text\_
 
-`\**text\**`   \**text\**
+\**text\**   
 
-`*\*text\**`   *\*text\**
+*\*text\**   
 
-`**\*text\***`   **\*text\***
+**\*text\***  
+```
+
+\*text\*
+
+\*\*text\*\*
+
+\_text\_
+
+\**text\**
+
+*\*text\**
+
+ **\*text\***
+
 
 ## Codeblock
 

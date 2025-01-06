@@ -24,7 +24,12 @@ export class Token {
     tagKind: TagKind = "selfClosing";
     attributes: Map<string, string>;
 
-    /**  The annotat */
+    /**
+     * An annotation can be used to specify the context or role of the token.
+     * It can be checked against at later points
+     *
+     * It has no effect on the generated output
+     */
     annotation: string = "";
 
     constructor(
@@ -50,6 +55,17 @@ export class Token {
 
     withAttribute(key: string, value: string): this {
         this.attributes.set(key, value);
+        return this;
+    }
+
+    /**
+     * An annotation can be used to specify the context or role of the token.
+     * It can be checked against at later points
+     *
+     * It has no effect on the generated output
+     */
+    withAnnotation(annotation: string): this {
+        this.annotation = annotation;
         return this;
     }
 }

@@ -1,5 +1,5 @@
 import { InputState } from "../input_state.js";
-import { ParsingStateBlock, StateChange } from "../parser.js";
+import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import { BlockToken, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
 import { toHtml } from "hast-util-to-html";
@@ -15,24 +15,27 @@ export const CodeblockFenced: BlockRule = {
         const line = input.currentLine();
         if (!line.startsWith("```")) return null;
         let langStr = line.substring(3).trim();
-
         stateChange.addBlockToken(
             BlockToken.createContentless("pre", input.currentPoint, "open", 1),
         );
 
         stateChange.addBlockToken(
-            BlockToken.createContentless(
-                "code",
-                input.currentPoint,
-                "open",
-            ).withAttribute("class", `${langStr}`),
+            BlockToken.createContentless("code", input.currentPoint, "open")
+                .withAttribute("class", `${langStr}`)
+                .withAnnotation("codeblock"),
         );
 
         let codeLines: string[] = [];
-        while (!input.nextLine()?.startsWith("```")) {
+        while (!input.isAtEof() && !input.nextLine()?.startsWith("```")) {
             codeLines.push(input.currentLine());
         }
         let codeContent = codeLines.join("\n");
+
+        if (input.isAtEof()) {
+            console.warn(
+                `Warning: Unclosed codeblock line ${stateChange.startPoint.line} - ${input.currentPoint.line}`,
+            );
+        }
 
         if (langStr != "") {
             try {

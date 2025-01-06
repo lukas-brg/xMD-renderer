@@ -63,6 +63,7 @@ export class InputState {
         const lineIdx = this._currentPoint.line;
 
         if (lineIdx >= this.lines.length) {
+            this._currentPoint.line++;
             return null;
         }
 

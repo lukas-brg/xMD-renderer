@@ -1,4 +1,4 @@
-import { ParsingStateInline } from "../parser.js";
+import { ParsingStateInline } from "../parsing_state.js";
 import InlineRule from "./inline_rule.js";
 import { InlineToken } from "../token.js";
 import { Dict } from "../util.js";
@@ -8,11 +8,12 @@ export const Emphasis: InlineRule = {
     name: "emphasis",
 
     process: (state: ParsingStateInline) => {
+        // prettier-ignore
         let tokenPositions: Dict<number[]> = {
             "*": [],
             "**": [],
-            _: [],
-            __: [],
+            "_": [],
+            "__": [],
         };
         let stack: string[] = [];
 
