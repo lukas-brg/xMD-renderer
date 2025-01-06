@@ -140,8 +140,3 @@ var foo = function (bar) {
 [Link](#this-is-a-heading)
 
 [Link to duplicate heading](#this-is-a-heading-1)
-
-
-
-
-

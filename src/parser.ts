@@ -28,7 +28,6 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
                     break;
                 }
             }
-            if (!doc.hasNext()) break;
         }
     }
 }
