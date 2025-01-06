@@ -2,7 +2,7 @@ import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import { BlockToken, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
-import { leadingWhitespaces, isEmpty } from "../string_utils.js";
+import { HeadingForm } from "../parsing_state.js";
 
 export const Heading: BlockRule = {
     name: "heading",
@@ -22,7 +22,7 @@ export const Heading: BlockRule = {
             return null;
         }
         const line = input.currentLine();
-        const [heading, remainingLine] = line.split(/\s+/, 2);
+        const [heading, remainingLine] = line.split(/\s+(.+)/, 2);
         if (!heading || !remainingLine) {
             return null;
         }
@@ -32,6 +32,13 @@ export const Heading: BlockRule = {
         stateChange.addBlockToken(
             BlockToken.createWrapped(headingTag, input.currentPoint, remainingLine),
         );
+        const lvl = Number.parseInt(headingTag.substring(1));
+        stateChange.registerHeading({
+            text: remainingLine,
+            level: lvl,
+            lineNumber: input.currentPoint.line,
+        });
+
         stateChange.endPoint = input.currentPoint;
         return stateChange;
     },

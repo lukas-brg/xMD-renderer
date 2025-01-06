@@ -2,6 +2,15 @@ export function isEmpty(line: string): boolean {
     return /^\s*$/.test(line);
 }
 
+export function makeIdString(text: string): string {
+    let id = text.toLowerCase().trim().replace(/[^\w]/g, "-");
+    id = id.replace(/^-+|-+$/g, "");
+    if (/^\d/.test(id)) {
+        id = `h-${id}`;
+    }
+    return id;
+}
+
 export function leadingWhitespaces(input: string): number {
     let count = 0;
     for (const char of input) {

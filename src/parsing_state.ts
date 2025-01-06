@@ -1,10 +1,25 @@
 import { Point, InputState } from "./input_state.js";
 import { BlockToken, InlineToken } from "./token.js";
+import { makeIdString } from "./string_utils.js";
+
+export type HeadingForm = {
+    text: string;
+    level: number;
+    lineNumber: number;
+};
+
+type HeadingEntry = HeadingForm & { id: string };
 
 export class ParsingStateBlock {
     blockTokens: BlockToken[];
+    _headings: HeadingEntry[];
     constructor() {
         this.blockTokens = [];
+        this._headings = [];
+    }
+
+    registerHeading(heading: HeadingForm) {
+        this._headings.push({ ...heading, id: makeIdString(heading.text) });
     }
 
     addBlockToken(token: BlockToken) {
@@ -40,6 +55,10 @@ export class ParsingStateInline {
 
     get tokens() {
         return this._tokens;
+    }
+
+    get headings(): HeadingEntry[] {
+        return this.headings;
     }
 
     escape(pos: number) {
@@ -87,12 +106,14 @@ export class StateChange extends ParsingStateBlock {
 
     applyToState(state: ParsingStateBlock) {
         state.blockTokens = state.blockTokens.concat(this.blockTokens);
+        this._headings = this._headings.concat(state._headings);
     }
 
     merge(other: StateChange) {
         this.blockTokens = this.blockTokens.concat(other.blockTokens);
         this.endPoint = other.endPoint;
         this.executedBy += ", " + other.executedBy;
+        this._headings = this._headings.concat(other._headings);
     }
 
     revertInput(doc: InputState) {

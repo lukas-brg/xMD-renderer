@@ -13,6 +13,7 @@ export const CodeblockFenced: BlockRule = {
     process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
         let stateChange = new StateChange(input.currentPoint, CodeblockFenced.name);
         const line = input.currentLine();
+
         if (!line.startsWith("```")) return null;
         let langStr = line.substring(3).trim();
         stateChange.addBlockToken(
