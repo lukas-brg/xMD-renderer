@@ -29,14 +29,18 @@ export const Heading: BlockRule = {
         const headingTag = headingTypes[heading];
 
         if (!headingTag) return null;
-        stateChange.addBlockToken(
-            BlockToken.createWrapped(headingTag, input.currentPoint, remainingLine),
+        const token = BlockToken.createWrapped(
+            headingTag,
+            input.currentPoint,
+            remainingLine,
         );
+        stateChange.addBlockToken(token);
         const lvl = Number.parseInt(headingTag.substring(1));
         stateChange.registerHeading({
             text: remainingLine,
             level: lvl,
             lineNumber: input.currentPoint.line,
+            token,
         });
 
         stateChange.endPoint = input.currentPoint;

@@ -42,6 +42,9 @@ function parseInline(state: ParsingStateBlock) {
                 let anyRuleApplies = false;
 
                 for (let [ruleName, rule] of Object.entries(rules.inline)) {
+                    if (ruleName == "link") {
+                        let m = 0;
+                    }
                     let success = rule.handlerObj.process(inlineState);
                     anyRuleApplies = anyRuleApplies || success;
                 }

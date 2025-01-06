@@ -7,6 +7,7 @@ import { Code } from "./inline_rules/code.js";
 import { Emphasis } from "./inline_rules/emphasis.js";
 import { Escape } from "./inline_rules/escape.js";
 import InlineRule from "./inline_rules/inline_rule.js";
+import { Link } from "./inline_rules/link.js";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";
 
@@ -30,6 +31,7 @@ const blockRules: BlockRuleList = {
         terminatedBy: [],
         failureMode: "plaintext",
     },
+
     heading: {
         handlerObj: Heading,
         terminatedBy: [],
@@ -53,6 +55,9 @@ const inlineRules: InlineRuleList = {
     },
     code: {
         handlerObj: Code,
+    },
+    link: {
+        handlerObj: Link,
     },
     emphasis: {
         handlerObj: Emphasis,

@@ -37,6 +37,8 @@ _**text**_
 **_text_**
 ```
 
+### This is a heading
+
 *text*
 
 **text**
@@ -51,6 +53,7 @@ _**text**_
 
 **_text_**
 
+### This is a heading
 
 ## Escaping
 
@@ -67,6 +70,8 @@ _**text**_
 
 **\*text\***  
 ```
+
+## Linking to headings
 
 \*text\*
 
@@ -92,8 +97,51 @@ var foo = function (bar) {
 ```
 
 
-## This is a heading
+## Links
 
-## This is a heading
+```markdown
+[Link](www.google.com) 
 
-## This is a heading 3
+[Link with title](www.google.com "Google") 
+
+[Link with **markup**](www.google.com) 
+
+[_Another link with markup_](www.google.com) 
+
+[Link to first H1 heading](#markdown)
+```
+
+[Link](www.google.com) 
+
+[Link with title](www.google.com "Google") 
+
+[Link with **markup**](www.google.com) 
+
+[_Another link with markup_](www.google.com) 
+
+[An email address](test@email.com) 
+
+
+
+
+
+
+
+```
+[Link to first H1 heading](#markdown)
+
+[Link](#this-is-a-heading)
+
+[Link to duplicate heading](#this-is-a-heading-1)
+```
+
+[Link to first H1 heading](#markdown)
+
+[Link](#this-is-a-heading)
+
+[Link to duplicate heading](#this-is-a-heading-1)
+
+
+
+
+

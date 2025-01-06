@@ -1,11 +1,12 @@
 import { Point, InputState } from "./input_state.js";
-import { BlockToken, InlineToken } from "./token.js";
+import { BlockToken, InlineToken, Token } from "./token.js";
 import { makeIdString } from "./string_utils.js";
 
 export type HeadingForm = {
     text: string;
     level: number;
     lineNumber: number;
+    token: Token;
 };
 
 type HeadingEntry = HeadingForm & { id: string };
@@ -41,7 +42,7 @@ export class ParsingStateInline {
     }
 
     addInlineToken(startPos: number, token: InlineToken) {
-        if (!token.parseContent || token.tag) {
+        if (!token.parseContent) {
             let [start, end, tag] = [startPos, token.positionEnd, token.tag];
 
             for (let i = start; i < end; i++) {
@@ -120,6 +121,7 @@ export class StateChange extends ParsingStateBlock {
             state._headingIds.set(heading.id, count);
             heading.id = uniqueId;
             state._headings.push(heading);
+            heading.token.addAttribute("id", uniqueId);
         }
     }
 

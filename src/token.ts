@@ -58,6 +58,13 @@ export class Token {
         return this;
     }
 
+    withAttributes(attributes: Dict<string>): this {
+        for (let [key, value] of Object.entries(attributes)) {
+            this.attributes.set(key, value);
+        }
+        return this;
+    }
+
     /**
      * An annotation can be used to specify the context or role of the token.
      * It can be checked against at later points
