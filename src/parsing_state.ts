@@ -14,12 +14,34 @@ type HeadingEntry = HeadingForm & { id: string };
 
 export class ParsingStateBlock {
     blockTokens: BlockToken[];
+    references: ReferenceManager;
     _headings: HeadingEntry[];
     _headingIds: Map<string, number>;
+
     constructor() {
         this.blockTokens = [];
         this._headings = [];
         this._headingIds = new Map();
+        this.references = new ReferenceManager();
+    }
+
+    registerReference(label: string, url: string, title?: string) {
+        this.references.registerReference(label, url, title);
+    }
+
+    resolveReference(label: string, token: InlineToken) {
+        this.references.resolveReference(label, token);
+    }
+
+    registerFootnoteDef(
+        label: string,
+        destinationTok: Token,
+        callback: (footnoteNumber: number) => void,
+    ) {
+        this.references.registerFootnote(label, destinationTok, callback);
+    }
+    resolveFootnoteRef(label: string, destinationTok: Token) {
+        this.references.resolveFootnote(label, destinationTok);
     }
 
     addBlockToken(token: BlockToken) {
@@ -43,6 +65,10 @@ export class ParsingStateInline {
         this.escapedPositions = new Set();
         this._consumedIndices = new Map();
         this.references = references;
+    }
+
+    resolveFootnoteRef(label: string, destinationTok: Token): number {
+        return this.references.resolveFootnote(label, destinationTok);
     }
 
     addInlineToken(startPos: number, token: InlineToken) {
@@ -159,6 +185,8 @@ export class StateChange extends ParsingStateBlock {
             state._headings.push(heading);
             heading.token.addAttribute("id", uniqueId);
         }
+
+        state.references = this.references;
     }
 
     merge(other: StateChange) {

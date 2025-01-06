@@ -33,7 +33,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
 }
 
 function parseInline(state: ParsingStateBlock) {
-    let references = new ReferenceManager();
+    let references = state.references;
     for (let blockTok of state.blockTokens) {
         const line = blockTok.content;
         if (line) {

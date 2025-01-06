@@ -1,11 +1,13 @@
-import BlockRule from "./blockrules/blockrule.js";
-import { CodeblockFenced } from "./blockrules/codeblock.js";
-import { Heading } from "./blockrules/heading.js";
-import { UnorderedList } from "./blockrules/list.js";
-import { Paragraph } from "./blockrules/paragraph.js";
+import BlockRule from "./block_rules/blockrule.js";
+import { CodeblockFenced } from "./block_rules/codeblock.js";
+import { FootnoteDef } from "./block_rules/footnote_def.js";
+import { Heading } from "./block_rules/heading.js";
+import { UnorderedList } from "./block_rules/list.js";
+import { Paragraph } from "./block_rules/paragraph.js";
 import { Code } from "./inline_rules/code.js";
 import { Emphasis } from "./inline_rules/emphasis.js";
 import { Escape } from "./inline_rules/escape.js";
+import { FootnoteRef } from "./inline_rules/footnote_ref.js";
 import InlineRule from "./inline_rules/inline_rule.js";
 import {
     AutoLink,
@@ -31,6 +33,11 @@ type InlineRuleEntry = {
 type InlineRuleList = { [name: string]: InlineRuleEntry };
 
 const blockRules: BlockRuleList = {
+    footnote_def: {
+        handlerObj: FootnoteDef,
+        terminatedBy: [],
+        failureMode: "plaintext",
+    },
     codeblock_fenced: {
         handlerObj: CodeblockFenced,
         terminatedBy: [],
@@ -49,7 +56,7 @@ const blockRules: BlockRuleList = {
     },
     paragraph: {
         handlerObj: Paragraph,
-        terminatedBy: [Heading, UnorderedList, CodeblockFenced],
+        terminatedBy: [Heading, UnorderedList, CodeblockFenced, FootnoteDef],
         failureMode: "applyPartially",
     },
 };
@@ -63,6 +70,9 @@ const inlineRules: InlineRuleList = {
     },
     link: {
         handlerObj: Link,
+    },
+    footnote_ref: {
+        handlerObj: FootnoteRef,
     },
     reference_link_definition: {
         handlerObj: ReferenceLinkDefinition,
