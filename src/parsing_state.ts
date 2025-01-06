@@ -13,13 +13,11 @@ type HeadingEntry = HeadingForm & { id: string };
 export class ParsingStateBlock {
     blockTokens: BlockToken[];
     _headings: HeadingEntry[];
+    _headingIds: Map<string, number>;
     constructor() {
         this.blockTokens = [];
         this._headings = [];
-    }
-
-    registerHeading(heading: HeadingForm) {
-        this._headings.push({ ...heading, id: makeIdString(heading.text) });
+        this._headingIds = new Map();
     }
 
     addBlockToken(token: BlockToken) {
@@ -90,7 +88,6 @@ export class StateChange extends ParsingStateBlock {
     success: boolean;
     executedBy: string;
     subStateChanges: StateChange[] = [];
-
     constructor(
         startPoint: Point,
         executedBy: string,
@@ -104,9 +101,26 @@ export class StateChange extends ParsingStateBlock {
         this.executedBy = executedBy;
     }
 
+    registerHeading(heading: HeadingForm) {
+        const id = makeIdString(heading.text);
+        this._headings.push({ ...heading, id: id });
+    }
+
     applyToState(state: ParsingStateBlock) {
         state.blockTokens = state.blockTokens.concat(this.blockTokens);
-        this._headings = this._headings.concat(state._headings);
+        for (const heading of this._headings) {
+            let count = state._headingIds.get(heading.id) ?? 0;
+            let uniqueId;
+            if (count > 0) {
+                uniqueId = `${heading.id}-${count}`;
+            } else {
+                uniqueId = heading.id;
+            }
+            count++;
+            state._headingIds.set(heading.id, count);
+            heading.id = uniqueId;
+            state._headings.push(heading);
+        }
     }
 
     merge(other: StateChange) {

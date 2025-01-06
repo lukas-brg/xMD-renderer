@@ -27,12 +27,12 @@ export const CodeblockFenced: BlockRule = {
         );
 
         let codeLines: string[] = [];
-        while (!input.isAtEof() && !input.nextLine()?.startsWith("```")) {
+        while (input.hasNext() && !input.nextLine()?.startsWith("```")) {
             codeLines.push(input.currentLine());
         }
         let codeContent = codeLines.join("\n");
 
-        if (input.isAtEof()) {
+        if (!input.hasNext()) {
             console.warn(
                 `Warning: Unclosed codeblock line ${stateChange.startPoint.line} - ${input.currentPoint.line}`,
             );

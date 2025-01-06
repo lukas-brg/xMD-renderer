@@ -6,17 +6,17 @@ import BlockRule from "./blockrule.js";
 export const Paragraph: BlockRule = {
     name: "paragraph",
     process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
-        let stateChange = new StateChange(input.currentPoint, Paragraph.name);
         let containsText = false;
-        stateChange.addBlockToken(
-            BlockToken.createContentless("p", input.currentPoint, "open"),
-        );
 
         while (input.isEmptyLine()) {
             if (input.nextLine() === null) {
-                break;
+                return null;
             }
         }
+        let stateChange = new StateChange(input.currentPoint, Paragraph.name);
+        stateChange.addBlockToken(
+            BlockToken.createContentless("p", input.currentPoint, "open"),
+        );
         do {
             for (const ruleObj of Paragraph.terminatedBy ?? []) {
                 const otherStateChange = ruleObj.process(input, state);

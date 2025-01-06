@@ -10,6 +10,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
         for (let [ruleName, rule] of Object.entries(rules.block)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
             let stateChange = rule.handlerObj.process(doc, state);
+            //console.log(line);
             if (stateChange) {
                 if (!stateChange.success) {
                     switch (rule.failureMode) {
@@ -27,6 +28,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
                     break;
                 }
             }
+            if (!doc.hasNext()) break;
         }
     }
 }

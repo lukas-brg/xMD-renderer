@@ -92,4 +92,8 @@ var foo = function (bar) {
 ```
 
 
-## Multi word heading
+## This is a heading
+
+## This is a heading
+
+## This is a heading 3

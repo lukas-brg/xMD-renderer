@@ -55,8 +55,8 @@ export class InputState {
         return this.lines[lineIdx];
     }
 
-    isAtEof(): boolean {
-        return this.currentPoint.line > this.lines.length;
+    hasNext(): boolean {
+        return this.currentPoint.line < this.lines.length;
     }
 
     nextLine(): string | null {
