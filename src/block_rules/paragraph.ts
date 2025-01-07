@@ -1,41 +1,41 @@
 import { Token, BlockToken } from "../token.js";
 import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
+import { processTerminations } from "../parser.js";
 import BlockRule from "./blockrule.js";
 
 export const Paragraph: BlockRule = {
     name: "paragraph",
-    process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
+    process: (
+        input: InputState,
+        state: Readonly<ParsingStateBlock>,
+        stateChange: StateChange,
+    ) => {
         let containsText = false;
 
         while (input.isEmptyLine()) {
             if (input.nextLine() === null) {
-                return null;
+                return false;
             }
         }
-        let stateChange = new StateChange(input.currentPoint, Paragraph.name);
         stateChange.references = state.references;
         stateChange.addBlockToken(
             BlockToken.createContentless("p", input.currentPoint, Paragraph.name, "open"),
         );
         do {
-            for (const ruleObj of Paragraph.terminatedBy ?? []) {
-                const otherStateChange = ruleObj.process(input, state);
-                if (otherStateChange) {
-                    stateChange.addBlockToken(
-                        BlockToken.createContentless(
-                            "p",
-                            input.currentPoint,
-                            Paragraph.name,
-                            "close",
-                        ),
-                    );
-                    if (!containsText) {
-                        return otherStateChange;
-                    }
-                    stateChange.merge(otherStateChange);
-                    return stateChange;
-                }
+            let didTerminate = processTerminations(input, state, stateChange, () => {
+                stateChange.addBlockToken(
+                    BlockToken.createContentless(
+                        "p",
+                        input.currentPoint,
+                        Paragraph.name,
+                        "close",
+                    ),
+                );
+            });
+
+            if (didTerminate) {
+                return true;
             }
 
             if (input.isEmptyLine()) {
@@ -66,6 +66,6 @@ export const Paragraph: BlockRule = {
             ),
         );
         stateChange.endPoint = input.currentPoint;
-        return stateChange;
+        return true;
     },
 };

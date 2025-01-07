@@ -1,8 +1,29 @@
 import { InputState, Point } from "./input_state.js";
 import { rules } from "./rules.js";
-import { ParsingStateBlock, ParsingStateInline } from "./parsing_state.js";
+import { ParsingStateBlock, ParsingStateInline, StateChange } from "./parsing_state.js";
 import { InlineToken } from "./token.js";
-import { ReferenceManager } from "./references.js";
+
+export function processTerminations(
+    input: InputState,
+    state: ParsingStateBlock,
+    stateChange: StateChange,
+    onTermination: () => void,
+): boolean {
+    const terminatedBy = rules.block[stateChange.executedBy].terminatedBy;
+    let newStateChange = StateChange.usingState(stateChange, input.currentPoint);
+
+    for (const ruleObj of terminatedBy) {
+        const success = ruleObj.process(input, state, newStateChange);
+        if (success) {
+            stateChange.executedBy = ruleObj.name;
+            onTermination();
+            stateChange.applyToState(state);
+            newStateChange.applyToState(state);
+            return true;
+        }
+    }
+    return false;
+}
 
 function parseBlocks(doc: InputState, state: ParsingStateBlock) {
     let line;
@@ -11,8 +32,9 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
         if (doc.isEmptyLine()) continue;
         for (let [ruleName, rule] of Object.entries(rules.block)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
-            let stateChange = rule.handlerObj.process(doc, state);
-            if (stateChange) {
+            let stateChange = new StateChange(doc.currentPoint, ruleName);
+            let success = rule.handlerObj.process(doc, state, stateChange);
+            if (success && !stateChange.wasApplied) {
                 if (!stateChange.success) {
                     switch (rule.failureMode) {
                         case "applyPartially":

@@ -19,6 +19,7 @@ export class ReferenceManager {
     private _unresolvedFootnotes: Map<string, Token>;
     private _unresolvedRefs: Map<string, Token>;
     private footnoteCount: number;
+
     constructor() {
         this._references = new Map();
         this._footnotes = new Map();
@@ -35,6 +36,16 @@ export class ReferenceManager {
         if (token) {
             token.addAttributes({ href: url, title: title ?? "" });
             this._unresolvedRefs.delete(label);
+        }
+    }
+
+    resolveReference(label: string, token: InlineToken) {
+        const ref = this._references.get(label);
+        if (ref != undefined) {
+            const title = ref.title ?? "";
+            token.addAttributes({ href: ref.url, title: title });
+        } else {
+            this._unresolvedRefs.set(label, token);
         }
     }
 
@@ -68,15 +79,5 @@ export class ReferenceManager {
         }
 
         return number;
-    }
-
-    resolveReference(label: string, token: InlineToken) {
-        const ref = this._references.get(label);
-        if (ref != undefined) {
-            const title = ref.title ?? "";
-            token.addAttributes({ href: ref.url, title: title });
-        } else {
-            this._unresolvedRefs.set(label, token);
-        }
     }
 }

@@ -148,12 +148,14 @@ export class ParsingStateInline {
 export class StateChange extends ParsingStateBlock {
     private _startPoint: Point;
     private _endPoint: Point;
+    private _wasApplied: boolean = false;
     success: boolean;
     executedBy: string;
     subStateChanges: StateChange[] = [];
+
     constructor(
         startPoint: Point,
-        executedBy: string,
+        executedBy?: string,
         endPoint?: Point,
         success: boolean = true,
     ) {
@@ -161,7 +163,21 @@ export class StateChange extends ParsingStateBlock {
         this._startPoint = startPoint;
         this.success = success;
         this._endPoint = endPoint ?? { ...startPoint };
-        this.executedBy = executedBy;
+        this.executedBy = executedBy ?? "";
+    }
+
+    get wasApplied(): boolean {
+        return this._wasApplied;
+    }
+
+    static usingState(
+        state: ParsingStateBlock,
+        startPoint: Point,
+        executedBy?: string,
+    ): StateChange {
+        let stateChange = new StateChange(startPoint, executedBy);
+        stateChange.references = state.references;
+        return stateChange;
     }
 
     registerHeading(heading: HeadingForm) {
@@ -185,7 +201,7 @@ export class StateChange extends ParsingStateBlock {
             state._headings.push(heading);
             heading.token.addAttribute("id", uniqueId);
         }
-
+        this._wasApplied = true;
         state.references = this.references;
     }
 

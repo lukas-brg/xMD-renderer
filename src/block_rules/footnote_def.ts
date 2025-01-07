@@ -8,12 +8,15 @@ const regex = /^\s*\[\^(\w+)\]:\s*(\w+.*)/g;
 export const FootnoteDef: BlockRule = {
     name: "footnote_def",
 
-    process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
-        let stateChange = new StateChange(input.currentPoint, FootnoteDef.name);
+    process: (
+        input: InputState,
+        state: Readonly<ParsingStateBlock>,
+        stateChange: StateChange,
+    ) => {
         stateChange.references = state.references; // Todo: temporary workaround
         const line = input.currentLine();
         const match = [...line.matchAll(regex)];
-        if (match.length == 0) return null;
+        if (match.length == 0) return false;
         let [wholeMatch, label, content] = match[0];
         let fnTok = BlockToken.createWrapped(
             "span",
@@ -26,6 +29,6 @@ export const FootnoteDef: BlockRule = {
         });
 
         stateChange.addBlockToken(fnTok);
-        return stateChange;
+        return true;
     },
 };

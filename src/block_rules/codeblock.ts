@@ -10,11 +10,14 @@ const starryNight = await createStarryNight(common);
 export const CodeblockFenced: BlockRule = {
     name: "codeblock_fenced",
 
-    process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
-        let stateChange = new StateChange(input.currentPoint, CodeblockFenced.name);
+    process: (
+        input: InputState,
+        state: Readonly<ParsingStateBlock>,
+        stateChange: StateChange,
+    ) => {
         const line = input.currentLine();
         stateChange.references = state.references;
-        if (!line.startsWith("```")) return null;
+        if (!line.startsWith("```")) return false;
         let langStr = line.substring(3).trim();
         stateChange.addBlockToken(
             BlockToken.createContentless(
@@ -83,6 +86,6 @@ export const CodeblockFenced: BlockRule = {
                 1,
             ),
         );
-        return stateChange;
+        return true;
     },
 };

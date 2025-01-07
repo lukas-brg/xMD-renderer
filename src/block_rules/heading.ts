@@ -7,8 +7,11 @@ import { HeadingForm } from "../parsing_state.js";
 export const Heading: BlockRule = {
     name: "heading",
 
-    process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
-        let stateChange = new StateChange(input.currentPoint, Heading.name);
+    process: (
+        input: InputState,
+        state: Readonly<ParsingStateBlock>,
+        stateChange: StateChange,
+    ) => {
         const headingTypes: { [key: string]: string } = {
             "#": "h1",
             "##": "h2",
@@ -19,16 +22,16 @@ export const Heading: BlockRule = {
         };
 
         if (!input.isEmptyLine(-1)) {
-            return null;
+            return false;
         }
         const line = input.currentLine();
         const [heading, remainingLine] = line.split(/\s+(.+)/, 2);
         if (!heading || !remainingLine) {
-            return null;
+            return false;
         }
         const headingTag = headingTypes[heading];
 
-        if (!headingTag) return null;
+        if (!headingTag) return false;
         const token = BlockToken.createWrapped(
             headingTag,
             input.currentPoint,
@@ -45,7 +48,7 @@ export const Heading: BlockRule = {
         });
 
         stateChange.endPoint = input.currentPoint;
-        return stateChange;
+        return true;
     },
 };
 

@@ -13,16 +13,18 @@ function isUnorderedList(line: string): boolean {
 
 export const UnorderedList: BlockRule = {
     name: "unordered_list",
-    process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
+    process: (
+        input: InputState,
+        state: Readonly<ParsingStateBlock>,
+        stateChange: StateChange,
+    ) => {
         let [point, firstLine] = input.currentLineSkipWhiteSpace();
 
-        if (!isUnorderedList(firstLine)) return null;
+        if (!isUnorderedList(firstLine)) return false;
 
         let prevDepth = Math.floor((point.column - 1) / 2);
         const initialDepth = prevDepth;
         let depths = [initialDepth];
-
-        let stateChange = new StateChange(input.currentPoint, UnorderedList.name);
 
         stateChange.addBlockToken(
             BlockToken.createContentless(
@@ -107,6 +109,6 @@ export const UnorderedList: BlockRule = {
         }
         assert(balance == 0, balance, `list.ts: ul open/close balance uneven ${balance}`);
         stateChange.endPoint = input.currentPoint;
-        return stateChange;
+        return true;
     },
 };
