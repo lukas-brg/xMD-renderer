@@ -42,7 +42,12 @@ export const Escape: InlineRule = {
             state.escape(charPos);
             state.addInlineToken(
                 backslashPos,
-                InlineToken.createText(backslashPos, escapedChar, backslashPos + 2),
+                InlineToken.createText(
+                    backslashPos,
+                    Escape.name,
+                    escapedChar,
+                    backslashPos + 2,
+                ),
             );
             didEscape = true;
         }

@@ -164,7 +164,7 @@ test@email.com
 
 The following definition should not be visible.
 
-[github]: github.com/
+[github]: github.com/ "GitHub link"
 
 Here is another link to [github] [github]
 ```
@@ -179,4 +179,3 @@ Here is another link to [github] [github]
 
 
 [^1]: footnote
-

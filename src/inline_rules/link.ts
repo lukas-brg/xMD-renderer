@@ -3,10 +3,13 @@ import InlineRule from "./inline_rule.js";
 import { InlineToken } from "../token.js";
 import normalizeUrl from "normalize-url";
 
-const pattern = /(?:^|[^!])\[(.*?)\]\((.*?)(?:\s*\"(.*?)\")?\)/g;
+const pattern = /\[(.*?)\]\((.*?)(?:\s*\"(.*?)\")?\)/g;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const urlRegex =
-    /(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/g;
+    /\b(https?:\/\/)?(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9(?:)]{1,6}\b(?:[-a-z0-9(?:)@:%_\+.~#?&//=]*)\b/g;
+
+const bracketAutoLinkRegex =
+    /<((?:https?:\/\/)?(www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-a-z0-9()@:%_\+.~#?&//=]*))>|<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>/g;
 
 const headingLinkRegex = /#\w+/;
 
@@ -16,9 +19,13 @@ function processUrl(url: string): string {
     }
 
     if (headingLinkRegex.test(url)) return url;
-
-    let cleanUrl = normalizeUrl(url);
-    return cleanUrl;
+    try {
+        let cleanUrl = normalizeUrl(url);
+        return cleanUrl;
+    } catch {
+        console.warn("Warning: Invalid URL detected: ", url);
+        return url;
+    }
 }
 
 export const Link: InlineRule = {
@@ -35,12 +42,14 @@ export const Link: InlineRule = {
                 const start = match.index;
                 const end = match.index + wholeMatch.length;
                 const urlStart = start + 1 + text.length;
+
                 url = processUrl(url);
                 state.addInlineToken(
                     match.index,
                     InlineToken.createContentless(
                         "a",
                         match.index,
+                        Link.name,
                         "open",
                     ).withAttributes({
                         href: url,
@@ -50,7 +59,7 @@ export const Link: InlineRule = {
 
                 state.addInlineToken(
                     urlStart,
-                    InlineToken.createContentless("a", urlStart, "close", end),
+                    InlineToken.createContentless("a", urlStart, Link.name, "close", end),
                 );
 
                 didAddLink = true;
@@ -74,6 +83,7 @@ export const AutoLink: InlineRule = {
                 InlineToken.createWrapped(
                     "a",
                     match.index,
+                    AutoLink.name,
                     linkText,
                     match.index + url.length + 1,
                 ).withAttribute("href", url),
@@ -84,15 +94,45 @@ export const AutoLink: InlineRule = {
     },
 };
 
-const refRegex = /\[(\w+.*)\]\s?\[(\w+)\]/g;
+export const BracketLink: InlineRule = {
+    name: "bracket_link",
+
+    process: (state: ParsingStateInline) => {
+        let didAddLink = false;
+        state.matchAll(bracketAutoLinkRegex).forEach((match) => {
+            const linkText = match[1];
+            const url = processUrl(linkText);
+
+            state.addInlineToken(
+                match.index,
+                InlineToken.createWrapped(
+                    "a",
+                    match.index,
+                    BracketLink.name,
+                    linkText,
+                    match.index + url.length + 3,
+                ).withAttribute("href", url),
+            );
+            didAddLink = true;
+        });
+        return didAddLink;
+    },
+};
+
+const refRegex = /\[(\w+.*)\]\s?\[(.*?)\]/g;
 
 export const ReferenceLink: InlineRule = {
     name: "reference_link",
 
     process: (state: ParsingStateInline) => {
         let didAddLink = false;
+        let matches = state.matchAll(refRegex);
+
         state.matchAll(refRegex).forEach((match) => {
-            const [wholeMatch, text, label] = match;
+            let [wholeMatch, text, label] = match;
+            if (!label) {
+                label = text;
+            }
             const start = match.index;
             const afterContentStart = start + 1 + text.length;
             const end = start + wholeMatch.length;
@@ -100,6 +140,7 @@ export const ReferenceLink: InlineRule = {
             let linkTokenClose = InlineToken.createContentless(
                 "a",
                 afterContentStart,
+                ReferenceLink.name,
                 "close",
                 end,
             );
@@ -112,21 +153,22 @@ export const ReferenceLink: InlineRule = {
     },
 };
 
-const defRegex = /\[(\w+)\]:\s+/g;
-
-const referenceDefRegex = new RegExp(
-    `${defRegex.source}(${urlRegex.source})(?:.*"(.*)")?`,
-    "g",
-);
+const defRegex = /\[(\w+.*)\]:\s+/g;
+const referenceDefRegex = new RegExp(`${defRegex.source}([^\\s]+)(?:.*"(\\w+.*)")?`, "g");
 
 export const ReferenceLinkDefinition: InlineRule = {
     name: "reference_link_definition",
 
     process: (state: ParsingStateInline) => {
         let didAddLink = false;
-        state.matchAll(referenceDefRegex).forEach((match) => {
-            const [wholeMatch, label, urlText] = match;
-            const title = match[6];
+        let matches = [...state.matchAll(referenceDefRegex)];
+        if (matches.length == 0) {
+            return false;
+        }
+
+        matches.forEach((match) => {
+            const [wholeMatch, label, urlText, title] = match;
+
             const url = processUrl(urlText);
             const start = match.index;
             const end = match.index + wholeMatch.length + 1;

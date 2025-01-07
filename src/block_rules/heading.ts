@@ -32,6 +32,7 @@ export const Heading: BlockRule = {
         const token = BlockToken.createWrapped(
             headingTag,
             input.currentPoint,
+            Heading.name,
             remainingLine,
         );
         stateChange.addBlockToken(token);

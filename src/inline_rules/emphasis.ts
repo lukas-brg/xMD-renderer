@@ -56,11 +56,23 @@ export const Emphasis: InlineRule = {
             for (let [start, end] of pairs(positions)) {
                 state.addInlineToken(
                     start,
-                    InlineToken.createContentless(tag, start, "open", start + tokLen),
+                    InlineToken.createContentless(
+                        tag,
+                        start,
+                        Emphasis.name,
+                        "open",
+                        start + tokLen,
+                    ),
                 );
                 state.addInlineToken(
                     end,
-                    InlineToken.createContentless(tag, end, "close", end + tokLen),
+                    InlineToken.createContentless(
+                        tag,
+                        end,
+                        Emphasis.name,
+                        "close",
+                        end + tokLen,
+                    ),
                 );
                 madeChange = true;
             }

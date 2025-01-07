@@ -13,15 +13,26 @@ export const CodeblockFenced: BlockRule = {
     process: (input: InputState, state: Readonly<ParsingStateBlock>) => {
         let stateChange = new StateChange(input.currentPoint, CodeblockFenced.name);
         const line = input.currentLine();
-
+        stateChange.references = state.references;
         if (!line.startsWith("```")) return null;
         let langStr = line.substring(3).trim();
         stateChange.addBlockToken(
-            BlockToken.createContentless("pre", input.currentPoint, "open", 1),
+            BlockToken.createContentless(
+                "pre",
+                input.currentPoint,
+                CodeblockFenced.name,
+                "open",
+                1,
+            ),
         );
 
         stateChange.addBlockToken(
-            BlockToken.createContentless("code", input.currentPoint, "open")
+            BlockToken.createContentless(
+                "code",
+                input.currentPoint,
+                CodeblockFenced.name,
+                "open",
+            )
                 .withAttribute("class", `${langStr}`)
                 .withAnnotation("codeblock"),
         );
@@ -48,14 +59,29 @@ export const CodeblockFenced: BlockRule = {
         }
 
         stateChange.addBlockToken(
-            BlockToken.createPreservedText(input.currentPoint, codeContent),
+            BlockToken.createPreservedText(
+                input.currentPoint,
+                CodeblockFenced.name,
+                codeContent,
+            ),
         );
 
         stateChange.addBlockToken(
-            BlockToken.createContentless("code", input.currentPoint, "close"),
+            BlockToken.createContentless(
+                "code",
+                input.currentPoint,
+                CodeblockFenced.name,
+                "close",
+            ),
         );
         stateChange.addBlockToken(
-            BlockToken.createContentless("pre", input.currentPoint, "close", 1),
+            BlockToken.createContentless(
+                "pre",
+                input.currentPoint,
+                CodeblockFenced.name,
+                "close",
+                1,
+            ),
         );
         return stateChange;
     },

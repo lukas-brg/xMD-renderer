@@ -8,6 +8,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
     let line;
 
     while ((line = doc.nextLine()) != null) {
+        if (doc.isEmptyLine()) continue;
         for (let [ruleName, rule] of Object.entries(rules.block)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
             let stateChange = rule.handlerObj.process(doc, state);
@@ -54,7 +55,7 @@ function parseInline(state: ParsingStateBlock) {
                 }
 
                 if (!anyRuleApplies) {
-                    blockTok.inlineTokens.push(InlineToken.createText(0, line));
+                    blockTok.inlineTokens.push(InlineToken.createText(0, "parser", line));
                     continue;
                 }
 
@@ -69,7 +70,11 @@ function parseInline(state: ParsingStateBlock) {
                     if (tok) {
                         if (continousText.length > 0) {
                             inlineTokens.push(
-                                InlineToken.createText(textStart, continousText),
+                                InlineToken.createText(
+                                    textStart,
+                                    "parser",
+                                    continousText,
+                                ),
                             );
                         }
                         inlineTokens.push(tok);
@@ -85,12 +90,18 @@ function parseInline(state: ParsingStateBlock) {
                 }
 
                 if (continousText.length > 0) {
-                    inlineTokens.push(InlineToken.createText(textStart, continousText));
+                    inlineTokens.push(
+                        InlineToken.createText(textStart, "parser", continousText),
+                    );
                 }
                 blockTok.inlineTokens = inlineTokens;
             } else {
                 blockTok.inlineTokens.push(
-                    InlineToken.createText(blockTok.relatedPosition.column, line),
+                    InlineToken.createText(
+                        blockTok.relatedPosition.column,
+                        "parser",
+                        line,
+                    ),
                 );
             }
         }

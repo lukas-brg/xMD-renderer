@@ -18,6 +18,7 @@ export const FootnoteDef: BlockRule = {
         let fnTok = BlockToken.createWrapped(
             "span",
             input.currentPoint,
+            FootnoteDef.name,
             content,
         ).withAnnotation("footnote-def");
         stateChange.registerFootnoteDef(label, fnTok, (fnNum) => {

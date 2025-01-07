@@ -17,6 +17,7 @@ export const FootnoteRef: InlineRule = {
             let reference = InlineToken.createWrapped(
                 "a",
                 match.index,
+                FootnoteRef.name,
                 "",
                 end + 2,
                 false,

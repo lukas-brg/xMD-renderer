@@ -1,3 +1,4 @@
+import { textChangeRangeIsUnchanged } from "typescript";
 import { Point } from "./input_state.js";
 import { Dict } from "./util.js";
 
@@ -23,6 +24,7 @@ export class Token {
     depth: number = 0;
     tagKind: TagKind = "selfClosing";
     attributes: Map<string, string>;
+    createdByRule: string;
 
     /**
      * An annotation can be used to specify the context or role of the token.
@@ -35,6 +37,7 @@ export class Token {
     constructor(
         tag: string,
         kind: ContentKind,
+        createdBy: string,
         content?: string,
         tagKind?: TagKind,
         parseContent?: boolean,
@@ -47,6 +50,7 @@ export class Token {
         this.depth = depth ?? 0;
         this.attributes = new Map();
         this.tagKind = tagKind ?? "selfClosing";
+        this.createdByRule = createdBy;
     }
 
     addAttribute(key: string, value: string) {
@@ -90,13 +94,14 @@ export class BlockToken extends Token {
     constructor(
         tag: string,
         relatedPosition: Point,
+        createdBy: string,
         tagKind?: TagKind,
         content?: string,
         parseContent?: boolean,
         depth?: number,
     ) {
         let point;
-        super(tag, "block", content, tagKind, parseContent, depth);
+        super(tag, "block", createdBy, content, tagKind, parseContent, depth);
         this.relatedPosition = relatedPosition;
         this.inlineTokens = [];
     }
@@ -104,20 +109,31 @@ export class BlockToken extends Token {
     static createContentless(
         tag: string,
         relatedPosition: Point,
+        createdBy: string,
         tagKind?: TagKind,
-        depth?: number,
-    ): BlockToken {
-        return new BlockToken(tag, relatedPosition, tagKind, undefined, false, depth);
-    }
-
-    static createSelfClosing(
-        tag: string,
-        relatedPosition: Point,
         depth?: number,
     ): BlockToken {
         return new BlockToken(
             tag,
             relatedPosition,
+            createdBy,
+            tagKind,
+            undefined,
+            false,
+            depth,
+        );
+    }
+
+    static createSelfClosing(
+        tag: string,
+        relatedPosition: Point,
+        createdBy: string,
+        depth?: number,
+    ): BlockToken {
+        return new BlockToken(
+            tag,
+            relatedPosition,
+            createdBy,
             undefined,
             "selfClosing",
             false,
@@ -128,25 +144,52 @@ export class BlockToken extends Token {
     static createWrapped(
         tag: string,
         relatedPosition: Point,
+        createdBy: string,
         content: string,
         depth?: number,
     ): BlockToken {
-        return new BlockToken(tag, relatedPosition, "wrapped", content, true, depth);
+        return new BlockToken(
+            tag,
+            relatedPosition,
+            createdBy,
+            "wrapped",
+            content,
+            true,
+            depth,
+        );
     }
 
     static createText(
         relatedPosition: Point,
+        createdBy: string,
         content: string,
         depth?: number,
     ): BlockToken {
-        return new BlockToken("text", relatedPosition, "text", content, true, depth);
+        return new BlockToken(
+            "text",
+            relatedPosition,
+            createdBy,
+            "text",
+            content,
+            true,
+            depth,
+        );
     }
     static createPreservedText(
         relatedPosition: Point,
+        createdBy: string,
         content: string,
         depth?: number,
     ): BlockToken {
-        return new BlockToken("text", relatedPosition, "text", content, false, depth);
+        return new BlockToken(
+            "text",
+            relatedPosition,
+            createdBy,
+            "text",
+            content,
+            false,
+            depth,
+        );
     }
 }
 
@@ -156,13 +199,14 @@ export class InlineToken extends Token {
     constructor(
         tag: string,
         position: number,
+        createdBy: string,
         tagKind?: TagKind,
         content?: string,
         parseContent?: boolean,
         depth?: number,
         positionEnd?: number,
     ) {
-        super(tag, "inline", content, tagKind, parseContent, depth);
+        super(tag, "inline", createdBy, content, tagKind, parseContent, depth);
         this.positionStart = position;
         this.positionEnd = positionEnd ?? position + 1;
     }
@@ -170,6 +214,7 @@ export class InlineToken extends Token {
     static createContentless(
         tag: string,
         position: number,
+        createdBy: string,
         tagKind?: TagKind,
         positionEnd?: number,
         depth?: number,
@@ -177,6 +222,7 @@ export class InlineToken extends Token {
         return new InlineToken(
             tag,
             position,
+            createdBy,
             tagKind,
             undefined,
             false,
@@ -185,13 +231,27 @@ export class InlineToken extends Token {
         );
     }
 
-    static createSelfClosing(tag: string, position: number, depth?: number): InlineToken {
-        return new InlineToken(tag, position, undefined, "selfClosing", false, depth);
+    static createSelfClosing(
+        tag: string,
+        position: number,
+        createdBy: string,
+        depth?: number,
+    ): InlineToken {
+        return new InlineToken(
+            tag,
+            position,
+            createdBy,
+            undefined,
+            "selfClosing",
+            false,
+            depth,
+        );
     }
 
     static createWrapped(
         tag: string,
         position: number,
+        createdBy: string,
         content: string,
         positionEnd?: number,
         parseContent?: boolean,
@@ -200,7 +260,9 @@ export class InlineToken extends Token {
         return new InlineToken(
             tag,
             position,
+            createdBy,
             "wrapped",
+
             content,
             parseContent,
             depth,
@@ -210,6 +272,7 @@ export class InlineToken extends Token {
 
     static createText(
         position: number,
+        createdBy: string,
         content: string,
         positionEnd?: number,
         depth?: number,
@@ -217,7 +280,9 @@ export class InlineToken extends Token {
         return new InlineToken(
             "text",
             position,
+            createdBy,
             "text",
+
             content,
             true,
             depth,

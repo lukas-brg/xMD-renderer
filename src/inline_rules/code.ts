@@ -21,6 +21,7 @@ export const Code: InlineRule = {
                 InlineToken.createWrapped(
                     "code",
                     start,
+                    Code.name,
                     line.substring(start + 1, end),
                     end + 1,
                     false,

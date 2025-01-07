@@ -25,7 +25,13 @@ export const UnorderedList: BlockRule = {
         let stateChange = new StateChange(input.currentPoint, UnorderedList.name);
 
         stateChange.addBlockToken(
-            BlockToken.createContentless("ul", input.currentPoint, "open", prevDepth),
+            BlockToken.createContentless(
+                "ul",
+                input.currentPoint,
+                UnorderedList.name,
+                "open",
+                prevDepth,
+            ),
         );
         let line;
         let balance = 1;
@@ -39,7 +45,13 @@ export const UnorderedList: BlockRule = {
 
             if (depth > prevDepth) {
                 stateChange.addBlockToken(
-                    BlockToken.createContentless("ul", input.currentPoint, "open", depth),
+                    BlockToken.createContentless(
+                        "ul",
+                        input.currentPoint,
+                        UnorderedList.name,
+                        "open",
+                        depth,
+                    ),
                 );
                 balance++;
                 depths.push(depth);
@@ -53,6 +65,7 @@ export const UnorderedList: BlockRule = {
                             BlockToken.createContentless(
                                 "ul",
                                 input.currentPoint,
+                                UnorderedList.name,
                                 "close",
                                 topDepth,
                             ),
@@ -65,7 +78,13 @@ export const UnorderedList: BlockRule = {
             }
             const content = lineTrimmed.slice(2);
             stateChange.addBlockToken(
-                BlockToken.createWrapped("li", point, content, depth + 1),
+                BlockToken.createWrapped(
+                    "li",
+                    point,
+                    UnorderedList.name,
+                    content,
+                    depth + 1,
+                ),
             );
             prevDepth = depth;
         } while ((line = input.nextLine()) != null);
@@ -79,6 +98,7 @@ export const UnorderedList: BlockRule = {
                 BlockToken.createContentless(
                     "ul",
                     input.currentPoint,
+                    UnorderedList.name,
                     "close",
                     prevDepth,
                 ),

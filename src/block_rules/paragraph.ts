@@ -14,15 +14,21 @@ export const Paragraph: BlockRule = {
             }
         }
         let stateChange = new StateChange(input.currentPoint, Paragraph.name);
+        stateChange.references = state.references;
         stateChange.addBlockToken(
-            BlockToken.createContentless("p", input.currentPoint, "open"),
+            BlockToken.createContentless("p", input.currentPoint, Paragraph.name, "open"),
         );
         do {
             for (const ruleObj of Paragraph.terminatedBy ?? []) {
                 const otherStateChange = ruleObj.process(input, state);
                 if (otherStateChange) {
                     stateChange.addBlockToken(
-                        BlockToken.createContentless("p", input.currentPoint, "close"),
+                        BlockToken.createContentless(
+                            "p",
+                            input.currentPoint,
+                            Paragraph.name,
+                            "close",
+                        ),
                     );
                     if (!containsText) {
                         return otherStateChange;
@@ -37,16 +43,27 @@ export const Paragraph: BlockRule = {
             }
 
             let line = input.currentLine();
-            stateChange.addBlockToken(BlockToken.createText(input.currentPoint, line, 1));
+            stateChange.addBlockToken(
+                BlockToken.createText(input.currentPoint, Paragraph.name, line, 1),
+            );
             containsText = true;
             if (input.trailingWhitespaces() >= 2) {
                 stateChange.addBlockToken(
-                    BlockToken.createSelfClosing("br", input.currentPoint),
+                    BlockToken.createSelfClosing(
+                        "br",
+                        input.currentPoint,
+                        Paragraph.name,
+                    ),
                 );
             }
         } while (input.nextLine() != null);
         stateChange.addBlockToken(
-            BlockToken.createContentless("p", input.currentPoint, "close"),
+            BlockToken.createContentless(
+                "p",
+                input.currentPoint,
+                Paragraph.name,
+                "close",
+            ),
         );
         stateChange.endPoint = input.currentPoint;
         return stateChange;

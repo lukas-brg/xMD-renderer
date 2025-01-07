@@ -11,6 +11,7 @@ import { FootnoteRef } from "./inline_rules/footnote_ref.js";
 import InlineRule from "./inline_rules/inline_rule.js";
 import {
     AutoLink,
+    BracketLink,
     Link,
     ReferenceLink,
     ReferenceLinkDefinition,
@@ -33,17 +34,17 @@ type InlineRuleEntry = {
 type InlineRuleList = { [name: string]: InlineRuleEntry };
 
 const blockRules: BlockRuleList = {
-    footnote_def: {
-        handlerObj: FootnoteDef,
-        terminatedBy: [],
-        failureMode: "plaintext",
-    },
     codeblock_fenced: {
         handlerObj: CodeblockFenced,
         terminatedBy: [],
         failureMode: "plaintext",
     },
 
+    footnote_def: {
+        handlerObj: FootnoteDef,
+        terminatedBy: [],
+        failureMode: "plaintext",
+    },
     heading: {
         handlerObj: Heading,
         terminatedBy: [],
@@ -70,6 +71,9 @@ const inlineRules: InlineRuleList = {
     },
     link: {
         handlerObj: Link,
+    },
+    bracket_link: {
+        handlerObj: BracketLink,
     },
     footnote_ref: {
         handlerObj: FootnoteRef,
