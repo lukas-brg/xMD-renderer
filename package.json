@@ -5,7 +5,9 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "start": "npx tsx src/index.ts"
+        "start": "npm run check && npx tsx src/index.ts",
+        "check": "npx tsc --noEmit",
+        "build": "npx tsc"
     },
     "keywords": [],
     "author": "",
