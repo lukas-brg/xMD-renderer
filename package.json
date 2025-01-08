@@ -8,7 +8,7 @@
         "start": "npm run check && npx tsx src/index.ts",
         "check": "npx tsc --noEmit",
         "cli": "tsx src/cli.ts",
-        "build": "npx tsc"
+        "build": "node build.js"
     },
     "bin": {
         "xmd": "./dist/cli.js"
