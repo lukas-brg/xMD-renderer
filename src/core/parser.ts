@@ -11,7 +11,7 @@ export function processTerminations(
     onTermination: () => void,
 ): boolean {
     const terminatedBy = ruleSet.block[stateChange.executedBy].terminatedBy;
-    let newStateChange = StateChange.usingState(stateChange, input.currentPoint);
+    let newStateChange = StateChange.fromState(stateChange, input.currentPoint);
 
     for (const ruleObj of terminatedBy) {
         const success = ruleObj.process(input, state, newStateChange);
@@ -37,7 +37,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
         if (doc.isEmptyLine()) continue;
         for (let [ruleName, rule] of Object.entries(ruleSet.block)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
-            let stateChange = new StateChange(doc.currentPoint, ruleName);
+            let stateChange = StateChange.fromState(state, doc.currentPoint, ruleName);
             let success = rule.handlerObj.process(doc, state, stateChange);
             if (success && !stateChange.wasApplied) {
                 if (!stateChange.success) {

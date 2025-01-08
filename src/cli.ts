@@ -44,7 +44,6 @@ program
 
         let outputPath = path.resolve(output);
 
-        console.log(outputPath);
         if (fs.existsSync(outputPath)) {
             // If the path exists, it is either a valid directory, or an already existing file
             if (fs.statSync(outputPath).isDirectory()) {

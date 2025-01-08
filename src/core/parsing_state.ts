@@ -14,12 +14,14 @@ type HeadingEntry = HeadingForm & { id: string };
 
 export class ParsingStateBlock {
     blockTokens: BlockToken[];
+    _footerTokens: BlockToken[];
     references: ReferenceManager;
     _headings: HeadingEntry[];
     _headingIds: Map<string, number>;
 
     constructor() {
         this.blockTokens = [];
+        this._footerTokens = [];
         this._headings = [];
         this._headingIds = new Map();
         this.references = new ReferenceManager();
@@ -36,16 +38,21 @@ export class ParsingStateBlock {
     registerFootnoteDef(
         label: string,
         destinationTok: Token,
-        callback: (footnoteNumber: number) => void,
+        onNumDetermined: (footnoteNumber: number) => void,
     ) {
-        this.references.registerFootnote(label, destinationTok, callback);
+        this.references.registerFootnoteDef(label, destinationTok, onNumDetermined);
     }
+
     resolveFootnoteRef(label: string, destinationTok: Token) {
-        this.references.resolveFootnote(label, destinationTok);
+        this.references.resolveFootnoteRef(label, destinationTok);
     }
 
     addBlockToken(token: BlockToken) {
         this.blockTokens.push(token);
+    }
+
+    addFooterToken(token: BlockToken) {
+        this._footerTokens.push(token);
     }
 }
 
@@ -68,7 +75,7 @@ export class ParsingStateInline {
     }
 
     resolveFootnoteRef(label: string, destinationTok: Token): number {
-        return this.references.resolveFootnote(label, destinationTok);
+        return this.references.resolveFootnoteRef(label, destinationTok);
     }
 
     addInlineToken(startPos: number, token: InlineToken) {
@@ -170,7 +177,7 @@ export class StateChange extends ParsingStateBlock {
         return this._wasApplied;
     }
 
-    static usingState(
+    static fromState(
         state: ParsingStateBlock,
         startPoint: Point,
         executedBy?: string,

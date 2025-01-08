@@ -13,7 +13,6 @@ export const FootnoteDef: BlockRule = {
         state: Readonly<ParsingStateBlock>,
         stateChange: StateChange,
     ) => {
-        stateChange.references = state.references; // Todo: temporary workaround
         const line = input.currentLine();
         const match = [...line.matchAll(regex)];
         if (match.length == 0) return false;

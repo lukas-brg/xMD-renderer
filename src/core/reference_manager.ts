@@ -1,3 +1,4 @@
+import { assert } from "console";
 import { makeIdString, trailingWhiteSpaces } from "./string_utils.js";
 import { InlineToken, Token } from "./token.js";
 
@@ -9,7 +10,7 @@ type Reference = {
 
 type FootnoteRef = {
     token: Token;
-    callback: (footnoteNumber: number) => void;
+    onNumDetermined: (footnoteNumber: number) => void;
 };
 
 export class ReferenceManager {
@@ -49,23 +50,32 @@ export class ReferenceManager {
         }
     }
 
-    registerFootnote(
+    registerFootnoteDef(
         label: string,
         destination: Token,
-        callback: (footnoteNumber: number) => void,
+        onNumDetermined: (footnoteNumber: number) => void,
     ) {
         label = makeIdString(label);
-        destination.addAttribute("id", `ref-${label}`);
-        this._footnotes.set(label, { token: destination, callback });
+        destination.addAttribute("id", `def-${label}`);
+        this._footnotes.set(label, {
+            token: destination,
+            onNumDetermined,
+        });
 
         let token = this._unresolvedFootnotes.get(label);
         if (token) {
-            token.addAttribute("href", `#ref-${label}`);
+            token.addAttribute("href", `#def-${label}`);
             this._unresolvedRefs.delete(label);
+            const num = this._footnoteNumbers.get(label);
+            if (num) {
+                onNumDetermined(num);
+            } else {
+                assert(false, `number for footnote ${label} should be determined`);
+            }
         }
     }
 
-    resolveFootnote(label: string, fnToken: Token): number {
+    resolveFootnoteRef(label: string, fnToken: Token): number {
         label = makeIdString(label);
         let number = this._footnoteNumbers.get(label) ?? this.footnoteCount++;
         this._footnoteNumbers.set(label, number);
@@ -73,7 +83,7 @@ export class ReferenceManager {
         let fnRef = this._footnotes.get(label);
         if (fnRef) {
             fnToken.addAttribute("href", `#ref-${label}`);
-            fnRef.callback(number);
+            fnRef.onNumDetermined(number);
         } else {
             this._unresolvedFootnotes.set(label, fnToken);
         }
