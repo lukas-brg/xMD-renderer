@@ -23,16 +23,22 @@ export const Paragraph: BlockRule = {
             BlockToken.createContentless("p", input.currentPoint, Paragraph.name, "open"),
         );
         do {
-            let didTerminate = processTerminations(input, state, stateChange, () => {
-                stateChange.addBlockToken(
-                    BlockToken.createContentless(
-                        "p",
-                        input.currentPoint,
-                        Paragraph.name,
-                        "close",
-                    ),
-                );
-            });
+            let didTerminate = processTerminations(
+                input,
+                state,
+                stateChange,
+                containsText, // don't apply paragraph state change if it's empty
+                () => {
+                    stateChange.addBlockToken(
+                        BlockToken.createContentless(
+                            "p",
+                            input.currentPoint,
+                            Paragraph.name,
+                            "close",
+                        ),
+                    );
+                },
+            );
 
             if (didTerminate) {
                 return true;

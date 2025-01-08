@@ -16,6 +16,7 @@ import {
     ReferenceLink,
     ReferenceLinkDefinition,
 } from "./inline_rules/link.js";
+import { Dict } from "./util.js";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";
 
@@ -25,15 +26,13 @@ type BlockRuleEntry = {
     failureMode: FailureMode;
 };
 
-type BlockRuleList = { [name: string]: BlockRuleEntry };
-
 type InlineRuleEntry = {
     handlerObj: InlineRule;
 };
 
-type InlineRuleList = { [name: string]: InlineRuleEntry };
+type RuleSet = Dict<InlineRuleEntry> | Dict<BlockRuleEntry>;
 
-const blockRules: BlockRuleList = {
+const blockRules: RuleSet = {
     codeblock_fenced: {
         handlerObj: CodeblockFenced,
         terminatedBy: [],
@@ -62,7 +61,7 @@ const blockRules: BlockRuleList = {
     },
 };
 
-const inlineRules: InlineRuleList = {
+const inlineRules: RuleSet = {
     escape: {
         handlerObj: Escape,
     },
@@ -92,7 +91,7 @@ const inlineRules: InlineRuleList = {
     },
 };
 
-export const rules = {
+export const ruleSet = {
     inline: inlineRules,
     block: blockRules,
 };

@@ -1,7 +1,7 @@
 import { Point, InputState } from "./input_state.js";
 import { BlockToken, InlineToken, Token } from "./token.js";
 import { makeIdString } from "./string_utils.js";
-import { ReferenceManager } from "./references.js";
+import { ReferenceManager } from "./reference_manager.js";
 
 export type HeadingForm = {
     text: string;

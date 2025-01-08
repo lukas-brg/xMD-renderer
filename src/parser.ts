@@ -1,5 +1,5 @@
 import { InputState, Point } from "./input_state.js";
-import { rules } from "./rules.js";
+import { ruleSet } from "./rules.js";
 import { ParsingStateBlock, ParsingStateInline, StateChange } from "./parsing_state.js";
 import { InlineToken } from "./token.js";
 
@@ -7,9 +7,10 @@ export function processTerminations(
     input: InputState,
     state: ParsingStateBlock,
     stateChange: StateChange,
+    applyStateChange: boolean = true,
     onTermination: () => void,
 ): boolean {
-    const terminatedBy = rules.block[stateChange.executedBy].terminatedBy;
+    const terminatedBy = ruleSet.block[stateChange.executedBy].terminatedBy;
     let newStateChange = StateChange.usingState(stateChange, input.currentPoint);
 
     for (const ruleObj of terminatedBy) {
@@ -17,7 +18,11 @@ export function processTerminations(
         if (success) {
             stateChange.executedBy = ruleObj.name;
             onTermination();
-            stateChange.applyToState(state);
+
+            if (applyStateChange) {
+                stateChange.applyToState(state);
+            }
+
             newStateChange.applyToState(state);
             return true;
         }
@@ -30,7 +35,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
 
     while ((line = doc.nextLine()) != null) {
         if (doc.isEmptyLine()) continue;
-        for (let [ruleName, rule] of Object.entries(rules.block)) {
+        for (let [ruleName, rule] of Object.entries(ruleSet.block)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
             let stateChange = new StateChange(doc.currentPoint, ruleName);
             let success = rule.handlerObj.process(doc, state, stateChange);
@@ -68,7 +73,7 @@ function parseInline(state: ParsingStateBlock) {
                 );
                 let anyRuleApplies = false;
 
-                for (let [ruleName, rule] of Object.entries(rules.inline)) {
+                for (let [ruleName, rule] of Object.entries(ruleSet.inline)) {
                     if (ruleName == "link") {
                         let m = 0;
                     }

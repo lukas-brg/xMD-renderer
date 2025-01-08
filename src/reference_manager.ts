@@ -1,5 +1,5 @@
-import { makeIdString, trailingWhiteSpaces } from "./string_utils";
-import { InlineToken, Token } from "./token";
+import { makeIdString, trailingWhiteSpaces } from "./string_utils.js";
+import { InlineToken, Token } from "./token.js";
 
 type Reference = {
     label: string;
