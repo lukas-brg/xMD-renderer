@@ -1,17 +1,91 @@
 import { Token, BlockToken } from "../token.js";
-import { InputState } from "../input_state.js";
+import { InputState, Point } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import BlockRule from "./blockrule.js";
 import { processTerminations } from "../parser.js";
 
 type ListTag = "ol" | "ul";
 
+export class ListManager {
+    openedLists: [number, ListTag][];
+    stateChange: StateChange;
+    currentDepth: number;
+    prevDepth: number;
+
+    constructor(stateChange: StateChange) {
+        this.openedLists = [];
+        this.stateChange = stateChange;
+        this.currentDepth = 0;
+        this.prevDepth = 0;
+    }
+
+    closeAll(currentPoint: Point) {
+        let item;
+        while ((item = this.openedLists.pop()) != undefined) {
+            this.stateChange.addBlockToken(
+                BlockToken.createContentless(
+                    item[1],
+                    currentPoint,
+                    List.name,
+                    "close",
+                    item[0],
+                ),
+            );
+        }
+    }
+
+    closeUntil(currentPoint: Point, targetDepth: number) {
+        while (this.openedLists.length > 1) {
+            const [topDepth, topTag] = this.openedLists.pop()!;
+            if (topDepth >= targetDepth) {
+                this.stateChange.addBlockToken(
+                    BlockToken.createContentless(
+                        topTag,
+                        currentPoint,
+                        List.name,
+                        "close",
+                        topDepth,
+                    ),
+                );
+            } else if (topDepth < targetDepth) {
+                break;
+            }
+        }
+    }
+
+    closeAndOpen(currentPoint: Point, newTag: ListTag, depth: number) {
+        const [topDepth, topTag] = this.openedLists.pop()!;
+
+        this.stateChange.addBlockToken(
+            BlockToken.createContentless(
+                topTag,
+                currentPoint,
+                List.name,
+                "close",
+                topDepth,
+            ),
+        );
+        this.stateChange.addBlockToken(
+            BlockToken.createContentless(newTag, currentPoint, List.name, "open", depth),
+        );
+        this.openedLists.push([depth, newTag]);
+    }
+
+    openList(depth: number, tag: ListTag, currentPoint: Point) {
+        this.stateChange.addBlockToken(
+            BlockToken.createContentless(tag, currentPoint, List.name, "open", depth),
+        );
+
+        this.openedLists.push([depth, tag]);
+    }
+}
+
 function processListItemContent(
     input: InputState,
     state: ParsingStateBlock,
     stateChange: StateChange,
     depth: number,
-    depths: [number, ListTag][],
+    listManager: ListManager,
 ): boolean {
     let line = input.currentLine().trim().substring(2);
     stateChange.addBlockToken(BlockToken.createText(input.currentPoint, List.name, line));
@@ -34,18 +108,7 @@ function processListItemContent(
                     depth + 1,
                 ),
             );
-            let item;
-            while ((item = depths.pop()) != undefined) {
-                stateChange.addBlockToken(
-                    BlockToken.createContentless(
-                        item[1],
-                        input.currentPoint,
-                        List.name,
-                        "close",
-                        item[0],
-                    ),
-                );
-            }
+            listManager.closeAll(input.currentPoint);
         });
         if (didTerminate) {
             return true;
@@ -66,6 +129,7 @@ function processListItems(
     depth: number,
     tag: string,
     depths: [number, ListTag][],
+    listManager: ListManager,
 ): boolean {
     do {
         const [{ column }, lineTrimmed] = input.lineSkipWhiteSpaces();
@@ -86,7 +150,7 @@ function processListItems(
             state,
             stateChange,
             depth,
-            depths,
+            listManager,
         );
 
         if (didTerminate) {
@@ -116,64 +180,18 @@ function processListItems(
 
 function handleListTermination(
     input: InputState,
-    stateChange: StateChange,
     depth: number,
     prevDepth: number,
     tag: ListTag,
     prevTag: string,
-    depths: [number, ListTag][],
+    listManger: ListManager,
 ) {
     if (depth > prevDepth) {
-        stateChange.addBlockToken(
-            BlockToken.createContentless(
-                tag,
-                input.currentPoint,
-                List.name,
-                "open",
-                depth,
-            ),
-        );
-        depths.push([depth, tag]);
+        listManger.openList(depth, tag, input.currentPoint);
     } else if (depth == prevDepth && tag !== prevTag) {
-        const [topDepth, topTag] = depths.pop()!;
-        if (topDepth >= depth) {
-            stateChange.addBlockToken(
-                BlockToken.createContentless(
-                    topTag,
-                    input.currentPoint,
-                    List.name,
-                    "close",
-                    topDepth,
-                ),
-            );
-            stateChange.addBlockToken(
-                BlockToken.createContentless(
-                    tag,
-                    input.currentPoint,
-                    List.name,
-                    "open",
-                    depth,
-                ),
-            );
-            depths.push([depth, tag]);
-        }
+        listManger.closeAndOpen(input.currentPoint, tag, depth);
     } else if (depth < prevDepth) {
-        while (depths.length > 1) {
-            const [topDepth, topTag] = depths.pop()!;
-            if (topDepth >= depth) {
-                stateChange.addBlockToken(
-                    BlockToken.createContentless(
-                        topTag,
-                        input.currentPoint,
-                        List.name,
-                        "close",
-                        topDepth,
-                    ),
-                );
-            } else if (topDepth <= depth) {
-                break;
-            }
-        }
+        listManger.closeUntil(input.currentPoint, depth);
     }
 }
 
@@ -184,23 +202,18 @@ export const List: BlockRule = {
         state: Readonly<ParsingStateBlock>,
         stateChange: StateChange,
     ) => {
+        let listManger = new ListManager(stateChange);
+
         let [point, firstLine] = input.lineSkipWhiteSpaces();
         let prevTag = getListTag(firstLine);
+
         if (!prevTag) return false;
 
         let prevDepth = Math.floor((point.column - 1) / 2);
         const initialDepth = prevDepth;
         let depths: [number, ListTag][] = [[initialDepth, prevTag]];
 
-        stateChange.addBlockToken(
-            BlockToken.createContentless(
-                prevTag,
-                input.currentPoint,
-                List.name,
-                "open",
-                prevDepth,
-            ),
-        );
+        listManger.openList(prevDepth, prevTag, input.currentPoint);
         let line;
         do {
             if (input.isEmptyLine()) {
@@ -213,15 +226,7 @@ export const List: BlockRule = {
             }
             const spaces = point.column - 1;
             const depth = Math.floor(spaces / 2);
-            handleListTermination(
-                input,
-                stateChange,
-                depth,
-                prevDepth,
-                tag,
-                prevTag,
-                depths,
-            );
+            handleListTermination(input, depth, prevDepth, tag, prevTag, listManger);
             let didTerminate = processListItems(
                 input,
                 state,
@@ -229,6 +234,7 @@ export const List: BlockRule = {
                 depth,
                 tag,
                 depths,
+                listManger,
             );
 
             if (didTerminate) {
@@ -238,18 +244,7 @@ export const List: BlockRule = {
             prevDepth = depth;
         } while ((line = input.nextLine()) != null);
 
-        for (let i = depths.length - 1; i >= 0; i--) {
-            const [topDepth, topTag] = depths[i];
-            stateChange.addBlockToken(
-                BlockToken.createContentless(
-                    topTag,
-                    input.currentPoint,
-                    List.name,
-                    "close",
-                    topDepth,
-                ),
-            );
-        }
+        listManger.closeAll(input.currentPoint);
         stateChange.endPoint = input.currentPoint;
         return true;
     },
