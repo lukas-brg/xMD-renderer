@@ -2,7 +2,6 @@ import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import { BlockToken, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
-import { HeadingForm } from "../parsing_state.js";
 
 export const Heading: BlockRule = {
     name: "heading",
@@ -40,12 +39,12 @@ export const Heading: BlockRule = {
         );
         stateChange.addBlockToken(token);
         const lvl = Number.parseInt(headingTag.substring(1));
-        stateChange.registerHeading({
-            text: remainingLine,
-            level: lvl,
-            lineNumber: input.currentPoint.line,
+        stateChange.document.registerHeading(
+            remainingLine,
+            lvl,
+            input.currentPoint.line,
             token,
-        });
+        );
 
         stateChange.endPoint = input.currentPoint;
         input.nextLine();

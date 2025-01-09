@@ -1,7 +1,7 @@
 import { InputState, Point } from "./input_state.js";
 import { ruleSet } from "./rules.js";
 import { ParsingStateBlock, ParsingStateInline, StateChange } from "./parsing_state.js";
-import { InlineToken } from "./token.js";
+import { BlockToken, InlineToken } from "./token.js";
 
 export function processTerminations(
     input: InputState,
@@ -51,11 +51,15 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
             }
         }
     }
+    state.blockTokens.push(
+        BlockToken.createSelfClosing("hr", doc.currentPoint, "parser"),
+    );
+
     state.blockTokens = state.blockTokens.concat(state._footerTokens);
 }
 
 function parseInline(state: ParsingStateBlock) {
-    let references = state.references;
+    let references = state.document;
     for (let blockTok of state.blockTokens) {
         const line = blockTok.content;
         if (line) {
@@ -68,9 +72,6 @@ function parseInline(state: ParsingStateBlock) {
                 let anyRuleApplies = false;
 
                 for (let [ruleName, rule] of Object.entries(ruleSet.inline)) {
-                    if (ruleName == "link") {
-                        let m = 0;
-                    }
                     let success = rule.handlerObj.process(inlineState);
                     anyRuleApplies = anyRuleApplies || success;
                 }

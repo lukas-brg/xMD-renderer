@@ -18,7 +18,7 @@ export const Paragraph: BlockRule = {
                 return false;
             }
         }
-        stateChange.references = state.references;
+        stateChange.document = state.document;
         stateChange.addBlockToken(
             BlockToken.createContentless("p", input.currentPoint, Paragraph.name, "open"),
         );

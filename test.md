@@ -185,6 +185,8 @@ The following definition should not be visible.
 Here is another link to [github] [github]
 ```
 
+[youtube.com](www.youtube.com)
+
 [link to github][github]
 
 The following definition should not be visible.

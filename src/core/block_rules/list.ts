@@ -25,7 +25,7 @@ function processListItems(
             ),
         );
 
-        // This function needs with the input *on* the last list item, hence the lookahead
+        // This function needs to return with the input *on* the last list item, hence the lookahead
         const nextLine = input.peekLine();
         if (nextLine == null) return;
         if (input.isEmptyLine()) return;

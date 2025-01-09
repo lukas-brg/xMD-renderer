@@ -16,7 +16,7 @@ export const CodeblockFenced: BlockRule = {
         stateChange: StateChange,
     ) => {
         const line = input.currentLine();
-        stateChange.references = state.references;
+        stateChange.document = state.document;
         if (!line.startsWith("```")) return false;
         let langStr = line.substring(3).trim();
         stateChange.addBlockToken(

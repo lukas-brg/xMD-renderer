@@ -23,7 +23,7 @@ export const FootnoteRef: InlineRule = {
                 false,
             ).withAnnotation("footnote-ref");
 
-            const no = state.resolveFootnoteRef(label, reference);
+            const no = state.document.resolveFootnoteRef(label, reference);
             reference.content = `<sup>[${no}]</sup>`;
             state.addInlineToken(match.index, reference);
 

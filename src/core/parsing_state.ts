@@ -1,50 +1,26 @@
 import { Point, InputState } from "./input_state.js";
 import { BlockToken, InlineToken, Token } from "./token.js";
-import { makeIdString } from "./string_utils.js";
-import { ReferenceManager } from "./reference_manager.js";
 
-export type HeadingForm = {
-    text: string;
-    level: number;
-    lineNumber: number;
-    token: Token;
-};
-
-type HeadingEntry = HeadingForm & { id: string };
+import { DocumentState } from "./document_state.js";
 
 export class ParsingStateBlock {
     blockTokens: BlockToken[];
     _footerTokens: BlockToken[];
-    references: ReferenceManager;
-    _headings: HeadingEntry[];
-    _headingIds: Map<string, number>;
+    _document: DocumentState;
 
     constructor() {
         this.blockTokens = [];
         this._footerTokens = [];
-        this._headings = [];
-        this._headingIds = new Map();
-        this.references = new ReferenceManager();
+
+        this._document = new DocumentState();
     }
 
-    registerReference(label: string, url: string, title?: string) {
-        this.references.registerReference(label, url, title);
+    get document(): DocumentState {
+        return this._document;
     }
 
-    resolveReference(label: string, token: InlineToken) {
-        this.references.resolveReference(label, token);
-    }
-
-    registerFootnoteDef(
-        label: string,
-        destinationTok: Token,
-        onNumDetermined: (footnoteNumber: number) => void,
-    ) {
-        this.references.registerFootnoteDef(label, destinationTok, onNumDetermined);
-    }
-
-    resolveFootnoteRef(label: string, destinationTok: Token) {
-        this.references.resolveFootnoteRef(label, destinationTok);
+    set document(document: DocumentState) {
+        this._document = document;
     }
 
     addBlockToken(token: BlockToken) {
@@ -63,19 +39,19 @@ export class ParsingStateInline {
     private escapedPositions: Set<number>;
     private _consumedIndices: Map<number, string>;
 
-    private references: ReferenceManager;
+    protected _document: DocumentState;
 
-    constructor(line: string, point: Point, references: ReferenceManager) {
+    constructor(line: string, point: Point, references: DocumentState) {
         this.relatedPoint = point;
         this.line = line;
         this._tokens = new Map<number, InlineToken>();
         this.escapedPositions = new Set();
         this._consumedIndices = new Map();
-        this.references = references;
+        this._document = references;
     }
 
-    resolveFootnoteRef(label: string, destinationTok: Token): number {
-        return this.references.resolveFootnoteRef(label, destinationTok);
+    get document(): DocumentState {
+        return this._document;
     }
 
     addInlineToken(startPos: number, token: InlineToken) {
@@ -91,14 +67,6 @@ export class ParsingStateInline {
         this._tokens.set(startPos, token);
     }
 
-    registerReference(label: string, url: string, title?: string) {
-        this.references.registerReference(label, url, title);
-    }
-
-    resolveReference(label: string, token: InlineToken) {
-        this.references.resolveReference(label, token);
-    }
-
     consume(start: number, end?: number) {
         end = end ?? start + 1;
         for (let i = start; i < end; i++) {
@@ -108,10 +76,6 @@ export class ParsingStateInline {
 
     get tokens() {
         return this._tokens;
-    }
-
-    get headings(): HeadingEntry[] {
-        return this.headings;
     }
 
     escape(pos: number) {
@@ -158,7 +122,6 @@ export class StateChange extends ParsingStateBlock {
     private _wasApplied: boolean = false;
     success: boolean;
     executedBy: string;
-    subStateChanges: StateChange[] = [];
 
     constructor(
         startPoint: Point,
@@ -183,41 +146,22 @@ export class StateChange extends ParsingStateBlock {
         executedBy?: string,
     ): StateChange {
         let stateChange = new StateChange(startPoint, executedBy);
-        stateChange.references = state.references;
+        stateChange._document = state.document;
         return stateChange;
-    }
-
-    registerHeading(heading: HeadingForm) {
-        const id = makeIdString(heading.text);
-        this._headings.push({ ...heading, id: id });
     }
 
     applyToState(state: ParsingStateBlock) {
         state.blockTokens = state.blockTokens.concat(this.blockTokens);
         state._footerTokens = state._footerTokens.concat(this._footerTokens);
-        for (const heading of this._headings) {
-            let count = state._headingIds.get(heading.id) ?? 0;
-            let uniqueId;
-            if (count > 0) {
-                uniqueId = `${heading.id}-${count}`;
-            } else {
-                uniqueId = heading.id;
-            }
-            count++;
-            state._headingIds.set(heading.id, count);
-            heading.id = uniqueId;
-            state._headings.push(heading);
-            heading.token.addAttribute("id", uniqueId);
-        }
+
         this._wasApplied = true;
-        state.references = this.references;
+        state.document = this.document;
     }
 
     merge(other: StateChange) {
         this.blockTokens = this.blockTokens.concat(other.blockTokens);
         this.endPoint = other.endPoint;
         this.executedBy += ", " + other.executedBy;
-        this._headings = this._headings.concat(other._headings);
     }
 
     revertInput(doc: InputState) {

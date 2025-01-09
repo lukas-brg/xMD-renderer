@@ -38,17 +38,24 @@ export const Link: InlineRule = {
             .matchAll(pattern)
             ?.filter((m) => !state.isEscaped(m.index))
             .forEach((match) => {
-                let [wholeMatch, text, url, title] = match;
+                let [wholeMatch, label, url, title] = match;
                 title = title ?? "";
                 const start = match.index;
                 const end = match.index + wholeMatch.length;
-                const urlStart = start + 1 + text.length;
-                if (urlRegex.test(text.trim().toLowerCase())) {
-                    warnInline(
-                        `Warning: URLs are not permitted as link labels.`,
-                        state,
-                        match.index,
-                    );
+                const urlStart = start + 1 + label.length;
+
+                if (urlRegex.test(label.trim().toLowerCase())) {
+                    let isSameUrl = false;
+                    try {
+                        isSameUrl = normalizeUrl(label) == normalizeUrl(url);
+                    } catch {}
+                    if (!isSameUrl) {
+                        warnInline(
+                            `Warning: URLs are not permitted as link labels.`,
+                            state,
+                            match.index,
+                        );
+                    }
                 }
                 url = processUrl(url);
                 state.addInlineToken(
@@ -144,7 +151,12 @@ export const ReferenceLink: InlineRule = {
             const start = match.index;
             const afterContentStart = start + 1 + text.length;
             const end = start + wholeMatch.length;
-            let linkTokenOpen = InlineToken.createContentless("a", start, "open");
+            let linkTokenOpen = InlineToken.createContentless(
+                "a",
+                start,
+                ReferenceLink.name,
+                "open",
+            );
             let linkTokenClose = InlineToken.createContentless(
                 "a",
                 afterContentStart,
@@ -154,7 +166,7 @@ export const ReferenceLink: InlineRule = {
             );
             state.addInlineToken(start, linkTokenOpen);
             state.addInlineToken(afterContentStart, linkTokenClose);
-            state.resolveReference(label, linkTokenOpen);
+            state.document.resolveReference(label, linkTokenOpen);
             didAddLink = true;
         });
         return didAddLink;
@@ -181,7 +193,7 @@ export const ReferenceLinkDefinition: InlineRule = {
             const start = match.index;
             const end = match.index + wholeMatch.length + 1;
             state.consume(start, end);
-            state.registerReference(label, url, title);
+            state.document.registerReference(label, url, title);
             didAddLink = true;
         });
         return didAddLink;

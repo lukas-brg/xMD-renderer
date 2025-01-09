@@ -10,16 +10,33 @@ type Reference = {
 
 type FootnoteRef = {
     token: Token;
-    onNumDetermined: (footnoteNumber: number) => void;
+    onNumResolved: (footnoteNumber: number) => void;
 };
 
-export class ReferenceManager {
+export type HeadingForm = {
+    text: string;
+    level: number;
+    lineNumber: number;
+    token: Token;
+};
+
+type HeadingEntry = {
+    id: string;
+    text: string;
+    level: number;
+    lineNumber: number;
+    token: Token;
+};
+
+export class DocumentState {
     private _references: Map<string, Reference>;
     private _footnotes: Map<string, FootnoteRef>;
     private _footnoteNumbers: Map<string, number>;
     private _unresolvedFootnotes: Map<string, Token>;
     private _unresolvedRefs: Map<string, Token>;
     private footnoteCount: number;
+    _headings: HeadingEntry[];
+    _headingIds: Map<string, number>;
 
     constructor() {
         this._references = new Map();
@@ -28,6 +45,8 @@ export class ReferenceManager {
         this._unresolvedRefs = new Map();
         this.footnoteCount = 1;
         this._footnoteNumbers = new Map();
+        this._headings = [];
+        this._headingIds = new Map();
     }
 
     registerReference(label: string, url: string, title?: string) {
@@ -53,13 +72,13 @@ export class ReferenceManager {
     registerFootnoteDef(
         label: string,
         destination: Token,
-        onNumDetermined: (footnoteNumber: number) => void,
+        onNumResolved: (footnoteNumber: number) => void,
     ) {
         label = makeIdString(label);
         destination.addAttribute("id", `def-${label}`);
         this._footnotes.set(label, {
             token: destination,
-            onNumDetermined,
+            onNumResolved: onNumResolved,
         });
 
         let token = this._unresolvedFootnotes.get(label);
@@ -68,7 +87,7 @@ export class ReferenceManager {
             this._unresolvedRefs.delete(label);
             const num = this._footnoteNumbers.get(label);
             if (num) {
-                onNumDetermined(num);
+                onNumResolved(num);
             } else {
                 assert(false, `number for footnote ${label} should be determined`);
             }
@@ -79,15 +98,31 @@ export class ReferenceManager {
         label = makeIdString(label);
         let number = this._footnoteNumbers.get(label) ?? this.footnoteCount++;
         this._footnoteNumbers.set(label, number);
-
+        fnToken.addAttribute("id", "ref-" + label);
         let fnRef = this._footnotes.get(label);
         if (fnRef) {
             fnToken.addAttribute("href", `#def-${label}`);
-            fnRef.onNumDetermined(number);
+            fnRef.onNumResolved(number);
         } else {
             this._unresolvedFootnotes.set(label, fnToken);
         }
 
         return number;
+    }
+
+    registerHeading(text: string, level: number, lineNumber: number, token: Token) {
+        const id = makeIdString(text);
+        let count = this._headingIds.get(id) ?? 0;
+        let uniqueId;
+        if (count > 0) {
+            uniqueId = `${id}-${count}`;
+        } else {
+            uniqueId = id;
+        }
+        this._headings.push({ text, level, lineNumber, token, id: uniqueId });
+        count++;
+        this._headingIds.set(id, count);
+
+        token.addAttribute("id", uniqueId);
     }
 }
