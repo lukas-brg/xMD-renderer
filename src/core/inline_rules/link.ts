@@ -2,6 +2,7 @@ import { ParsingStateInline } from "../parsing_state.js";
 import InlineRule from "./inline_rule.js";
 import { InlineToken } from "../token.js";
 import normalizeUrl from "normalize-url";
+import { warnInline } from "../errors.js";
 
 const pattern = /\[(.*?)\]\((.*?)(?:\s*\"(.*?)\")?\)/g;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -42,7 +43,13 @@ export const Link: InlineRule = {
                 const start = match.index;
                 const end = match.index + wholeMatch.length;
                 const urlStart = start + 1 + text.length;
-
+                if (urlRegex.test(text.trim().toLowerCase())) {
+                    warnInline(
+                        `Warning: URLs are not permitted as link labels.`,
+                        state,
+                        match.index,
+                    );
+                }
                 url = processUrl(url);
                 state.addInlineToken(
                     match.index,
