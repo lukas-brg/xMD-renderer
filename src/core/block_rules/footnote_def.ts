@@ -27,7 +27,7 @@ export const FootnoteDef: BlockRule = {
             fnTok.content = `${fnNum}. ${fnTok.content}`;
         });
 
-        stateChange.addBlockToken(fnTok);
+        stateChange.addFooterToken(fnTok);
         return true;
     },
 };

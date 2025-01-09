@@ -2,25 +2,26 @@
 
 ## Lists
 
-+ Create a list by starting a line with `+`, `-`, or `*`
-+ Sub-lists are made by indenting 2 spaces:
-  - Marker character change forces new list start:
-    * Ac tristique libero volutpat at
-    + Facilisis in pretium nisl aliquet
-    - Nulla volutpat aliquam velit
-      - Test
-+ Very easy!
+- Create a list by starting a line with `+`, `-`, or `*`
+- Sub-lists are made by indenting 2 spaces:
+    - Marker character change forces new list start:
+        - Ac tristique libero volutpat at
+        * Facilisis in pretium nisl aliquet
+        - Nulla volutpat aliquam velit
+            - Test
+- Very easy!
 
-## Paragraph  
+## Paragraph
 
 This is a paragraph of text.
 This should still be on the same line  
-This should be a new line 
+This should be a new line
+
 - Here the paragraph should be terminated by the list
 - List item 2
 
 ## Emphasis
-  
+
 ```
 *text*
 
@@ -39,15 +40,15 @@ _**text**_
 
 ### This is a heading
 
-*text*
+_text_
 
 **text**
 
- _text_
+_text_
 
-__text__
+**text**
 
-***text***
+**_text_**
 
 _**text**_
 
@@ -60,15 +61,15 @@ _**text**_
 ```
 \*text*
 
-\*\*text\*\*   
+\*\*text\*\*
 
 \_text\_
 
-\**text\**   
+\**text\**
 
-*\*text\**   
+*\*text\**
 
-**\*text\***  
+**\*text\***
 ```
 
 ## Linking to headings
@@ -79,12 +80,11 @@ _**text**_
 
 \_text\_
 
-\**text\**
+\*\*text\*\*
 
-*\*text\**
+\*\*text\*\*
 
- **\*text\***
-
+**\*text\***
 
 ## Codeblock
 
@@ -92,40 +92,33 @@ _**text**_
 
 ```js
 var foo = function (bar) {
-  return bar++;
+    return bar++;
 };
 ```
-
 
 ## Links
 
 ```markdown
-[Link](www.google.com) 
+[Link](www.google.com)
 
-[Link with title](www.google.com "Google") 
+[Link with title](www.google.com "Google")
 
-[Link with **markup**](www.google.com) 
+[Link with **markup**](www.google.com)
 
-[_Another link with markup_](www.google.com) 
+[_Another link with markup_](www.google.com)
 
 [Link to first H1 heading](#markdown)
 ```
 
-[Link](www.google.com) 
+[Link](www.google.com)
 
-[Link with title](www.google.com "Google") 
+[Link with title](www.google.com "Google")
 
-[Link with **markup**](www.google.com) 
+[Link with **markup**](www.google.com)
 
-[_Another link with markup_](www.google.com) 
+[_Another link with markup_](www.google.com)
 
-[An email address](test@email.com) 
-
-
-
-
-
-
+[An email address](test@email.com)
 
 ```
 [Link to first H1 heading](#markdown)
@@ -157,7 +150,7 @@ test@email.com
 
 ### Reference Links
 
- Footnote[^1]
+Footnote[^1]
 
 ```
 [link to github][github]
@@ -176,6 +169,7 @@ The following definition should not be visible.
 [github]: github.com/ "GitHub link"
 
 Here is another link to [github] [github]
-
 
 [^1]: footnote
+
+# Heading

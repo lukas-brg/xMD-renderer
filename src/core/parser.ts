@@ -58,6 +58,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
             }
         }
     }
+    state.blockTokens = state.blockTokens.concat(state._footerTokens);
 }
 
 function parseInline(state: ParsingStateBlock) {

@@ -15,25 +15,25 @@
   <ul>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
     <li>Sub-lists are made by indenting 2 spaces:</li>
-    <ul>
-      <li>Marker character change forces new list start:</li>
       <ul>
-        <li>Ac tristique libero volutpat at</li>
-        <li>Facilisis in pretium nisl aliquet</li>
-        <li>Nulla volutpat aliquam velit</li>
-        <ul>
-          <li>Test</li>
-        </ul>
+        <li>Marker character change forces new list start:</li>
+          <ul>
+            <li>Ac tristique libero volutpat at</li>
+            <li>Facilisis in pretium nisl aliquet</li>
+            <li>Nulla volutpat aliquam velit</li>
+              <ul>
+                <li>Test</li>
+              </ul>
+          </ul>
       </ul>
-    </ul>
     <li>Very easy!</li>
   </ul>
-  <h2 id="paragraph">Paragraph  </h2>
+  <h2 id="paragraph">Paragraph</h2>
   <p>
 This is a paragraph of text.
 This should still be on the same line  
   <br/>
-This should be a new line 
+This should be a new line
   </p>
   <ul>
     <li>Here the paragraph should be terminated by the list</li>
@@ -61,7 +61,7 @@ _**text**_
 <strong>text</strong>
   </p>
   <p>
- <em>text</em>
+<em>text</em>
   </p>
   <p>
 <strong>text</strong>
@@ -79,15 +79,15 @@ _**text**_
   <h2 id="escaping">Escaping</h2>
 <pre><code class="">\*text*
 
-\*\*text\*\*   
+\*\*text\*\*
 
 \_text\_
 
-\**text\**   
+\**text\**
 
-*\*text\**   
+*\*text\**
 
-**\*text\***  
+**\*text\***
 </code></pre>  <h2 id="linking-to-headings">Linking to headings</h2>
   <p>
 *text*
@@ -99,43 +99,43 @@ _**text**_
 _text_
   </p>
   <p>
-*<em>text*</em>
+**text**
   </p>
   <p>
-<em>*text*</em>
+**text**
   </p>
   <p>
- <strong>*text*</strong>
+<strong>*text*</strong>
   </p>
   <h2 id="codeblock">Codeblock</h2>
   <h3 id="fenced">Fenced</h3>
 <pre><code class="js"><span class="pl-k">var</span> <span class="pl-en">foo</span> <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-smi">bar</span>) {
-  <span class="pl-k">return</span> bar<span class="pl-k">++</span>;
+    <span class="pl-k">return</span> bar<span class="pl-k">++</span>;
 };
 </code></pre>  <h2 id="links">Links</h2>
-<pre><code class="markdown"><span class="pl-s">[</span>Link<span class="pl-s">](<span class="pl-corl">www.google.com</span>)</span> 
+<pre><code class="markdown"><span class="pl-s">[</span>Link<span class="pl-s">](<span class="pl-corl">www.google.com</span>)</span>
 
-<span class="pl-s">[</span>Link with title<span class="pl-s">](<span class="pl-corl">www.google.com</span></span> <span class="pl-s">"Google")</span> 
+<span class="pl-s">[</span>Link with title<span class="pl-s">](<span class="pl-corl">www.google.com</span></span> <span class="pl-s">"Google")</span>
 
-<span class="pl-s">[</span>Link with <span class="pl-s">**</span>markup<span class="pl-s">**](<span class="pl-corl">www.google.com</span>)</span> 
+<span class="pl-s">[</span>Link with <span class="pl-s">**</span>markup<span class="pl-s">**](<span class="pl-corl">www.google.com</span>)</span>
 
-<span class="pl-s">[_</span>Another link with markup<span class="pl-s">_](<span class="pl-corl">www.google.com</span>)</span> 
+<span class="pl-s">[_</span>Another link with markup<span class="pl-s">_](<span class="pl-corl">www.google.com</span>)</span>
 
 <span class="pl-s">[</span>Link to first H1 heading<span class="pl-s">](<span class="pl-corl">#markdown</span>)</span>
 </code></pre>  <p>
-<a href="http://google.com" title="">Link</a> 
+<a href="http://google.com" title="">Link</a>
   </p>
   <p>
-<a href="http://google.com" title="Google">Link with title</a> 
+<a href="http://google.com" title="Google">Link with title</a>
   </p>
   <p>
-<a href="http://google.com" title="">Link with <strong>markup</strong></a> 
+<a href="http://google.com" title="">Link with <strong>markup</strong></a>
   </p>
   <p>
-<a href="http://google.com" title=""><em>Another link with markup</em></a> 
+<a href="http://google.com" title=""><em>Another link with markup</em></a>
   </p>
   <p>
-<a href="mailto:test@email.com" title="">An email address</a> 
+<a href="mailto:test@email.com" title="">An email address</a>
   </p>
 <pre><code class="">[Link to first H1 heading](#markdown)
 
@@ -172,7 +172,7 @@ _text_
   </p>
   <h3 id="reference-links">Reference Links</h3>
   <p>
- Footnote<a href="#def-h-1"><sup>[1]</sup></a>
+Footnote<a href="#def-h-1"><sup>[1]</sup></a>
   </p>
 <pre><code class="">[link to github][github]
 
@@ -193,6 +193,7 @@ The following definition should not be visible.
   <p>
 Here is another link to <a href="http://github.com" title="GitHub link"/>github</a>
   </p>
+  <h1 id="heading">Heading</h1>
   <span id="def-h-1">1. footnote</span>
 
 <style>

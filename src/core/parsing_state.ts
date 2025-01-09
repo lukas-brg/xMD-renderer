@@ -194,6 +194,7 @@ export class StateChange extends ParsingStateBlock {
 
     applyToState(state: ParsingStateBlock) {
         state.blockTokens = state.blockTokens.concat(this.blockTokens);
+        state._footerTokens = state._footerTokens.concat(this._footerTokens);
         for (const heading of this._headings) {
             let count = state._headingIds.get(heading.id) ?? 0;
             let uniqueId;
