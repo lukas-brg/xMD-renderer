@@ -2,38 +2,116 @@ import { Token, BlockToken } from "../token.js";
 import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import BlockRule from "./blockrule.js";
-import { assert } from "console";
+import { processTerminations } from "../parser.js";
 
 type ListTag = "ol" | "ul";
 
+function processListItemContent(
+    input: InputState,
+    state: ParsingStateBlock,
+    stateChange: StateChange,
+    depth: number,
+    depths: [number, ListTag][],
+): boolean {
+    let line = input.currentLine().trim().substring(2);
+    stateChange.addBlockToken(BlockToken.createText(input.currentPoint, List.name, line));
+    while (true) {
+        let nextLine = input.peekLine();
+        if (nextLine == null) return false;
+        if (input.isEmptyLine(1)) return false;
+        nextLine = nextLine.trim();
+        let nextTag = getListTag(nextLine);
+        if (nextTag) return false;
+
+        // check if list item is terminated by another rule
+        let didTerminate = processTerminations(input, state, stateChange, true, () => {
+            stateChange.addBlockToken(
+                BlockToken.createContentless(
+                    "li",
+                    input.currentPoint,
+                    List.name,
+                    "close",
+                    depth + 1,
+                ),
+            );
+            let item;
+            while ((item = depths.pop()) != undefined) {
+                stateChange.addBlockToken(
+                    BlockToken.createContentless(
+                        item[1],
+                        input.currentPoint,
+                        List.name,
+                        "close",
+                        item[0],
+                    ),
+                );
+            }
+        });
+        if (didTerminate) {
+            return true;
+        }
+
+        stateChange.addBlockToken(
+            BlockToken.createText(input.currentPoint, List.name, nextLine),
+        );
+
+        input.nextLine();
+    }
+}
+
 function processListItems(
     input: InputState,
+    state: ParsingStateBlock,
     stateChange: StateChange,
     depth: number,
     tag: string,
-) {
+    depths: [number, ListTag][],
+): boolean {
     do {
         const [{ column }, lineTrimmed] = input.lineSkipWhiteSpaces();
         const content = lineTrimmed.substring(2).trim();
+
         stateChange.addBlockToken(
-            BlockToken.createWrapped(
+            BlockToken.createContentless(
                 "li",
                 input.currentPoint,
                 List.name,
-                content,
+                "open",
                 depth + 1,
             ),
         );
 
-        // This function needs to return with the input *on* the last list item, hence the lookahead
+        let didTerminate = processListItemContent(
+            input,
+            state,
+            stateChange,
+            depth,
+            depths,
+        );
+
+        if (didTerminate) {
+            return true;
+        } else {
+            stateChange.addBlockToken(
+                BlockToken.createContentless(
+                    "li",
+                    input.currentPoint,
+                    List.name,
+                    "close",
+                    depth + 1,
+                ),
+            );
+        }
         const nextLine = input.peekLine();
-        if (nextLine == null) return;
-        if (input.isEmptyLine()) return;
-        if (getListTag(nextLine) != tag) return;
+        if (nextLine == null) return false;
+        if (input.isEmptyLine()) return false;
+
+        let nextTag = getListTag(nextLine);
         const [{ column: nextColumn }, _] = input.lineSkipWhiteSpaces(1);
         const nextDepth = Math.floor((nextColumn - 1) / 2);
-        if (nextDepth != depth) return;
+        if (nextDepth != depth) return false;
     } while (input.nextLine());
+    return false;
 }
 
 function handleListTermination(
@@ -144,7 +222,18 @@ export const List: BlockRule = {
                 prevTag,
                 depths,
             );
-            processListItems(input, stateChange, depth, tag);
+            let didTerminate = processListItems(
+                input,
+                state,
+                stateChange,
+                depth,
+                tag,
+                depths,
+            );
+
+            if (didTerminate) {
+                return true;
+            }
             prevTag = tag;
             prevDepth = depth;
         } while ((line = input.nextLine()) != null);

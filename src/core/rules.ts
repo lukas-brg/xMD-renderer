@@ -51,7 +51,7 @@ const blockRules: RuleSet = {
     },
     list: {
         handlerObj: List,
-        terminatedBy: [],
+        terminatedBy: [Heading, FootnoteDef, CodeblockFenced],
         failureMode: "applyPartially",
     },
     paragraph: {

@@ -34,6 +34,25 @@
     3. Integer molestie lorem at massa
 + Very easy!
 
+
+### Multiline list items
+
+* **Current**: Under active development. Code for the Current release is in the
+  branch for its major version number (for example,
+  [v22.x](https://github.com/nodejs/node/tree/v22.x)). Node.js releases a new
+  major version every 6 months, allowing for breaking changes. This happens in
+  April and October every year. Releases appearing each October have a support
+  life of 8 months. Releases appearing each April convert to LTS (see below)
+  each October.
+* **LTS**: Releases that receive Long Term Support, with a focus on stability
+  and security. Every even-numbered major version will become an LTS release.
+  LTS releases receive 12 months of _Active LTS_ support and a further 18 months
+  of _Maintenance_. LTS release lines have alphabetically-ordered code names,
+  beginning with v4 Argon. There are no breaking changes or feature additions,
+  except in some special circumstances.
+* **Nightly**: Code from the Current branch built every 24-hours when there are
+  changes. Use with caution.
+
 ## Paragraph
 
 This is a paragraph of text.

@@ -9,9 +9,6 @@ const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const urlRegex =
     /\b(https?:\/\/)?(?:www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9(?:)]{1,6}\b(?:[-a-z0-9(?:)@:%_\+.~#?&//=]*)\b/g;
 
-const bracketAutoLinkRegex =
-    /<((?:https?:\/\/)?(www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-a-z0-9()@:%_\+.~#?&//=]*))>|<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>/g;
-
 const headingLinkRegex = /#\w+/;
 
 function processUrl(url: string): string {
@@ -44,19 +41,19 @@ export const Link: InlineRule = {
                 const end = match.index + wholeMatch.length;
                 const urlStart = start + 1 + label.length;
 
-                if (urlRegex.test(label.trim().toLowerCase())) {
-                    let isSameUrl = false;
-                    try {
-                        isSameUrl = normalizeUrl(label) == normalizeUrl(url);
-                    } catch {}
-                    if (!isSameUrl) {
-                        warnInline(
-                            `Warning: URLs are not permitted as link labels.`,
-                            state,
-                            match.index,
-                        );
-                    }
-                }
+                // if (urlRegex.test(label.trim().toLowerCase())) {
+                //     let isSameUrl = false;
+                //     try {
+                //         isSameUrl = normalizeUrl(label) == normalizeUrl(url);
+                //     } catch {}
+                //     if (!isSameUrl) {
+                //         warnInline(
+                //             `Warning: URLs are not permitted as link labels.`,
+                //             state,
+                //             match.index,
+                //         );
+                //     }
+                // }
                 url = processUrl(url);
                 state.addInlineToken(
                     match.index,
@@ -108,13 +105,45 @@ export const AutoLink: InlineRule = {
     },
 };
 
+// const bracketAutoLinkRegex =
+//     /<((?:https?:\/\/)?(www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-a-z0-9()@:%_\+.~#?&//=]*))>|<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>/g;
+
+const bracketAutoLinkRegex =
+    /<((?:https?:\/\/)?(www\.)?[-a-z0-9@:%._\+~#=]{1,256}\.[a-z0-9()]{1,6}\b([-a-z0-9()@:%_\+.~#?&//=]*))>/g;
+
+const bracketAutoEmailRegex = /<<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})>>/g;
+
 export const BracketLink: InlineRule = {
     name: "bracket_link",
 
     process: (state: ParsingStateInline) => {
         let didAddLink = false;
-        state.matchAll(bracketAutoLinkRegex).forEach((match) => {
+
+        state.matchAll(bracketAutoEmailRegex).forEach((match) => {
+            if (match.length < 2) return false;
+
             const linkText = match[1];
+            if (!linkText) return false;
+            const url = processUrl(linkText);
+            state.addInlineToken(
+                match.index,
+                InlineToken.createWrapped(
+                    "a",
+                    match.index,
+                    BracketLink.name,
+                    linkText,
+                    match.index + linkText.length + 4,
+                ).withAttribute("href", url),
+            );
+            didAddLink = true;
+        });
+        if (didAddLink) return true;
+
+        state.matchAll(bracketAutoLinkRegex).forEach((match) => {
+            if (match.length < 2) return false;
+
+            const linkText = match[1];
+            if (!linkText) return false;
             const url = processUrl(linkText);
 
             state.addInlineToken(
