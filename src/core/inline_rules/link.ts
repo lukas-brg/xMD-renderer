@@ -122,6 +122,7 @@ export const BracketLink: InlineRule = {
             );
             didAddLink = true;
         });
+
         return didAddLink;
     },
 };

@@ -48,6 +48,7 @@ export const Heading: BlockRule = {
         });
 
         stateChange.endPoint = input.currentPoint;
+        input.nextLine();
         return true;
     },
 };

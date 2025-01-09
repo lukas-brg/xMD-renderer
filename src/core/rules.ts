@@ -2,7 +2,7 @@ import BlockRule from "./block_rules/blockrule.js";
 import { CodeblockFenced } from "./block_rules/codeblock.js";
 import { FootnoteDef } from "./block_rules/footnote_def.js";
 import { Heading } from "./block_rules/heading.js";
-import { UnorderedList } from "./block_rules/list.js";
+import { List } from "./block_rules/list.js";
 import { Paragraph } from "./block_rules/paragraph.js";
 import { Code } from "./inline_rules/code.js";
 import { Emphasis } from "./inline_rules/emphasis.js";
@@ -49,14 +49,14 @@ const blockRules: RuleSet = {
         terminatedBy: [],
         failureMode: "applyPartially",
     },
-    unordered_list: {
-        handlerObj: UnorderedList,
+    list: {
+        handlerObj: List,
         terminatedBy: [],
         failureMode: "applyPartially",
     },
     paragraph: {
         handlerObj: Paragraph,
-        terminatedBy: [Heading, UnorderedList, CodeblockFenced, FootnoteDef],
+        terminatedBy: [Heading, List, CodeblockFenced, FootnoteDef],
         failureMode: "applyPartially",
     },
 };

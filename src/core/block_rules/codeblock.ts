@@ -86,6 +86,7 @@ export const CodeblockFenced: BlockRule = {
                 1,
             ),
         );
+        input.nextLine();
         return true;
     },
 };

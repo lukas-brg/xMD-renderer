@@ -32,28 +32,21 @@ export function processTerminations(
 
 function parseBlocks(doc: InputState, state: ParsingStateBlock) {
     let line;
-
-    while ((line = doc.nextLine()) != null) {
-        if (doc.isEmptyLine()) continue;
+    doc.nextLine();
+    outer: while ((line = doc.currentLine()) != null) {
+        if (doc.isEmptyLine()) {
+            doc.nextLine();
+            continue;
+        }
+        let ruleApplied = false;
         for (let [ruleName, rule] of Object.entries(ruleSet.block)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
             let stateChange = StateChange.fromState(state, doc.currentPoint, ruleName);
             let success = rule.handlerObj.process(doc, state, stateChange);
-            if (success && !stateChange.wasApplied) {
-                if (!stateChange.success) {
-                    switch (rule.failureMode) {
-                        case "applyPartially":
-                            stateChange.applyToState(state);
-                            break;
-                        case "plaintext":
-                            stateChange.revertInput(doc);
-                            break;
-                        case "ignore":
-                            break;
-                    }
-                } else {
+            if (success) {
+                if (!stateChange.wasApplied) {
                     stateChange.applyToState(state);
-                    break;
+                    continue outer;
                 }
             }
         }

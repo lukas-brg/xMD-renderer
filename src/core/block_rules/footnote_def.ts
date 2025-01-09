@@ -28,6 +28,7 @@ export const FootnoteDef: BlockRule = {
         });
 
         stateChange.addFooterToken(fnTok);
+        input.nextLine();
         return true;
     },
 };

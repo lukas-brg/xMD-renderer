@@ -1,3 +1,4 @@
+import { assert } from "console";
 import {
     readFile,
     replaceTabs,
@@ -55,6 +56,12 @@ export class InputState {
         return this.lines[lineIdx];
     }
 
+    line(relativeIndex?: number): string {
+        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        assert(!(absIdx < 0 || absIdx >= this.lines.length));
+        return this.lines[absIdx];
+    }
+
     hasNext(): boolean {
         return this.currentPoint.line < this.lines.length;
     }
@@ -87,8 +94,10 @@ export class InputState {
             returns the `Point` marking the stripped line's beginning 
             and the stripped line without advancing to the new Point 
     */
-    currentLineSkipWhiteSpace(): [Point, string] {
-        const line = this.currentLine();
+    lineSkipWhiteSpaces(relativeIndex?: number): [Point, string] {
+        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        assert(!(absIdx < 0 || absIdx >= this.lines.length));
+        const line = this.lines[absIdx];
 
         const lineTrimmed = line.trimStart();
 
