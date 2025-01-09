@@ -82,7 +82,7 @@ export class ReferenceManager {
 
         let fnRef = this._footnotes.get(label);
         if (fnRef) {
-            fnToken.addAttribute("href", `#ref-${label}`);
+            fnToken.addAttribute("href", `#def-${label}`);
             fnRef.onNumDetermined(number);
         } else {
             this._unresolvedFootnotes.set(label, fnToken);
