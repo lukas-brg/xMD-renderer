@@ -3,20 +3,27 @@ import { InputState, Point } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import BlockRule from "./blockrule.js";
 import { processTerminations } from "../parser.js";
+import { leadingWhitespaces } from "../string_utils.js";
 
 type ListTag = "ol" | "ul";
 
-export class ListManager {
+class ListManager {
     openedLists: [number, ListTag][];
     stateChange: StateChange;
-    currentDepth: number;
-    prevDepth: number;
+    lastDepth: number;
+    lastTag: ListTag;
 
-    constructor(stateChange: StateChange) {
+    constructor(
+        stateChange: StateChange,
+        depth: number,
+        tag: ListTag,
+        currentPoint: Point,
+    ) {
         this.openedLists = [];
         this.stateChange = stateChange;
-        this.currentDepth = 0;
-        this.prevDepth = 0;
+        this.lastTag = "ul";
+        this.lastDepth = 0;
+        this.openList(depth, tag, currentPoint);
     }
 
     closeAll(currentPoint: Point) {
@@ -51,6 +58,8 @@ export class ListManager {
                 break;
             }
         }
+        this.lastTag = this.openedLists[0][1];
+        this.lastDepth = this.openedLists[0][0];
     }
 
     closeAndOpen(currentPoint: Point, newTag: ListTag, depth: number) {
@@ -69,6 +78,8 @@ export class ListManager {
             BlockToken.createContentless(newTag, currentPoint, List.name, "open", depth),
         );
         this.openedLists.push([depth, newTag]);
+        this.lastTag = newTag;
+        this.lastDepth = depth;
     }
 
     openList(depth: number, tag: ListTag, currentPoint: Point) {
@@ -77,6 +88,8 @@ export class ListManager {
         );
 
         this.openedLists.push([depth, tag]);
+        this.lastTag = tag;
+        this.lastDepth = depth;
     }
 }
 
@@ -84,108 +97,55 @@ function processListItemContent(
     input: InputState,
     state: ParsingStateBlock,
     stateChange: StateChange,
-    depth: number,
     listManager: ListManager,
-): boolean {
+): string | null {
     let line = input.currentLine().trim().substring(2);
-    stateChange.addBlockToken(BlockToken.createText(input.currentPoint, List.name, line));
+    let content = [line];
     while (true) {
         let nextLine = input.peekLine();
-        if (nextLine == null) return false;
-        if (input.isEmptyLine(1)) return false;
+        if (nextLine == null) break;
+        if (input.isEmptyLine(1)) break;
         nextLine = nextLine.trim();
         let nextTag = getListTag(nextLine);
-        if (nextTag) return false;
+        if (nextTag) break;
 
         // check if list item is terminated by another rule
         let didTerminate = processTerminations(input, state, stateChange, true, () => {
+            stateChange.addBlockToken(
+                BlockToken.createText(input.currentPoint, List.name, content.join(" ")),
+            );
             stateChange.addBlockToken(
                 BlockToken.createContentless(
                     "li",
                     input.currentPoint,
                     List.name,
                     "close",
-                    depth + 1,
+                    listManager.lastDepth + 1,
                 ),
             );
             listManager.closeAll(input.currentPoint);
         });
         if (didTerminate) {
-            return true;
+            return null;
         }
 
-        stateChange.addBlockToken(
-            BlockToken.createText(input.currentPoint, List.name, nextLine),
-        );
+        content.push(nextLine);
 
         input.nextLine();
     }
+    return content.join(" ");
 }
 
-function processListItems(
-    input: InputState,
-    state: ParsingStateBlock,
-    stateChange: StateChange,
-    depth: number,
-    tag: string,
-    depths: [number, ListTag][],
-    listManager: ListManager,
-): boolean {
-    do {
-        const [{ column }, lineTrimmed] = input.lineSkipWhiteSpaces();
-        const content = lineTrimmed.substring(2).trim();
+function handleListTermination(input: InputState, listManger: ListManager): boolean {
+    input.skipToFirstNonEmptyLine();
 
-        stateChange.addBlockToken(
-            BlockToken.createContentless(
-                "li",
-                input.currentPoint,
-                List.name,
-                "open",
-                depth + 1,
-            ),
-        );
+    const line = input.currentLine();
+    const tag = getListTag(line);
+    const depth = getDepth(line);
+    const prevDepth = listManger.lastDepth;
+    const prevTag = listManger.lastTag;
 
-        let didTerminate = processListItemContent(
-            input,
-            state,
-            stateChange,
-            depth,
-            listManager,
-        );
-
-        if (didTerminate) {
-            return true;
-        } else {
-            stateChange.addBlockToken(
-                BlockToken.createContentless(
-                    "li",
-                    input.currentPoint,
-                    List.name,
-                    "close",
-                    depth + 1,
-                ),
-            );
-        }
-        const nextLine = input.peekLine();
-        if (nextLine == null) return false;
-        if (input.isEmptyLine()) return false;
-
-        let nextTag = getListTag(nextLine);
-        const [{ column: nextColumn }, _] = input.lineSkipWhiteSpaces(1);
-        const nextDepth = Math.floor((nextColumn - 1) / 2);
-        if (nextDepth != depth) return false;
-    } while (input.nextLine());
-    return false;
-}
-
-function handleListTermination(
-    input: InputState,
-    depth: number,
-    prevDepth: number,
-    tag: ListTag,
-    prevTag: string,
-    listManger: ListManager,
-) {
+    if (!tag) return false;
     if (depth > prevDepth) {
         listManger.openList(depth, tag, input.currentPoint);
     } else if (depth == prevDepth && tag !== prevTag) {
@@ -193,6 +153,8 @@ function handleListTermination(
     } else if (depth < prevDepth) {
         listManger.closeUntil(input.currentPoint, depth);
     }
+
+    return true;
 }
 
 export const List: BlockRule = {
@@ -202,57 +164,68 @@ export const List: BlockRule = {
         state: Readonly<ParsingStateBlock>,
         stateChange: StateChange,
     ) => {
-        let listManger = new ListManager(stateChange);
-
-        let [point, firstLine] = input.lineSkipWhiteSpaces();
-        let prevTag = getListTag(firstLine);
-
-        if (!prevTag) return false;
-
-        let prevDepth = Math.floor((point.column - 1) / 2);
-        const initialDepth = prevDepth;
-        let depths: [number, ListTag][] = [[initialDepth, prevTag]];
-
-        listManger.openList(prevDepth, prevTag, input.currentPoint);
-        let line;
+        let line: string | null = input.currentLine();
+        let tag = getListTag(line);
+        if (!tag) return false;
+        let depth = getDepth(line);
+        // open initial list
+        let listManager = new ListManager(stateChange, depth, tag, input.currentPoint);
+        let doContinue = true;
         do {
-            if (input.isEmptyLine()) {
-                continue;
-            }
-            const [point, lineTrimmed] = input.lineSkipWhiteSpaces();
-            let tag = getListTag(lineTrimmed);
-            if (!tag) {
-                break;
-            }
-            const spaces = point.column - 1;
-            const depth = Math.floor(spaces / 2);
-            handleListTermination(input, depth, prevDepth, tag, prevTag, listManger);
-            let didTerminate = processListItems(
-                input,
-                state,
-                stateChange,
-                depth,
-                tag,
-                depths,
-                listManger,
-            );
+            doContinue = handleListTermination(input, listManager);
+            if (!doContinue) break;
+            openLi(stateChange, input.currentPoint, listManager);
+            let content = processListItemContent(input, state, stateChange, listManager);
 
-            if (didTerminate) {
-                return true;
-            }
-            prevTag = tag;
-            prevDepth = depth;
+            if (!content) return true; // li was terminated by another rule
+
+            stateChange.addBlockToken(
+                BlockToken.createText(
+                    input.currentPoint,
+                    List.name,
+                    content,
+                    listManager.lastDepth + 1,
+                ),
+            );
+            closeLi(stateChange, input.currentPoint, listManager);
         } while ((line = input.nextLine()) != null);
 
-        listManger.closeAll(input.currentPoint);
-        stateChange.endPoint = input.currentPoint;
+        listManager.closeAll(input.currentPoint);
+
         return true;
     },
 };
+
+function openLi(stateChange: StateChange, pos: Point, listManager: ListManager) {
+    stateChange.addBlockToken(
+        BlockToken.createContentless(
+            "li",
+            pos,
+            List.name,
+            "open",
+            listManager.lastDepth + 1,
+        ),
+    );
+}
+function closeLi(stateChange: StateChange, pos: Point, listManager: ListManager) {
+    stateChange.addBlockToken(
+        BlockToken.createContentless(
+            "li",
+            pos,
+            List.name,
+            "close",
+            listManager.lastDepth + 1,
+        ),
+    );
+}
 
 function getListTag(line: string): ListTag | null {
     const trimmed = line.trim();
     if (/^[-+*]\s/.test(trimmed)) return "ul";
     if (/^\d+\.\s/.test(trimmed)) return "ol";
     return null;
+}
+
+function getDepth(line: string) {
+    return Math.floor(leadingWhitespaces(line) / 2);
 }

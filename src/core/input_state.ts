@@ -136,4 +136,8 @@ export class InputState {
 
         return trailingWhiteSpaces(this.lines[absIdx]);
     }
+
+    skipToFirstNonEmptyLine() {
+        while (this.isEmptyLine() && this.nextLine() != null) {}
+    }
 }
