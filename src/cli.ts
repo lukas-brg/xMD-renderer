@@ -40,7 +40,9 @@ program
             program.error(`Error: input path '${input}' is a directory.`);
         }
 
-        output = output ?? path.basename(input, ".md") + ".html";
+        output =
+            output ??
+            path.join(path.dirname(inputPath), path.basename(input, ".md") + ".html");
 
         let outputPath = path.resolve(output);
 

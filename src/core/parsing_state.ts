@@ -112,7 +112,7 @@ export class ParsingStateInline {
     }
 }
 
-/** Rules don't mutate state directly. This class represents the change of state a rule wants to apply.
+/** BlockRules don't mutate state directly. This class represents the change of state a rule wants to apply.
  * Once applied, the state is considered immutable, so there are only positive state changes
  * (i.e. a `StateChange` cannot remove tokens)
  */

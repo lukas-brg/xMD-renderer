@@ -1,0 +1,1905 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://esm.sh/@wooorm/starry-night@3/style/both">
+    <script type="module">
+    </script>
+    <title>Markdown Output</title>
+</head>
+<body class="markdown-body">
+  <h1 id="node-js">Node.js</h1>
+  <p>
+Node.js is an open-source, cross-platform JavaScript runtime environment.
+  </p>
+  <p>
+For information on using Node.js, see the <a href="https://nodejs.org" title="">Node.js website</a>.
+  </p>
+  <p>
+The Node.js project uses an <a href="./GOVERNANCE.md" title="">open governance model</a>. The
+<a href="https://openjsf.org" title="">OpenJS Foundation</a> provides support for the project.
+  </p>
+  <p>
+Contributors are expected to act in a collaborative manner to move
+the project forward. We encourage the constructive exchange of contrary
+opinions and compromise. The <a href="./GOVERNANCE.md#technical-steering-committee" title="">TSC</a>
+reserves the right to limit or block contributors who repeatedly act in ways
+that discourage, exhaust, or otherwise negatively affect other participants.
+  </p>
+  <p>
+<strong>This project has a <a href="https://github.com/nodejs/admin/blob/HEAD/CODE_OF_CONDUCT.md" title="">Code of Conduct</a>.</strong>
+  </p>
+  <h2 id="table-of-contents">Table of contents</h2>
+  <ul>
+    <li><a href="#support" title="">Support</a></li>
+    <li><a href="#release-types" title="">Release types</a></li>
+    <ul>
+      <li><a href="#download" title="">Download</a></li>
+      <ul>
+        <li><a href="#current-and-lts-releases" title="">Current and LTS releases</a></li>
+        <li><a href="#nightly-releases" title="">Nightly releases</a></li>
+        <li><a href="#api-documentation" title="">API documentation</a></li>
+      </ul>
+    </ul>
+    <li><a href="#verifying-binaries" title="">Verifying binaries</a></li>
+    <li><a href="#building-nodejs" title="">Building Node.js</a></li>
+    <li><a href="#security" title="">Security</a></li>
+    <li><a href="#contributing-to-nodejs" title="">Contributing to Node.js</a></li>
+    <li><a href="#current-project-team-members" title="">Current project team members</a></li>
+    <ul>
+      <li><a href="#tsc-technical-steering-committee" title="">TSC (Technical Steering Committee)</a></li>
+      <li><a href="#collaborators" title="">Collaborators</a></li>
+      <li><a href="#triagers" title="">Triagers</a></li>
+      <li><a href="#release-keys" title="">Release keys</a></li>
+    </ul>
+    <li><a href="#license" title="">License</a></li>
+  </ul>
+  <h2 id="support">Support</h2>
+  <p>
+Looking for help? Check out the
+<a href="http://.github/SUPPORT.md" title="">instructions for getting support</a>.
+  </p>
+  <h2 id="release-types">Release types</h2>
+  <ul>
+    <li><strong>Current</strong>: Under active development. Code for the Current release is in the branch for its major version number (for example, <a href="https://github.com/nodejs/node/tree/v22.x" title=""><a href="http://v22.x">v22.x</a>). Node.js releases a new major version every 6 months, allowing for breaking changes. This happens in April and October every year. Releases appearing each October have a support life of 8 months. Releases appearing each April convert to LTS (see below) each October.</li>
+    <li><strong>LTS</strong>: Releases that receive Long Term Support, with a focus on stability and security. Every even-numbered major version will become an LTS release. LTS releases receive 12 months of <em>Active LTS</em> support and a further 18 months of <em>Maintenance</em>. LTS release lines have alphabetically-ordered code names, beginning with v4 Argon. There are no breaking changes or feature additions, except in some special circumstances.</li>
+    <li><strong>Nightly</strong>: Code from the Current branch built every 24-hours when there are changes. Use with caution.</li>
+  </ul>
+  <p>
+Current and LTS releases follow <a href="https://semver.org" title="">semantic versioning</a>. A
+member of the Release Team <a href="#release-keys" title="">signs</a> each Current and LTS release.
+For more information, see the
+<a href="https://github.com/nodejs/Release#readme" title="">Release README</a>.
+  </p>
+  <h3 id="download">Download</h3>
+  <p>
+Binaries, installers, and source tarballs are available at
+<a href="https://nodejs.org/en/download">https://nodejs.org/en/download/</a>.
+  </p>
+  <h4 id="current-and-lts-releases">Current and LTS releases</h4>
+  <p>
+<a href="https://nodejs.org/download/release">https://nodejs.org/download/release/</a>
+  </p>
+  <p>
+The <a href="https://nodejs.org/download/release/latest" title="">latest</a> directory is an
+alias for the latest Current release. The latest-<em>codename</em> directory is an
+alias for the latest release from an LTS line. For example, the
+<a href="https://nodejs.org/download/release/latest-hydrogen" title="">latest-hydrogen</a>
+directory contains the latest Hydrogen (Node.js 18) release.
+  </p>
+  <h4 id="nightly-releases">Nightly releases</h4>
+  <p>
+<a href="https://nodejs.org/download/nightly">https://nodejs.org/download/nightly/</a>
+  </p>
+  <p>
+Each directory and filename includes the version (<a href="http://e.g">e.g</a>),
+followed by the UTC date (<a href="http://e.g">e.g</a> for April 24, 2024),
+and the short commit SHA of the HEAD of the release (<a href="http://e.g">e.g</a>).
+For instance, a full directory name might look like <code>v22.0.0-nightly20240424ddd0a9e494</code>.
+  </p>
+  <h4 id="api-documentation">API documentation</h4>
+  <p>
+Documentation for the latest Current release is at <a href="https://nodejs.org/api">https://nodejs.org/api/</a>.
+Version-specific documentation is available in each release directory in the
+<em>docs</em> subdirectory. Version-specific documentation is also at
+<a href="https://nodejs.org/download/docs">https://nodejs.org/download/docs/</a>.
+  </p>
+  <h3 id="verifying-binaries">Verifying binaries</h3>
+  <p>
+Download directories contain a <code>SHASUMS256.txt</code> file with SHA checksums for the
+files.
+  </p>
+  <p>
+To download <code>SHASUMS256.txt</code> using <code>curl</code>:
+  </p>
+<pre><code class="bash">curl -O https://nodejs.org/dist/vx.y.z/SHASUMS256.txt
+</code></pre>  <p>
+To check that downloaded files match the checksum, use <code>sha256sum</code>:
+  </p>
+<pre><code class="bash">sha256sum -c SHASUMS256.txt --ignore-missing
+</code></pre>  <p>
+For Current and LTS, the GPG detached signature of <code>SHASUMS256.txt</code> is in
+<code>SHASUMS256.txt.sig</code>. You can use it with <code>gpg</code> to verify the integrity of
+<code>SHASUMS256.txt</code>. You will first need to import
+<a href="#release-keys" title="">the GPG keys of individuals authorized to create releases</a>.
+  </p>
+  <p>
+See <a href="#release-keys" title="">Release keys</a> for commands to import active release keys.
+  </p>
+  <p>
+Next, download the <code>SHASUMS256.txt.sig</code> for the release:
+  </p>
+<pre><code class="bash">curl -O https://nodejs.org/dist/vx.y.z/SHASUMS256.txt.sig
+</code></pre>  <p>
+Then use <code>gpg --verify SHASUMS256.txt.sig SHASUMS256.txt</code> to verify
+the file's signature.
+  </p>
+  <h2 id="building-node-js">Building Node.js</h2>
+  <p>
+See <a href="http://building.md" title="">BUILDING.md</a> for instructions on how to build Node.js from
+source and a list of supported platforms.
+  </p>
+  <h2 id="security">Security</h2>
+  <p>
+For information on reporting security vulnerabilities in Node.js, see
+<a href="./SECURITY.md" title="">SECURITY.md</a>.
+  </p>
+  <h2 id="contributing-to-node-js">Contributing to Node.js</h2>
+  <ul>
+    <li><a href="http://contributing.md" title="">Contributing to the project</a></li>
+    <li><a href="https://github.com/nodejs/TSC/blob/HEAD/WORKING_GROUPS.md" title="">Working Groups</a></li>
+    <li><a href="http://doc/contributing/strategic-initiatives.md" title="">Strategic initiatives</a></li>
+    <li><a href="http://doc/contributing/technical-values.md" title="">Technical values and prioritization</a></li>
+  </ul>
+  <h2 id="current-project-team-members">Current project team members</h2>
+  <p>
+For information about the governance of the Node.js project, see
+<a href="./GOVERNANCE.md" title="">GOVERNANCE.md</a>.
+  </p>
+  <p>
+<!-- node-core-utils and <a href="http://find-inactive-tsc.mjs">find-inactive-tsc.mjs</a>on the format of the TSC
+     list. If the format changes, those utilities need to be tested and
+     updated. -->
+  </p>
+  <h3 id="tsc--technical-steering-committee">TSC (Technical Steering Committee)</h3>
+  <h4 id="tsc-voting-members">TSC voting members</h4>
+  <p>
+<!--lint disable prohibited-strings-->
+  </p>
+  <ul>
+    <li><a href="https://github.com/aduh95" title="">aduh95</a> - <strong>Antoine du Hamel</strong> <a href="mailto:duhamelantoine1995@gmail.com">duhamelantoine1995@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/anonrig" title="">anonrig</a> - <strong>Yagiz Nizipli</strong> <a href="mailto:yagiz@nizipli.com">yagiz@nizipli.com</a> (he/him)</li>
+    <li><a href="https://github.com/benjamingr" title="">benjamingr</a> - <strong>Benjamin Gruenbaum</strong> <a href="mailto:benjamingr@gmail.com">benjamingr@gmail.com</a></li>
+    <li><a href="https://github.com/BridgeAR" title="">BridgeAR</a> - <strong>Ruben Bridgewater</strong> <a href="mailto:ruben@bridgewater.de">ruben@bridgewater.de</a> (he/him)</li>
+    <li><a href="https://github.com/gireeshpunathil" title="">gireeshpunathil</a> - <strong>Gireesh Punathil</strong> <a href="mailto:gpunathi@in.ibm.com">gpunathi@in.ibm.com</a> (he/him)</li>
+    <li><a href="https://github.com/jasnell" title="">jasnell</a> - <strong>James M Snell</strong> <a href="mailto:jasnell@gmail.com">jasnell@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/joyeecheung" title="">joyeecheung</a> - <strong>Joyee Cheung</strong> <a href="mailto:joyeec9h3@gmail.com">joyeec9h3@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/legendecas" title="">legendecas</a> - <strong>Chengzhong Wu</strong> <a href="mailto:legendecas@gmail.com">legendecas@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/marco-ippolito" title="">marco-ippolito</a> - <strong>Marco Ippolito</strong> <a href="mailto:marcoippolito54@gmail.com">marcoippolito54@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/mcollina" title="">mcollina</a> - <strong>Matteo Collina</strong> <a href="mailto:matteo.collina@gmail.com">matteo.collina@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/mhdawson" title="">mhdawson</a> - <strong>Michael Dawson</strong> <a href="mailto:midawson@redhat.com">midawson@redhat.com</a> (he/him)</li>
+    <li><a href="https://github.com/RafaelGSS" title="">RafaelGSS</a> - <strong>Rafael Gonzaga</strong> <a href="mailto:rafael.nunu@hotmail.com">rafael.nunu@hotmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/richardlau" title="">richardlau</a> - <strong>Richard Lau</strong> <a href="mailto:rlau@redhat.com">rlau@redhat.com</a></li>
+    <li><a href="https://github.com/ronag" title="">ronag</a> - <strong>Robert Nagy</strong> <a href="mailto:ronagy@icloud.com">ronagy@icloud.com</a></li>
+    <li><a href="https://github.com/ruyadorno" title="">ruyadorno</a> - <strong>Ruy Adorno</strong> <a href="mailto:ruy@vlt.sh">ruy@vlt.sh</a> (he/him)</li>
+    <li><a href="https://github.com/ShogunPanda" title="">ShogunPanda</a> - <strong>Paolo Insogna</strong> <a href="mailto:paolo@cowtech.it">paolo@cowtech.it</a> (he/him)</li>
+    <li><a href="https://github.com/targos" title="">targos</a> - <strong>Michaël Zasso</strong> <a href="mailto:targos@protonmail.com">targos@protonmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/tniessen" title="">tniessen</a> - <strong>Tobias Nießen</strong> <a href="mailto:tniessen@tnie.de">tniessen@tnie.de</a> (he/him)</li>
+  </ul>
+  <h4 id="tsc-regular-members">TSC regular members</h4>
+  <ul>
+    <li><a href="https://github.com/apapirovski" title="">apapirovski</a> - <strong>Anatoli Papirovski</strong> <a href="mailto:apapirovski@mac.com">apapirovski@mac.com</a> (he/him)</li>
+    <li><a href="https://github.com/BethGriggs" title="">BethGriggs</a> - <strong>Beth Griggs</strong> <a href="mailto:bethanyngriggs@gmail.com">bethanyngriggs@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/bnoordhuis" title="">bnoordhuis</a> - <strong>Ben Noordhuis</strong> <a href="mailto:info@bnoordhuis.nl">info@bnoordhuis.nl</a></li>
+    <li><a href="https://github.com/cjihrig" title="">cjihrig</a> - <strong>Colin Ihrig</strong> <a href="mailto:cjihrig@gmail.com">cjihrig@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/codebytere" title="">codebytere</a> - <strong>Shelley Vohr</strong> <a href="mailto:shelley.vohr@gmail.com">shelley.vohr@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/GeoffreyBooth" title="">GeoffreyBooth</a> - <strong>Geoffrey Booth</strong> <a href="mailto:webadmin@geoffreybooth.com">webadmin@geoffreybooth.com</a> (he/him)</li>
+    <li><a href="https://github.com/MoLow" title="">MoLow</a> - <strong>Moshe Atlow</strong> <a href="mailto:moshe@atlow.co.il">moshe@atlow.co.il</a> (he/him)</li>
+    <li><a href="https://github.com/Trott" title="">Trott</a> - <strong>Rich Trott</strong> <a href="mailto:rtrott@gmail.com">rtrott@gmail.com</a> (he/him)</li>
+  </ul>
+  <p>
+<details>
+  </p>
+  <p>
+<summary>TSC emeriti members</summary>
+  </p>
+  <h4 id="tsc-emeriti-members">TSC emeriti members</h4>
+  <ul>
+    <li><a href="https://github.com/addaleax" title="">addaleax</a> - <strong>Anna Henningsen</strong> <a href="mailto:anna@addaleax.net">anna@addaleax.net</a> (she/her)</li>
+    <li><a href="https://github.com/ChALkeR" title="">ChALkeR</a> - <strong>Сковорода Никита Андреевич</strong> <a href="mailto:chalkerx@gmail.com">chalkerx@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/chrisdickinson" title="">chrisdickinson</a> - <strong>Chris Dickinson</strong> <a href="mailto:christopher.s.dickinson@gmail.com">christopher.s.dickinson@gmail.com</a></li>
+    <li><a href="https://github.com/danbev" title="">danbev</a> - <strong>Daniel Bevenius</strong> <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/danielleadams" title="">danielleadams</a> - <strong>Danielle Adams</strong> <a href="mailto:adamzdanielle@gmail.com">adamzdanielle@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/evanlucas" title="">evanlucas</a> - <strong>Evan Lucas</strong> <a href="mailto:evanlucas@me.com">evanlucas@me.com</a> (he/him)</li>
+    <li><a href="https://github.com/fhinkel" title="">fhinkel</a> - <strong>Franziska Hinkelmann</strong> <a href="mailto:franziska.hinkelmann@gmail.com">franziska.hinkelmann@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/Fishrock123" title="">Fishrock123</a> - <strong>Jeremiah Senkpiel</strong> <a href="mailto:fishrock123@rocketmail.com">fishrock123@rocketmail.com</a> (he/they)</li>
+    <li><a href="https://github.com/gabrielschulhof" title="">gabrielschulhof</a> - <strong>Gabriel Schulhof</strong> <a href="mailto:gabrielschulhof@gmail.com">gabrielschulhof@gmail.com</a></li>
+    <li><a href="https://github.com/gibfahn" title="">gibfahn</a> - <strong>Gibson Fahnestock</strong> <a href="mailto:gibfahn@gmail.com">gibfahn@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/indutny" title="">indutny</a> - <strong>Fedor Indutny</strong> <a href="mailto:fedor@indutny.com">fedor@indutny.com</a></li>
+    <li><a href="https://github.com/isaacs" title="">isaacs</a> - <strong>Isaac Z. Schlueter</strong> <a href="mailto:i@izs.me">i@izs.me</a></li>
+    <li><a href="https://github.com/joshgav" title="">joshgav</a> - <strong>Josh Gavant</strong> <a href="mailto:josh.gavant@outlook.com">josh.gavant@outlook.com</a></li>
+    <li><a href="https://github.com/mmarchini" title="">mmarchini</a> - <strong>Mary Marchini</strong> <a href="mailto:oss@mmarchini.me">oss@mmarchini.me</a> (she/her)</li>
+    <li><a href="https://github.com/mscdex" title="">mscdex</a> - <strong>Brian White</strong> <a href="mailto:mscdex@mscdex.net">mscdex@mscdex.net</a></li>
+    <li><a href="https://github.com/MylesBorins" title="">MylesBorins</a> - <strong>Myles Borins</strong> <a href="mailto:myles.borins@gmail.com">myles.borins@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/nebrius" title="">nebrius</a> - <strong>Bryan Hughes</strong> <a href="mailto:bryan@nebri.us">bryan@nebri.us</a></li>
+    <li><a href="https://github.com/ofrobots" title="">ofrobots</a> - <strong>Ali Ijaz Sheikh</strong> <a href="mailto:ofrobots@google.com">ofrobots@google.com</a> (he/him)</li>
+    <li><a href="https://github.com/orangemocha" title="">orangemocha</a> - <strong>Alexis Campailla</strong> <a href="mailto:orangemocha@nodejs.org">orangemocha@nodejs.org</a></li>
+    <li><a href="https://github.com/piscisaureus" title="">piscisaureus</a> - <strong>Bert Belder</strong> <a href="mailto:bertbelder@gmail.com">bertbelder@gmail.com</a></li>
+    <li><a href="https://github.com/RaisinTen" title="">RaisinTen</a> - <strong>Darshan Sen</strong> <a href="mailto:raisinten@gmail.com">raisinten@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/rvagg" title="">rvagg</a> - <strong>Rod Vagg</strong> <a href="mailto:r@va.gg">r@va.gg</a></li>
+    <li><a href="https://github.com/sam-github" title="">sam-github</a> - <strong>Sam Roberts</strong> <a href="mailto:vieuxtech@gmail.com">vieuxtech@gmail.com</a></li>
+    <li><a href="https://github.com/shigeki" title="">shigeki</a> - <strong>Shigeki Ohtsu</strong> <a href="mailto:ohtsu@ohtsu.org">ohtsu@ohtsu.org</a> (he/him)</li>
+    <li><a href="https://github.com/thefourtheye" title="">thefourtheye</a> - <strong>Sakthipriyan Vairamani</strong> <a href="mailto:thechargingvolcano@gmail.com">thechargingvolcano@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/TimothyGu" title="">TimothyGu</a> - <strong>Tiancheng "Timothy" Gu</strong> <a href="mailto:timothygu99@gmail.com">timothygu99@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/trevnorris" title="">trevnorris</a> - <strong>Trevor Norris</strong> <a href="mailto:trev.norris@gmail.com">trev.norris@gmail.com</a></li>
+  </ul>
+  <p>
+</details>
+  </p>
+  <p>
+<!-- node-core-utils and <a href="http://find-inactive-collaborators.mjs">find-inactive-collaborators.mjs</a>on the format
+     of the collaborator list. If the format changes, those utilities need to be
+     tested and updated. -->
+  </p>
+  <h3 id="collaborators">Collaborators</h3>
+  <ul>
+    <li><a href="https://github.com/abmusse" title="">abmusse</a> - <strong>Abdirahim Musse</strong> <a href="mailto:abdirahim.musse@ibm.com">abdirahim.musse@ibm.com</a></li>
+    <li><a href="https://github.com/addaleax" title="">addaleax</a> - <strong>Anna Henningsen</strong> <a href="mailto:anna@addaleax.net">anna@addaleax.net</a> (she/her)</li>
+    <li><a href="https://github.com/aduh95" title="">aduh95</a> - <strong>Antoine du Hamel</strong> <a href="mailto:duhamelantoine1995@gmail.com">duhamelantoine1995@gmail.com</a> (he/him) - <a href="https://github.com/sponsors/aduh95" title="">Support me</a></li>
+    <li><a href="https://github.com/anonrig" title="">anonrig</a> - <strong>Yagiz Nizipli</strong> <a href="mailto:yagiz@nizipli.com">yagiz@nizipli.com</a> (he/him) - <a href="https://github.com/sponsors/anonrig" title="">Support me</a></li>
+    <li><a href="https://github.com/apapirovski" title="">apapirovski</a> - <strong>Anatoli Papirovski</strong> <a href="mailto:apapirovski@mac.com">apapirovski@mac.com</a> (he/him)</li>
+    <li><a href="https://github.com/atlowChemi" title="">atlowChemi</a> - <strong>Chemi Atlow</strong> <a href="mailto:chemi@atlow.co.il">chemi@atlow.co.il</a> (he/him)</li>
+    <li><a href="https://github.com/Ayase-252" title="">Ayase-252</a> - <strong>Qingyu Deng</strong> <a href="mailto:i@ayase-lab.com">i@ayase-lab.com</a></li>
+    <li><a href="https://github.com/bengl" title="">bengl</a> - <strong>Bryan English</strong> <a href="mailto:bryan@bryanenglish.com">bryan@bryanenglish.com</a> (he/him)</li>
+    <li><a href="https://github.com/benjamingr" title="">benjamingr</a> - <strong>Benjamin Gruenbaum</strong> <a href="mailto:benjamingr@gmail.com">benjamingr@gmail.com</a></li>
+    <li><a href="https://github.com/BethGriggs" title="">BethGriggs</a> - <strong>Beth Griggs</strong> <a href="mailto:bethanyngriggs@gmail.com">bethanyngriggs@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/bnb" title="">bnb</a> - <strong>Tierney Cyren</strong> <a href="mailto:hello@bnb.im">hello@bnb.im</a> (they/them)</li>
+    <li><a href="https://github.com/bnoordhuis" title="">bnoordhuis</a> - <strong>Ben Noordhuis</strong> <a href="mailto:info@bnoordhuis.nl">info@bnoordhuis.nl</a></li>
+    <li><a href="https://github.com/BridgeAR" title="">BridgeAR</a> - <strong>Ruben Bridgewater</strong> <a href="mailto:ruben@bridgewater.de">ruben@bridgewater.de</a> (he/him)</li>
+    <li><a href="https://github.com/cclauss" title="">cclauss</a> - <strong>Christian Clauss</strong> <a href="mailto:cclauss@me.com">cclauss@me.com</a> (he/him)</li>
+    <li><a href="https://github.com/cjihrig" title="">cjihrig</a> - <strong>Colin Ihrig</strong> <a href="mailto:cjihrig@gmail.com">cjihrig@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/codebytere" title="">codebytere</a> - <strong>Shelley Vohr</strong> <a href="mailto:shelley.vohr@gmail.com">shelley.vohr@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/cola119" title="">cola119</a> - <strong>Kohei Ueno</strong> <a href="mailto:kohei.ueno119@gmail.com">kohei.ueno119@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/daeyeon" title="">daeyeon</a> - <strong>Daeyeon Jeong</strong> <a href="mailto:daeyeon.dev@gmail.com">daeyeon.dev@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/debadree25" title="">debadree25</a> - <strong>Debadree Chatterjee</strong> <a href="mailto:debadree333@gmail.com">debadree333@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/deokjinkim" title="">deokjinkim</a> - <strong>Deokjin Kim</strong> <a href="mailto:deokjin81.kim@gmail.com">deokjin81.kim@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/edsadr" title="">edsadr</a> - <strong>Adrian Estrada</strong> <a href="mailto:edsadr@gmail.com">edsadr@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/ErickWendel" title="">ErickWendel</a> - <strong>Erick Wendel</strong> <a href="mailto:erick.workspace@gmail.com">erick.workspace@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/Ethan-Arrowood" title="">Ethan-Arrowood</a> - <strong>Ethan Arrowood</strong> <a href="mailto:ethan@arrowood.dev">ethan@arrowood.dev</a> (he/him)</li>
+    <li><a href="https://github.com/F3n67u" title="">F3n67u</a> - <strong>Feng Yu</strong> <a href="mailto:F3n67u@outlook.com">F3n67u@outlook.com</a> (he/him)</li>
+    <li><a href="https://github.com/fhinkel" title="">fhinkel</a> - <strong>Franziska Hinkelmann</strong> <a href="mailto:franziska.hinkelmann@gmail.com">franziska.hinkelmann@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/Flarna" title="">Flarna</a> - <strong>Gerhard Stöbich</strong> <a href="mailto:deb2001-github@yahoo.de">deb2001-github@yahoo.de</a> (he/they)</li>
+    <li><a href="https://github.com/gabrielschulhof" title="">gabrielschulhof</a> - <strong>Gabriel Schulhof</strong> <a href="mailto:gabrielschulhof@gmail.com">gabrielschulhof@gmail.com</a></li>
+    <li><a href="https://github.com/gengjiawen" title="">gengjiawen</a> - <strong>Jiawen Geng</strong> <a href="mailto:technicalcute@gmail.com">technicalcute@gmail.com</a></li>
+    <li><a href="https://github.com/GeoffreyBooth" title="">GeoffreyBooth</a> - <strong>Geoffrey Booth</strong> <a href="mailto:webadmin@geoffreybooth.com">webadmin@geoffreybooth.com</a> (he/him)</li>
+    <li><a href="https://github.com/gireeshpunathil" title="">gireeshpunathil</a> - <strong>Gireesh Punathil</strong> <a href="mailto:gpunathi@in.ibm.com">gpunathi@in.ibm.com</a> (he/him)</li>
+    <li><a href="https://github.com/guybedford" title="">guybedford</a> - <strong>Guy Bedford</strong> <a href="mailto:guybedford@gmail.com">guybedford@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/H4ad" title="">H4ad</a> - <strong>Vinícius Lourenço Claro Cardoso</strong> <a href="mailto:contact@viniciusl.com.br">contact@viniciusl.com.br</a> (he/him)</li>
+    <li><a href="https://github.com/HarshithaKP" title="">HarshithaKP</a> - <strong>Harshitha K P</strong> <a href="mailto:harshitha014@gmail.com">harshitha014@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/himself65" title="">himself65</a> - <strong>Zeyu "Alex" Yang</strong> <a href="mailto:himself65@outlook.com">himself65@outlook.com</a> (he/him)</li>
+    <li><a href="https://github.com/jakecastelli" title="">jakecastelli</a> - <strong>Jake Yuesong Li</strong> <a href="mailto:jake.yuesong@gmail.com">jake.yuesong@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/JakobJingleheimer" title="">JakobJingleheimer</a> - <strong>Jacob Smith</strong> <a href="mailto:jacob@frende.me">jacob@frende.me</a> (he/him)</li>
+    <li><a href="https://github.com/jasnell" title="">jasnell</a> - <strong>James M Snell</strong> <a href="mailto:jasnell@gmail.com">jasnell@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/jazelly" title="">jazelly</a> - <strong>Jason Zhang</strong> <a href="mailto:xzha4350@gmail.com">xzha4350@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/jkrems" title="">jkrems</a> - <strong>Jan Krems</strong> <a href="mailto:jan.krems@gmail.com">jan.krems@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/joyeecheung" title="">joyeecheung</a> - <strong>Joyee Cheung</strong> <a href="mailto:joyeec9h3@gmail.com">joyeec9h3@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/juanarbol" title="">juanarbol</a> - <strong>Juan José Arboleda</strong> <a href="mailto:soyjuanarbol@gmail.com">soyjuanarbol@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/JungMinu" title="">JungMinu</a> - <strong>Minwoo Jung</strong> <a href="mailto:nodecorelab@gmail.com">nodecorelab@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/KhafraDev" title="">KhafraDev</a> - <strong>Matthew Aitken</strong> <a href="mailto:maitken033380023@gmail.com">maitken033380023@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/kvakil" title="">kvakil</a> - <strong>Keyhan Vakil</strong> <a href="mailto:kvakil@sylph.kvakil.me">kvakil@sylph.kvakil.me</a></li>
+    <li><a href="https://github.com/legendecas" title="">legendecas</a> - <strong>Chengzhong Wu</strong> <a href="mailto:legendecas@gmail.com">legendecas@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/lemire" title="">lemire</a> - <strong>Daniel Lemire</strong> <a href="mailto:daniel@lemire.me">daniel@lemire.me</a></li>
+    <li><a href="https://github.com/Linkgoron" title="">Linkgoron</a> - <strong>Nitzan Uziely</strong> <a href="mailto:linkgoron@gmail.com">linkgoron@gmail.com</a></li>
+    <li><a href="https://github.com/LiviaMedeiros" title="">LiviaMedeiros</a> - <strong>LiviaMedeiros</strong> <a href="mailto:livia@cirno.name">livia@cirno.name</a></li>
+    <li><a href="https://github.com/ljharb" title="">ljharb</a> - <strong>Jordan Harband</strong> <a href="mailto:ljharb@gmail.com">ljharb@gmail.com</a></li>
+    <li><a href="https://github.com/lpinca" title="">lpinca</a> - <strong>Luigi Pinca</strong> <a href="mailto:luigipinca@gmail.com">luigipinca@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/lukekarrys" title="">lukekarrys</a> - <strong>Luke Karrys</strong> <a href="mailto:luke@lukekarrys.com">luke@lukekarrys.com</a> (he/him)</li>
+    <li><a href="https://github.com/Lxxyx" title="">Lxxyx</a> - <strong>Zijian Liu</strong> <a href="mailto:lxxyxzj@gmail.com">lxxyxzj@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/marco-ippolito" title="">marco-ippolito</a> - <strong>Marco Ippolito</strong> <a href="mailto:marcoippolito54@gmail.com">marcoippolito54@gmail.com</a> (he/him) - <a href="https://github.com/sponsors/marco-ippolito" title="">Support me</a></li>
+    <li><a href="https://github.com/marsonya" title="">marsonya</a> - <strong>Akhil Marsonya</strong> <a href="mailto:akhil.marsonya27@gmail.com">akhil.marsonya27@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/MattiasBuelens" title="">MattiasBuelens</a> - <strong>Mattias Buelens</strong> <a href="mailto:mattias@buelens.com">mattias@buelens.com</a> (he/him)</li>
+    <li><a href="https://github.com/mcollina" title="">mcollina</a> - <strong>Matteo Collina</strong> <a href="mailto:matteo.collina@gmail.com">matteo.collina@gmail.com</a> (he/him) - <a href="https://github.com/sponsors/mcollina" title="">Support me</a></li>
+    <li><a href="https://github.com/meixg" title="">meixg</a> - <strong>Xuguang Mei</strong> <a href="mailto:meixuguang@gmail.com">meixuguang@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/mhdawson" title="">mhdawson</a> - <strong>Michael Dawson</strong> <a href="mailto:midawson@redhat.com">midawson@redhat.com</a> (he/him)</li>
+    <li><a href="https://github.com/mildsunrise" title="">mildsunrise</a> - <strong>Alba Mendez</strong> <a href="mailto:me@alba.sh">me@alba.sh</a> (she/her)</li>
+    <li><a href="https://github.com/MoLow" title="">MoLow</a> - <strong>Moshe Atlow</strong> <a href="mailto:moshe@atlow.co.il">moshe@atlow.co.il</a> (he/him)</li>
+    <li><a href="https://github.com/MrJithil" title="">MrJithil</a> - <strong>Jithil P Ponnan</strong> <a href="mailto:jithil@outlook.com">jithil@outlook.com</a> (he/him)</li>
+    <li><a href="https://github.com/ovflowd" title="">ovflowd</a> - <strong>Claudio Wunder</strong> <a href="mailto:cwunder@gnome.org">cwunder@gnome.org</a> (he/they)</li>
+    <li><a href="https://github.com/panva" title="">panva</a> - <strong>Filip Skokan</strong> <a href="mailto:panva.ip@gmail.com">panva.ip@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/pimterry" title="">pimterry</a> - <strong>Tim Perry</strong> <a href="mailto:pimterry@gmail.com">pimterry@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/pmarchini" title="">pmarchini</a> - <strong>Pietro Marchini</strong> <a href="mailto:pietro.marchini94@gmail.com">pietro.marchini94@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/Qard" title="">Qard</a> - <strong>Stephen Belanger</strong> <a href="mailto:admin@stephenbelanger.com">admin@stephenbelanger.com</a> (he/him)</li>
+    <li><a href="https://github.com/RafaelGSS" title="">RafaelGSS</a> - <strong>Rafael Gonzaga</strong> <a href="mailto:rafael.nunu@hotmail.com">rafael.nunu@hotmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/richardlau" title="">richardlau</a> - <strong>Richard Lau</strong> <a href="mailto:rlau@redhat.com">rlau@redhat.com</a></li>
+    <li><a href="https://github.com/rluvaton" title="">rluvaton</a> - <strong>Raz Luvaton</strong> <a href="mailto:rluvaton@gmail.com">rluvaton@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/ronag" title="">ronag</a> - <strong>Robert Nagy</strong> <a href="mailto:ronagy@icloud.com">ronagy@icloud.com</a></li>
+    <li><a href="https://github.com/ruyadorno" title="">ruyadorno</a> - <strong>Ruy Adorno</strong> <a href="mailto:ruy@vlt.sh">ruy@vlt.sh</a> (he/him)</li>
+    <li><a href="https://github.com/santigimeno" title="">santigimeno</a> - <strong>Santiago Gimeno</strong> <a href="mailto:santiago.gimeno@gmail.com">santiago.gimeno@gmail.com</a></li>
+    <li><a href="https://github.com/ShogunPanda" title="">ShogunPanda</a> - <strong>Paolo Insogna</strong> <a href="mailto:paolo@cowtech.it">paolo@cowtech.it</a> (he/him)</li>
+    <li><a href="https://github.com/srl295" title="">srl295</a> - <strong>Steven R Loomis</strong> <a href="mailto:srl295@gmail.com">srl295@gmail.com</a></li>
+    <li><a href="https://github.com/StefanStojanovic" title="">StefanStojanovic</a> - <strong>Stefan Stojanovic</strong> <a href="mailto:stefan.stojanovic@janeasystems.com">stefan.stojanovic@janeasystems.com</a> (he/him)</li>
+    <li><a href="https://github.com/sxa" title="">sxa</a> - <strong>Stewart X Addison</strong> <a href="mailto:sxa@redhat.com">sxa@redhat.com</a> (he/him)</li>
+    <li><a href="https://github.com/targos" title="">targos</a> - <strong>Michaël Zasso</strong> <a href="mailto:targos@protonmail.com">targos@protonmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/theanarkh" title="">theanarkh</a> - <strong>theanarkh</strong> <a href="mailto:theratliter@gmail.com">theratliter@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/tniessen" title="">tniessen</a> - <strong>Tobias Nießen</strong> <a href="mailto:tniessen@tnie.de">tniessen@tnie.de</a> (he/him)</li>
+    <li><a href="https://github.com/trivikr" title="">trivikr</a> - <strong>Trivikram Kamat</strong> <a href="mailto:trivikr.dev@gmail.com">trivikr.dev@gmail.com</a></li>
+    <li><a href="https://github.com/Trott" title="">Trott</a> - <strong>Rich Trott</strong> <a href="mailto:rtrott@gmail.com">rtrott@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/UlisesGascon" title="">UlisesGascon</a> - <strong>Ulises Gascón</strong> <a href="mailto:ulisesgascongonzalez@gmail.com">ulisesgascongonzalez@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/vmoroz" title="">vmoroz</a> - <strong>Vladimir Morozov</strong> <a href="mailto:vmorozov@microsoft.com">vmorozov@microsoft.com</a> (he/him)</li>
+    <li><a href="https://github.com/VoltrexKeyva" title="">VoltrexKeyva</a> - <strong>Mohammed Keyvanzadeh</strong> <a href="mailto:mohammadkeyvanzade94@gmail.com">mohammadkeyvanzade94@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/zcbenz" title="">zcbenz</a> - <strong>Cheng Zhao</strong> <a href="mailto:zcbenz@gmail.com">zcbenz@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/ZYSzys" title="">ZYSzys</a> - <strong>Yongsheng Zhang</strong> <a href="mailto:zyszys98@gmail.com">zyszys98@gmail.com</a> (he/him)</li>
+  </ul>
+  <p>
+<details>
+  </p>
+  <p>
+<summary>Emeriti</summary>
+  </p>
+  <p>
+<!-- <a href="http://find-inactive-collaborators.mjs">find-inactive-collaborators.mjs</a> on the format of the emeriti list.
+     If the format changes, those utilities need to be tested and updated. -->
+  </p>
+  <h3 id="collaborator-emeriti">Collaborator emeriti</h3>
+  <ul>
+    <li><a href="https://github.com/ak239" title="">ak239</a> - <strong>Aleksei Koziatinskii</strong> <a href="mailto:ak239spb@gmail.com">ak239spb@gmail.com</a></li>
+    <li><a href="https://github.com/andrasq" title="">andrasq</a> - <strong>Andras</strong> <a href="mailto:andras@kinvey.com">andras@kinvey.com</a></li>
+    <li><a href="https://github.com/AndreasMadsen" title="">AndreasMadsen</a> - <strong>Andreas Madsen</strong> <a href="mailto:amwebdk@gmail.com">amwebdk@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/AnnaMag" title="">AnnaMag</a> - <strong>Anna M. Kedzierska</strong> <a href="mailto:anna.m.kedzierska@gmail.com">anna.m.kedzierska@gmail.com</a></li>
+    <li><a href="https://github.com/antsmartian" title="">antsmartian</a> - <strong>Anto Aravinth</strong> <a href="mailto:anto.aravinth.cse@gmail.com">anto.aravinth.cse@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/aqrln" title="">aqrln</a> - <strong>Alexey Orlenko</strong> <a href="mailto:eaglexrlnk@gmail.com">eaglexrlnk@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/AshCripps" title="">AshCripps</a> - <strong>Ash Cripps</strong> <a href="mailto:email@ashleycripps.co.uk">email@ashleycripps.co.uk</a></li>
+    <li><a href="https://github.com/bcoe" title="">bcoe</a> - <strong>Ben Coe</strong> <a href="mailto:bencoe@gmail.com">bencoe@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/bmeck" title="">bmeck</a> - <strong>Bradley Farias</strong> <a href="mailto:bradley.meck@gmail.com">bradley.meck@gmail.com</a></li>
+    <li><a href="https://github.com/bmeurer" title="">bmeurer</a> - <strong>Benedikt Meurer</strong> <a href="mailto:benedikt.meurer@gmail.com">benedikt.meurer@gmail.com</a></li>
+    <li><a href="https://github.com/boneskull" title="">boneskull</a> - <strong>Christopher Hiller</strong> <a href="mailto:boneskull@boneskull.com">boneskull@boneskull.com</a> (he/him)</li>
+    <li><a href="https://github.com/brendanashworth" title="">brendanashworth</a> - <strong>Brendan Ashworth</strong> <a href="mailto:brendan.ashworth@me.com">brendan.ashworth@me.com</a></li>
+    <li><a href="https://github.com/bzoz" title="">bzoz</a> - <strong>Bartosz Sosnowski</strong> <a href="mailto:bartosz@janeasystems.com">bartosz@janeasystems.com</a></li>
+    <li><a href="https://github.com/calvinmetcalf" title="">calvinmetcalf</a> - <strong>Calvin Metcalf</strong> <a href="mailto:calvin.metcalf@gmail.com">calvin.metcalf@gmail.com</a></li>
+    <li><a href="https://github.com/ChALkeR" title="">ChALkeR</a> - <strong>Сковорода Никита Андреевич</strong> <a href="mailto:chalkerx@gmail.com">chalkerx@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/chrisdickinson" title="">chrisdickinson</a> - <strong>Chris Dickinson</strong> <a href="mailto:christopher.s.dickinson@gmail.com">christopher.s.dickinson@gmail.com</a></li>
+    <li><a href="https://github.com/claudiorodriguez" title="">claudiorodriguez</a> - <strong>Claudio Rodriguez</strong> <a href="mailto:cjrodr@yahoo.com">cjrodr@yahoo.com</a></li>
+    <li><a href="https://github.com/danbev" title="">danbev</a> - <strong>Daniel Bevenius</strong> <a href="mailto:daniel.bevenius@gmail.com">daniel.bevenius@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/danielleadams" title="">danielleadams</a> - <strong>Danielle Adams</strong> <a href="mailto:adamzdanielle@gmail.com">adamzdanielle@gmail.com</a> (she/her)</li>
+    <li><a href="https://github.com/DavidCai1993" title="">DavidCai1993</a> - <strong>David Cai</strong> <a href="mailto:davidcai1993@yahoo.com">davidcai1993@yahoo.com</a> (he/him)</li>
+    <li><a href="https://github.com/davisjam" title="">davisjam</a> - <strong>Jamie Davis</strong> <a href="mailto:davisjam@vt.edu">davisjam@vt.edu</a> (he/him)</li>
+    <li><a href="https://github.com/devnexen" title="">devnexen</a> - <strong>David Carlier</strong> <a href="mailto:devnexen@gmail.com">devnexen@gmail.com</a></li>
+    <li><a href="https://github.com/devsnek" title="">devsnek</a> - <strong>Gus Caplan</strong> <a href="mailto:me@gus.host">me@gus.host</a> (they/them)</li>
+    <li><a href="https://github.com/digitalinfinity" title="">digitalinfinity</a> - <strong>Hitesh Kanwathirtha</strong> <a href="mailto:digitalinfinity@gmail.com">digitalinfinity@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/dmabupt" title="">dmabupt</a> - <strong>Xu Meng</strong> <a href="mailto:dmabupt@gmail.com">dmabupt@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/dnlup" title="">dnlup</a> - <strong>dnlup</strong> <a href="mailto:dnlup.dev@gmail.com">dnlup.dev@gmail.com</a></li>
+    <li><a href="https://github.com/eljefedelrodeodeljefe" title="">eljefedelrodeodeljefe</a> - <strong>Robert Jefe Lindstaedt</strong> <a href="mailto:robert.lindstaedt@gmail.com">robert.lindstaedt@gmail.com</a></li>
+    <li><a href="https://github.com/estliberitas" title="">estliberitas</a> - <strong>Alexander Makarenko</strong> <a href="mailto:estliberitas@gmail.com">estliberitas@gmail.com</a></li>
+    <li><a href="https://github.com/eugeneo" title="">eugeneo</a> - <strong>Eugene Ostroukhov</strong> <a href="mailto:eostroukhov@google.com">eostroukhov@google.com</a></li>
+    <li><a href="https://github.com/evanlucas" title="">evanlucas</a> - <strong>Evan Lucas</strong> <a href="mailto:evanlucas@me.com">evanlucas@me.com</a> (he/him)</li>
+    <li><a href="https://github.com/firedfox" title="">firedfox</a> - <strong>Daniel Wang</strong> <a href="mailto:wangyang0123@gmail.com">wangyang0123@gmail.com</a></li>
+    <li><a href="https://github.com/Fishrock123" title="">Fishrock123</a> - <strong>Jeremiah Senkpiel</strong> <a href="mailto:fishrock123@rocketmail.com">fishrock123@rocketmail.com</a> (he/they)</li>
+    <li><a href="https://github.com/gdams" title="">gdams</a> - <strong>George Adams</strong> <a href="mailto:gadams@microsoft.com">gadams@microsoft.com</a> (he/him)</li>
+    <li><a href="https://github.com/geek" title="">geek</a> - <strong>Wyatt Preul</strong> <a href="mailto:wpreul@gmail.com">wpreul@gmail.com</a></li>
+    <li><a href="https://github.com/gibfahn" title="">gibfahn</a> - <strong>Gibson Fahnestock</strong> <a href="mailto:gibfahn@gmail.com">gibfahn@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/glentiki" title="">glentiki</a> - <strong>Glen Keane</strong> <a href="mailto:glenkeane.94@gmail.com">glenkeane.94@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/hashseed" title="">hashseed</a> - <strong>Yang Guo</strong> <a href="mailto:yangguo@chromium.org">yangguo@chromium.org</a> (he/him)</li>
+    <li><a href="https://github.com/hiroppy" title="">hiroppy</a> - <strong>Yuta Hiroto</strong> <a href="mailto:hello@hiroppy.me">hello@hiroppy.me</a> (he/him)</li>
+    <li><a href="https://github.com/iansu" title="">iansu</a> - <strong>Ian Sutherland</strong> <a href="mailto:ian@iansutherland.ca">ian@iansutherland.ca</a></li>
+    <li><a href="https://github.com/iarna" title="">iarna</a> - <strong>Rebecca Turner</strong> <a href="mailto:me@re-becca.org">me@re-becca.org</a></li>
+    <li><a href="https://github.com/imran-iq" title="">imran-iq</a> - <strong>Imran Iqbal</strong> <a href="mailto:imran@imraniqbal.org">imran@imraniqbal.org</a></li>
+    <li><a href="https://github.com/imyller" title="">imyller</a> - <strong>Ilkka Myller</strong> <a href="mailto:ilkka.myller@nodefield.com">ilkka.myller@nodefield.com</a></li>
+    <li><a href="https://github.com/indutny" title="">indutny</a> - <strong>Fedor Indutny</strong> <a href="mailto:fedor@indutny.com">fedor@indutny.com</a></li>
+    <li><a href="https://github.com/isaacs" title="">isaacs</a> - <strong>Isaac Z. Schlueter</strong> <a href="mailto:i@izs.me">i@izs.me</a></li>
+    <li><a href="https://github.com/italoacasas" title="">italoacasas</a> - <strong>Italo A. Casas</strong> <a href="mailto:me@italoacasas.com">me@italoacasas.com</a> (he/him)</li>
+    <li><a href="https://github.com/JacksonTian" title="">JacksonTian</a> - <strong>Jackson Tian</strong> <a href="mailto:shyvo1987@gmail.com">shyvo1987@gmail.com</a></li>
+    <li><a href="https://github.com/jasongin" title="">jasongin</a> - <strong>Jason Ginchereau</strong> <a href="mailto:jasongin@microsoft.com">jasongin@microsoft.com</a></li>
+    <li><a href="https://github.com/jbergstroem" title="">jbergstroem</a> - <strong>Johan Bergström</strong> <a href="mailto:bugs@bergstroem.nu">bugs@bergstroem.nu</a></li>
+    <li><a href="https://github.com/jdalton" title="">jdalton</a> - <strong>John-David Dalton</strong> <a href="mailto:john.david.dalton@gmail.com">john.david.dalton@gmail.com</a></li>
+    <li><a href="https://github.com/jhamhader" title="">jhamhader</a> - <strong>Yuval Brik</strong> <a href="mailto:yuval@brik.org.il">yuval@brik.org.il</a></li>
+    <li><a href="https://github.com/joaocgreis" title="">joaocgreis</a> - <strong>João Reis</strong> <a href="mailto:reis@janeasystems.com">reis@janeasystems.com</a></li>
+    <li><a href="https://github.com/joesepi" title="">joesepi</a> - <strong>Joe Sepi</strong> <a href="mailto:sepi@joesepi.com">sepi@joesepi.com</a> (he/him)</li>
+    <li><a href="https://github.com/joshgav" title="">joshgav</a> - <strong>Josh Gavant</strong> <a href="mailto:josh.gavant@outlook.com">josh.gavant@outlook.com</a></li>
+    <li><a href="https://github.com/julianduque" title="">julianduque</a> - <strong>Julian Duque</strong> <a href="mailto:julianduquej@gmail.com">julianduquej@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/kfarnung" title="">kfarnung</a> - <strong>Kyle Farnung</strong> <a href="mailto:kfarnung@microsoft.com">kfarnung@microsoft.com</a> (he/him)</li>
+    <li><a href="https://github.com/kunalspathak" title="">kunalspathak</a> - <strong>Kunal Pathak</strong> <a href="mailto:kunal.pathak@microsoft.com">kunal.pathak@microsoft.com</a></li>
+    <li><a href="https://github.com/kuriyosh" title="">kuriyosh</a> - <strong>Yoshiki Kurihara</strong> <a href="mailto:yosyos0306@gmail.com">yosyos0306@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/lance" title="">lance</a> - <strong>Lance Ball</strong> <a href="mailto:lball@redhat.com">lball@redhat.com</a> (he/him)</li>
+    <li><a href="https://github.com/Leko" title="">Leko</a> - <strong>Shingo Inoue</strong> <a href="mailto:leko.noor@gmail.com">leko.noor@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/lucamaraschi" title="">lucamaraschi</a> - <strong>Luca Maraschi</strong> <a href="mailto:luca.maraschi@gmail.com">luca.maraschi@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/lundibundi" title="">lundibundi</a> - <strong>Denys Otrishko</strong> <a href="mailto:shishugi@gmail.com">shishugi@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/lxe" title="">lxe</a> - <strong>Aleksey Smolenchuk</strong> <a href="mailto:lxe@lxe.co">lxe@lxe.co</a></li>
+    <li><a href="https://github.com/maclover7" title="">maclover7</a> - <strong>Jon Moss</strong> <a href="mailto:me@jonathanmoss.me">me@jonathanmoss.me</a> (he/him)</li>
+    <li><a href="https://github.com/mafintosh" title="">mafintosh</a> - <strong>Mathias Buus</strong> <a href="mailto:mathiasbuus@gmail.com">mathiasbuus@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/matthewloring" title="">matthewloring</a> - <strong>Matthew Loring</strong> <a href="mailto:mattloring@google.com">mattloring@google.com</a></li>
+    <li><a href="https://github.com/Mesteery" title="">Mesteery</a> - <strong>Mestery</strong> <a href="mailto:mestery@protonmail.com">mestery@protonmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/micnic" title="">micnic</a> - <strong>Nicu Micleușanu</strong> <a href="mailto:micnic90@gmail.com">micnic90@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/mikeal" title="">mikeal</a> - <strong>Mikeal Rogers</strong> <a href="mailto:mikeal.rogers@gmail.com">mikeal.rogers@gmail.com</a></li>
+    <li><a href="https://github.com/miladfarca" title="">miladfarca</a> - <strong>Milad Fa</strong> <a href="mailto:mfarazma@redhat.com">mfarazma@redhat.com</a> (he/him)</li>
+    <li><a href="https://github.com/misterdjules" title="">misterdjules</a> - <strong>Julien Gilli</strong> <a href="mailto:jgilli@netflix.com">jgilli@netflix.com</a></li>
+    <li><a href="https://github.com/mmarchini" title="">mmarchini</a> - <strong>Mary Marchini</strong> <a href="mailto:oss@mmarchini.me">oss@mmarchini.me</a> (she/her)</li>
+    <li><a href="https://github.com/monsanto" title="">monsanto</a> - <strong>Christopher Monsanto</strong> <a href="mailto:chris@monsan.to">chris@monsan.to</a></li>
+    <li><a href="https://github.com/MoonBall" title="">MoonBall</a> - <strong>Chen Gang</strong> <a href="mailto:gangc.cxy@foxmail.com">gangc.cxy@foxmail.com</a></li>
+    <li><a href="https://github.com/mscdex" title="">mscdex</a> - <strong>Brian White</strong> <a href="mailto:mscdex@mscdex.net">mscdex@mscdex.net</a></li>
+    <li><a href="https://github.com/MylesBorins" title="">MylesBorins</a> - <strong>Myles Borins</strong> <a href="mailto:myles.borins@gmail.com">myles.borins@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/not-an-aardvark" title="">not-an-aardvark</a> - <strong>Teddy Katz</strong> <a href="mailto:teddy.katz@gmail.com">teddy.katz@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/ofrobots" title="">ofrobots</a> - <strong>Ali Ijaz Sheikh</strong> <a href="mailto:ofrobots@google.com">ofrobots@google.com</a> (he/him)</li>
+    <li><a href="https://github.com/Olegas" title="">Olegas</a> - <strong>Oleg Elifantiev</strong> <a href="mailto:oleg@elifantiev.ru">oleg@elifantiev.ru</a></li>
+    <li><a href="https://github.com/orangemocha" title="">orangemocha</a> - <strong>Alexis Campailla</strong> <a href="mailto:orangemocha@nodejs.org">orangemocha@nodejs.org</a></li>
+    <li><a href="https://github.com/othiym23" title="">othiym23</a> - <strong>Forrest L Norvell</strong> <a href="mailto:ogd@aoaioxxysz.net">ogd@aoaioxxysz.net</a> (they/them/themself)</li>
+    <li><a href="https://github.com/oyyd" title="">oyyd</a> - <strong>Ouyang Yadong</strong> <a href="mailto:oyydoibh@gmail.com">oyydoibh@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/petkaantonov" title="">petkaantonov</a> - <strong>Petka Antonov</strong> <a href="mailto:petka_antonov@hotmail.com">petka_antonov@hotmail.com</a></li>
+    <li><a href="https://github.com/phillipj" title="">phillipj</a> - <strong>Phillip Johnsen</strong> <a href="mailto:johphi@gmail.com">johphi@gmail.com</a></li>
+    <li><a href="https://github.com/piscisaureus" title="">piscisaureus</a> - <strong>Bert Belder</strong> <a href="mailto:bertbelder@gmail.com">bertbelder@gmail.com</a></li>
+    <li><a href="https://github.com/pmq20" title="">pmq20</a> - <strong>Minqi Pan</strong> <a href="mailto:pmq2001@gmail.com">pmq2001@gmail.com</a></li>
+    <li><a href="https://github.com/PoojaDurgad" title="">PoojaDurgad</a> - <strong>Pooja D P</strong> <a href="mailto:Pooja.D.P@ibm.com">Pooja.D.P@ibm.com</a> (she/her)</li>
+    <li><a href="https://github.com/princejwesley" title="">princejwesley</a> - <strong>Prince John Wesley</strong> <a href="mailto:princejohnwesley@gmail.com">princejohnwesley@gmail.com</a></li>
+    <li><a href="https://github.com/psmarshall" title="">psmarshall</a> - <strong>Peter Marshall</strong> <a href="mailto:petermarshall@chromium.org">petermarshall@chromium.org</a> (he/him)</li>
+    <li><a href="https://github.com/puzpuzpuz" title="">puzpuzpuz</a> - <strong>Andrey Pechkurov</strong> <a href="mailto:apechkurov@gmail.com">apechkurov@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/RaisinTen" title="">RaisinTen</a> - <strong>Darshan Sen</strong> <a href="mailto:raisinten@gmail.com">raisinten@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/refack" title="">refack</a> - <strong>Refael Ackermann (רפאל פלחי)</strong> <a href="mailto:refack@gmail.com">refack@gmail.com</a> (he/him/הוא/אתה)</li>
+    <li><a href="https://github.com/rexagod" title="">rexagod</a> - <strong>Pranshu Srivastava</strong> <a href="mailto:rexagod@gmail.com">rexagod@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/rickyes" title="">rickyes</a> - <strong>Ricky Zhou</strong> <a href="mailto:0x19951125@gmail.com">0x19951125@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/rlidwka" title="">rlidwka</a> - <strong>Alex Kocharin</strong> <a href="mailto:alex@kocharin.ru">alex@kocharin.ru</a></li>
+    <li><a href="https://github.com/rmg" title="">rmg</a> - <strong>Ryan Graham</strong> <a href="mailto:r.m.graham@gmail.com">r.m.graham@gmail.com</a></li>
+    <li><a href="https://github.com/robertkowalski" title="">robertkowalski</a> - <strong>Robert Kowalski</strong> <a href="mailto:rok@kowalski.gd">rok@kowalski.gd</a></li>
+    <li><a href="https://github.com/romankl" title="">romankl</a> - <strong>Roman Klauke</strong> <a href="mailto:romaaan.git@gmail.com">romaaan.git@gmail.com</a></li>
+    <li><a href="https://github.com/ronkorving" title="">ronkorving</a> - <strong>Ron Korving</strong> <a href="mailto:ron@ronkorving.nl">ron@ronkorving.nl</a></li>
+    <li><a href="https://github.com/RReverser" title="">RReverser</a> - <strong>Ingvar Stepanyan</strong> <a href="mailto:me@rreverser.com">me@rreverser.com</a></li>
+    <li><a href="https://github.com/rubys" title="">rubys</a> - <strong>Sam Ruby</strong> <a href="mailto:rubys@intertwingly.net">rubys@intertwingly.net</a></li>
+    <li><a href="https://github.com/rvagg" title="">rvagg</a> - <strong>Rod Vagg</strong> <a href="mailto:rod@vagg.org">rod@vagg.org</a></li>
+    <li><a href="https://github.com/ryzokuken" title="">ryzokuken</a> - <strong>Ujjwal Sharma</strong> <a href="mailto:ryzokuken@disroot.org">ryzokuken@disroot.org</a> (he/him)</li>
+    <li><a href="https://github.com/saghul" title="">saghul</a> - <strong>Saúl Ibarra Corretgé</strong> <a href="mailto:s@saghul.net">s@saghul.net</a></li>
+    <li><a href="https://github.com/sam-github" title="">sam-github</a> - <strong>Sam Roberts</strong> <a href="mailto:vieuxtech@gmail.com">vieuxtech@gmail.com</a></li>
+    <li><a href="https://github.com/sebdeckers" title="">sebdeckers</a> - <strong>Sebastiaan Deckers</strong> <a href="mailto:sebdeckers83@gmail.com">sebdeckers83@gmail.com</a></li>
+    <li><a href="https://github.com/seishun" title="">seishun</a> - <strong>Nikolai Vavilov</strong> <a href="mailto:vvnicholas@gmail.com">vvnicholas@gmail.com</a></li>
+    <li><a href="https://github.com/shigeki" title="">shigeki</a> - <strong>Shigeki Ohtsu</strong> <a href="mailto:ohtsu@ohtsu.org">ohtsu@ohtsu.org</a> (he/him)</li>
+    <li><a href="https://github.com/shisama" title="">shisama</a> - <strong>Masashi Hirano</strong> <a href="mailto:shisama07@gmail.com">shisama07@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/silverwind" title="">silverwind</a> - <strong>Roman Reiss</strong> <a href="mailto:me@silverwind.io">me@silverwind.io</a></li>
+    <li><a href="https://github.com/starkwang" title="">starkwang</a> - <strong>Weijia Wang</strong> <a href="mailto:starkwang@126.com">starkwang@126.com</a></li>
+    <li><a href="https://github.com/stefanmb" title="">stefanmb</a> - <strong>Stefan Budeanu</strong> <a href="mailto:stefan@budeanu.com">stefan@budeanu.com</a></li>
+    <li><a href="https://github.com/tellnes" title="">tellnes</a> - <strong>Christian Tellnes</strong> <a href="mailto:christian@tellnes.no">christian@tellnes.no</a></li>
+    <li><a href="https://github.com/thefourtheye" title="">thefourtheye</a> - <strong>Sakthipriyan Vairamani</strong> <a href="mailto:thechargingvolcano@gmail.com">thechargingvolcano@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/thlorenz" title="">thlorenz</a> - <strong>Thorsten Lorenz</strong> <a href="mailto:thlorenz@gmx.de">thlorenz@gmx.de</a></li>
+    <li><a href="https://github.com/TimothyGu" title="">TimothyGu</a> - <strong>Tiancheng "Timothy" Gu</strong> <a href="mailto:timothygu99@gmail.com">timothygu99@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/trevnorris" title="">trevnorris</a> - <strong>Trevor Norris</strong> <a href="mailto:trev.norris@gmail.com">trev.norris@gmail.com</a></li>
+    <li><a href="https://github.com/tunniclm" title="">tunniclm</a> - <strong>Mike Tunnicliffe</strong> <a href="mailto:m.j.tunnicliffe@gmail.com">m.j.tunnicliffe@gmail.com</a></li>
+    <li><a href="https://github.com/vdeturckheim" title="">vdeturckheim</a> - <strong>Vladimir de Turckheim</strong> <a href="mailto:vlad2t@hotmail.com">vlad2t@hotmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/vkurchatkin" title="">vkurchatkin</a> - <strong>Vladimir Kurchatkin</strong> <a href="mailto:vladimir.kurchatkin@gmail.com">vladimir.kurchatkin@gmail.com</a></li>
+    <li><a href="https://github.com/vsemozhetbyt" title="">vsemozhetbyt</a> - <strong>Vse Mozhet Byt</strong> <a href="mailto:vsemozhetbyt@gmail.com">vsemozhetbyt@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/watilde" title="">watilde</a> - <strong>Daijiro Wachi</strong> <a href="mailto:daijiro.wachi@gmail.com">daijiro.wachi@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/watson" title="">watson</a> - <strong>Thomas Watson</strong> <a href="mailto:w@tson.dk">w@tson.dk</a></li>
+    <li><a href="https://github.com/whitlockjc" title="">whitlockjc</a> - <strong>Jeremy Whitlock</strong> <a href="mailto:jwhitlock@apache.org">jwhitlock@apache.org</a></li>
+    <li><a href="https://github.com/XadillaX" title="">XadillaX</a> - <strong>Khaidi Chu</strong> <a href="mailto:i@2333.moe">i@2333.moe</a> (he/him)</li>
+    <li><a href="https://github.com/yashLadha" title="">yashLadha</a> - <strong>Yash Ladha</strong> <a href="mailto:yash@yashladha.in">yash@yashladha.in</a> (he/him)</li>
+    <li><a href="https://github.com/yhwang" title="">yhwang</a> - <strong>Yihong Wang</strong> <a href="mailto:yh.wang@ibm.com">yh.wang@ibm.com</a></li>
+    <li><a href="https://github.com/yorkie" title="">yorkie</a> - <strong>Yorkie Liu</strong> <a href="mailto:yorkiefixer@gmail.com">yorkiefixer@gmail.com</a></li>
+    <li><a href="https://github.com/yosuke-furukawa" title="">yosuke-furukawa</a> - <strong>Yosuke Furukawa</strong> <a href="mailto:yosuke.furukawa@gmail.com">yosuke.furukawa@gmail.com</a></li>
+  </ul>
+  <p>
+</details>
+  </p>
+  <p>
+<!--lint enable prohibited-strings-->
+  </p>
+  <p>
+Collaborators follow the <a href="./doc/contributing/collaborator-guide.md" title="">Collaborator Guide</a> in
+maintaining the Node.js project.
+  </p>
+  <h3 id="triagers">Triagers</h3>
+  <ul>
+    <li><a href="https://github.com/atlowChemi" title="">atlowChemi</a> - <strong>Chemi Atlow</strong> <a href="mailto:chemi@atlow.co.il">chemi@atlow.co.il</a> (he/him)</li>
+    <li><a href="https://github.com/Ayase-252" title="">Ayase-252</a> - <strong>Qingyu Deng</strong> <a href="mailto:i@ayase-lab.com">i@ayase-lab.com</a></li>
+    <li><a href="https://github.com/bmuenzenmeyer" title="">bmuenzenmeyer</a> - <strong>Brian Muenzenmeyer</strong> <a href="mailto:brian.muenzenmeyer@gmail.com">brian.muenzenmeyer@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/CanadaHonk" title="">CanadaHonk</a> - <strong>Oliver Medhurst</strong> <a href="mailto:honk@goose.icu">honk@goose.icu</a> (they/them)</li>
+    <li><a href="https://github.com/daeyeon" title="">daeyeon</a> - <strong>Daeyeon Jeong</strong> <a href="mailto:daeyeon.dev@gmail.com">daeyeon.dev@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/F3n67u" title="">F3n67u</a> - <strong>Feng Yu</strong> <a href="mailto:F3n67u@outlook.com">F3n67u@outlook.com</a> (he/him)</li>
+    <li><a href="https://github.com/gireeshpunathil" title="">gireeshpunathil</a> - <strong>Gireesh Punathil</strong> <a href="mailto:gpunathi@in.ibm.com">gpunathi@in.ibm.com</a> (he/him)</li>
+    <li><a href="https://github.com/iam-frankqiu" title="">iam-frankqiu</a> - <strong>Frank Qiu</strong> <a href="mailto:iam.frankqiu@gmail.com">iam.frankqiu@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/KevinEady" title="">KevinEady</a> - <strong>Kevin Eady</strong> <a href="mailto:kevin.c.eady@gmail.com">kevin.c.eady@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/kvakil" title="">kvakil</a> - <strong>Keyhan Vakil</strong> <a href="mailto:kvakil@sylph.kvakil.me">kvakil@sylph.kvakil.me</a></li>
+    <li><a href="https://github.com/marsonya" title="">marsonya</a> - <strong>Akhil Marsonya</strong> <a href="mailto:akhil.marsonya27@gmail.com">akhil.marsonya27@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/meixg" title="">meixg</a> - <strong>Xuguang Mei</strong> <a href="mailto:meixuguang@gmail.com">meixuguang@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/mertcanaltin" title="">mertcanaltin</a> - <strong>Mert Can Altin</strong> <a href="mailto:mertgold60@gmail.com">mertgold60@gmail.com</a></li>
+    <li><a href="https://github.com/preveen-stack" title="">preveen-stack</a> - <strong>Preveen Padmanabhan</strong> <a href="mailto:wide4head@gmail.com">wide4head@gmail.com</a> (he/him)</li>
+    <li><a href="https://github.com/VoltrexKeyva" title="">VoltrexKeyva</a> - <strong>Mohammed Keyvanzadeh</strong> <a href="mailto:mohammadkeyvanzade94@gmail.com">mohammadkeyvanzade94@gmail.com</a> (he/him)</li>
+  </ul>
+  <p>
+Triagers follow the <a href="./doc/contributing/issues.md#triaging-a-bug-report" title="">Triage Guide</a> when
+responding to new issues.
+  </p>
+  <h3 id="release-keys">Release keys</h3>
+  <p>
+Primary GPG keys for Node.js Releasers (some Releasers sign with subkeys):
+  </p>
+  <ul>
+    <li><strong>Antoine du Hamel</strong> <a href="mailto:duhamelantoine1995@gmail.com">duhamelantoine1995@gmail.com</a> <code>C0D6248439F1D5604AAFFB4021D900FFDB233756</code></li>
+    <li><strong>Juan José Arboleda</strong> <a href="mailto:soyjuanarbol@gmail.com">soyjuanarbol@gmail.com</a> <code>DD792F5973C6DE52C432CBDAC77ABFA00DDBF2B7</code></li>
+    <li><strong>Marco Ippolito</strong> <a href="mailto:marcoippolito54@gmail.com">marcoippolito54@gmail.com</a> <code>CC68F5A3106FF448322E48ED27F5E38D5B0A215F</code></li>
+    <li><strong>Michaël Zasso</strong> <a href="mailto:targos@protonmail.com">targos@protonmail.com</a> <code>8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600</code></li>
+    <li><strong>Rafael Gonzaga</strong> <a href="mailto:rafael.nunu@hotmail.com">rafael.nunu@hotmail.com</a> <code>890C08DB8579162FEE0DF9DB8BEAB4DFCF555EF4</code></li>
+    <li><strong>Richard Lau</strong> <a href="mailto:rlau@redhat.com">rlau@redhat.com</a> <code>C82FA3AE1CBEDC6BE46B9360C43CEC45C17AB93C</code></li>
+    <li><strong>Ruy Adorno</strong> <a href="mailto:ruyadorno@hotmail.com">ruyadorno@hotmail.com</a> <code>108F52B48DB57BB0CC439B2997B01419BD92F80A</code></li>
+    <li><strong>Ulises Gascón</strong> <a href="mailto:ulisesgascongonzalez@gmail.com">ulisesgascongonzalez@gmail.com</a> <code>A363A499291CBBC940DD62E41F10027AF002F8B0</code></li>
+  </ul>
+  <p>
+To import the full set of trusted release keys (including subkeys possibly used
+to sign releases):
+  </p>
+<pre><code class="bash">gpg --keyserver hkps://keys.openpgp.org --recv-keys C0D6248439F1D5604AAFFB4021D900FFDB233756 <span class="pl-c"># Antoine du Hamel</span>
+gpg --keyserver hkps://keys.openpgp.org --recv-keys DD792F5973C6DE52C432CBDAC77ABFA00DDBF2B7 <span class="pl-c"># Juan José Arboleda</span>
+gpg --keyserver hkps://keys.openpgp.org --recv-keys CC68F5A3106FF448322E48ED27F5E38D5B0A215F <span class="pl-c"># Marco Ippolito</span>
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600 <span class="pl-c"># Michaël Zasso</span>
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 890C08DB8579162FEE0DF9DB8BEAB4DFCF555EF4 <span class="pl-c"># Rafael Gonzaga</span>
+gpg --keyserver hkps://keys.openpgp.org --recv-keys C82FA3AE1CBEDC6BE46B9360C43CEC45C17AB93C <span class="pl-c"># Richard Lau</span>
+gpg --keyserver hkps://keys.openpgp.org --recv-keys 108F52B48DB57BB0CC439B2997B01419BD92F80A <span class="pl-c"># Ruy Adorno</span>
+gpg --keyserver hkps://keys.openpgp.org --recv-keys A363A499291CBBC940DD62E41F10027AF002F8B0 <span class="pl-c"># Ulises Gascón</span>
+</code></pre>  <p>
+See <a href="#verifying-binaries" title="">Verifying binaries</a> for how to use these keys to
+verify a downloaded file.
+  </p>
+  <p>
+<details>
+  </p>
+  <p>
+<summary>Other keys used to sign some previous releases</summary>
+  </p>
+  <ul>
+    <li><strong>Beth Griggs</strong> <a href="mailto:bethanyngriggs@gmail.com">bethanyngriggs@gmail.com</a> <code>4ED778F539E3634C779C87C6D7062848A1AB005C</code></li>
+    <li><strong>Bryan English</strong> <a href="mailto:bryan@bryanenglish.com">bryan@bryanenglish.com</a> <code>141F07595B7B3FFE74309A937405533BE57C7D57</code></li>
+    <li><strong>Chris Dickinson</strong> <a href="mailto:christopher.s.dickinson@gmail.com">christopher.s.dickinson@gmail.com</a> <code>9554F04D7259F04124DE6B476D5A82AC7E37093B</code></li>
+    <li><strong>Colin Ihrig</strong> <a href="mailto:cjihrig@gmail.com">cjihrig@gmail.com</a> <code>94AE36675C464D64BAFA68DD7434390BDBE9B9C5</code></li>
+    <li><strong>Danielle Adams</strong> <a href="mailto:adamzdanielle@gmail.com">adamzdanielle@gmail.com</a> <code>1C050899334244A8AF75E53792EF661D867B9DFA</code> <code>74F12602B6F1C4E913FAA37AD3A89613643B6201</code></li>
+    <li><strong>Evan Lucas</strong> <a href="mailto:evanlucas@me.com">evanlucas@me.com</a> <code>B9AE9905FFD7803F25714661B63B535A4C206CA9</code></li>
+    <li><strong>Gibson Fahnestock</strong> <a href="mailto:gibfahn@gmail.com">gibfahn@gmail.com</a> <code>77984A986EBC2AA786BC0F66B01FBB92821C587A</code></li>
+    <li><strong>Isaac Z. Schlueter</strong> <a href="mailto:i@izs.me">i@izs.me</a> <code>93C7E9E91B49E432C2F75674B0A78B0A6C481CF6</code></li>
+    <li><strong>Italo A. Casas</strong> <a href="mailto:me@italoacasas.com">me@italoacasas.com</a> <code>56730D5401028683275BD23C23EFEFE93C4CFFFE</code></li>
+    <li><strong>James M Snell</strong> <a href="mailto:jasnell@keybase.io">jasnell@keybase.io</a> <code>71DCFD284A79C3B38668286BC97EC7A07EDE3FC1</code></li>
+    <li><strong>Jeremiah Senkpiel</strong> <a href="mailto:fishrock@keybase.io">fishrock@keybase.io</a> <code>FD3A5288F042B6850C66B31F09FE44734EB7990E</code></li>
+    <li><strong>Juan José Arboleda</strong> <a href="mailto:soyjuanarbol@gmail.com">soyjuanarbol@gmail.com</a> <code>61FC681DFB92A079F1685E77973F295594EC4689</code></li>
+    <li><strong>Julien Gilli</strong> <a href="mailto:jgilli@fastmail.fm">jgilli@fastmail.fm</a> <code>114F43EE0176B71C7BC219DD50A3051F888C628D</code></li>
+    <li><strong>Myles Borins</strong> <a href="mailto:myles.borins@gmail.com">myles.borins@gmail.com</a> <code>C4F0DFFF4E8C1A8236409D08E73BC641CC11F4C8</code></li>
+    <li><strong>Rod Vagg</strong> <a href="mailto:rod@vagg.org">rod@vagg.org</a> <code>DD8F2338BAE7501E3DD5AC78C273792F7D83545D</code></li>
+    <li><strong>Ruben Bridgewater</strong> <a href="mailto:ruben@bridgewater.de">ruben@bridgewater.de</a> <code>A48C2BEE680E841632CD4E44F07496B3EB3C1762</code></li>
+    <li><strong>Shelley Vohr</strong> <a href="mailto:shelley.vohr@gmail.com">shelley.vohr@gmail.com</a> <code>B9E2F5981AA6E0CD28160D9FF13993A75599653C</code></li>
+    <li><strong>Timothy J Fontaine</strong> <a href="mailto:tjfontaine@gmail.com">tjfontaine@gmail.com</a> <code>7937DFD2AB06298B2293C3187D33FF9D0246406D</code></li>
+  </ul>
+  <p>
+</details>
+  </p>
+  <h3 id="security-release-stewards">Security release stewards</h3>
+  <p>
+When possible, the commitment to take slots in the
+security release steward rotation is made by companies in order
+to ensure individuals who act as security stewards have the
+support and recognition from their employer to be able to
+prioritize security releases. Security release stewards manage security
+releases on a rotation basis as outlined in the
+<a href="./doc/contributing/security-release-process.md" title="">security release process</a>.
+  </p>
+  <ul>
+    <li><a href="https://datadoghq.com" title="">Datadog</a></li>
+    <ul>
+      <li><a href="https://github.com/bengl" title="">bengl</a> - <strong>Bryan English</strong> <a href="mailto:bryan@bryanenglish.com">bryan@bryanenglish.com</a> (he/him)</li>
+    </ul>
+    <li><a href="https://nodesource.com" title="">NodeSource</a></li>
+    <ul>
+      <li><a href="https://github.com/juanarbol" title="">juanarbol</a> - <strong>Juan José Arboleda</strong> <a href="mailto:soyjuanarbol@gmail.com">soyjuanarbol@gmail.com</a> (he/him)</li>
+      <li><a href="https://github.com/RafaelGSS" title="">RafaelGSS</a> - <strong>Rafael Gonzaga</strong> <a href="mailto:rafael.nunu@hotmail.com">rafael.nunu@hotmail.com</a> (he/him)</li>
+    </ul>
+    <li><a href="https://platformatic.dev" title="">Platformatic</a></li>
+    <ul>
+      <li><a href="https://github.com/mcollina" title="">mcollina</a> - <strong>Matteo Collina</strong> <a href="mailto:matteo.collina@gmail.com">matteo.collina@gmail.com</a> (he/him)</li>
+    </ul>
+    <li><a href="https://redhat.com" title="">Red Hat</a> / <a href="https://ibm.com" title="">IBM</a></li>
+    <ul>
+      <li><a href="https://github.com/joesepi" title="">joesepi</a> - <strong>Joe Sepi</strong> <a href="mailto:joesepi@ibm.com">joesepi@ibm.com</a> (he/him)</li>
+      <li><a href="https://github.com/mhdawson" title="">mhdawson</a> - <strong>Michael Dawson</strong> <a href="mailto:midawson@redhat.com">midawson@redhat.com</a> (he/him)</li>
+    </ul>
+  </ul>
+  <h2 id="license">License</h2>
+  <p>
+Node.js is available under the
+<a href="https://opensource.org/licenses/MIT" title="">MIT License</a>. Node.js also includes
+external libraries that are available under a variety of licenses.  See
+<a href="https://github.com/nodejs/node/blob/HEAD/LICENSE" title="">LICENSE</a> for the full
+license text.
+  </p>
+  <p>
+
+
+
+
+
+
+
+  </p>
+  <hr/>
+
+<style>
+/*
+MIT License
+
+source: https://github.com/sindresorhus/github-markdown-css
+
+Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com)
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+*/
+
+.markdown-body {
+    --base-size-4: 0.25rem;
+    --base-size-8: 0.5rem;
+    --base-size-16: 1rem;
+    --base-size-24: 1.5rem;
+    --base-size-40: 2.5rem;
+    --base-text-weight-normal: 400;
+    --base-text-weight-medium: 500;
+    --base-text-weight-semibold: 600;
+    --fontStack-monospace: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas,
+        Liberation Mono, monospace;
+    --fgColor-accent: Highlight;
+}
+@media (prefers-color-scheme: dark) {
+    .markdown-body,
+    [data-theme="dark"] {
+        /* dark */
+        color-scheme: dark;
+        --focus-outlineColor: #1f6feb;
+        --fgColor-default: #f0f6fc;
+        --fgColor-muted: #9198a1;
+        --fgColor-accent: #4493f8;
+        --fgColor-success: #3fb950;
+        --fgColor-attention: #d29922;
+        --fgColor-danger: #f85149;
+        --fgColor-done: #ab7df8;
+        --bgColor-default: #0d1117;
+        --bgColor-muted: #151b23;
+        --bgColor-neutral-muted: #656c7633;
+        --bgColor-attention-muted: #bb800926;
+        --borderColor-default: #3d444d;
+        --borderColor-muted: #3d444db3;
+        --borderColor-neutral-muted: #3d444db3;
+        --borderColor-accent-emphasis: #1f6feb;
+        --borderColor-success-emphasis: #238636;
+        --borderColor-attention-emphasis: #9e6a03;
+        --borderColor-danger-emphasis: #da3633;
+        --borderColor-done-emphasis: #8957e5;
+        --color-prettylights-syntax-comment: #9198a1;
+        --color-prettylights-syntax-constant: #79c0ff;
+        --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+        --color-prettylights-syntax-entity: #d2a8ff;
+        --color-prettylights-syntax-storage-modifier-import: #f0f6fc;
+        --color-prettylights-syntax-entity-tag: #7ee787;
+        --color-prettylights-syntax-keyword: #ff7b72;
+        --color-prettylights-syntax-string: #a5d6ff;
+        --color-prettylights-syntax-variable: #ffa657;
+        --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
+        --color-prettylights-syntax-brackethighlighter-angle: #9198a1;
+        --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+        --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+        --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+        --color-prettylights-syntax-carriage-return-bg: #b62324;
+        --color-prettylights-syntax-string-regexp: #7ee787;
+        --color-prettylights-syntax-markup-list: #f2cc60;
+        --color-prettylights-syntax-markup-heading: #1f6feb;
+        --color-prettylights-syntax-markup-italic: #f0f6fc;
+        --color-prettylights-syntax-markup-bold: #f0f6fc;
+        --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+        --color-prettylights-syntax-markup-deleted-bg: #67060c;
+        --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+        --color-prettylights-syntax-markup-inserted-bg: #033a16;
+        --color-prettylights-syntax-markup-changed-text: #ffdfb6;
+        --color-prettylights-syntax-markup-changed-bg: #5a1e02;
+        --color-prettylights-syntax-markup-ignored-text: #f0f6fc;
+        --color-prettylights-syntax-markup-ignored-bg: #1158c7;
+        --color-prettylights-syntax-meta-diff-range: #d2a8ff;
+        --color-prettylights-syntax-sublimelinter-gutter-mark: #3d444d;
+    }
+}
+@media (prefers-color-scheme: light) {
+    .markdown-body,
+    [data-theme="light"] {
+        /* light */
+        color-scheme: light;
+        --focus-outlineColor: #0969da;
+        --fgColor-default: #1f2328;
+        --fgColor-muted: #59636e;
+        --fgColor-accent: #0969da;
+        --fgColor-success: #1a7f37;
+        --fgColor-attention: #9a6700;
+        --fgColor-danger: #d1242f;
+        --fgColor-done: #8250df;
+        --bgColor-default: #ffffff;
+        --bgColor-muted: #f6f8fa;
+        --bgColor-neutral-muted: #818b981f;
+        --bgColor-attention-muted: #fff8c5;
+        --borderColor-default: #d1d9e0;
+        --borderColor-muted: #d1d9e0b3;
+        --borderColor-neutral-muted: #d1d9e0b3;
+        --borderColor-accent-emphasis: #0969da;
+        --borderColor-success-emphasis: #1a7f37;
+        --borderColor-attention-emphasis: #9a6700;
+        --borderColor-danger-emphasis: #cf222e;
+        --borderColor-done-emphasis: #8250df;
+        --color-prettylights-syntax-comment: #59636e;
+        --color-prettylights-syntax-constant: #0550ae;
+        --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+        --color-prettylights-syntax-entity: #6639ba;
+        --color-prettylights-syntax-storage-modifier-import: #1f2328;
+        --color-prettylights-syntax-entity-tag: #0550ae;
+        --color-prettylights-syntax-keyword: #cf222e;
+        --color-prettylights-syntax-string: #0a3069;
+        --color-prettylights-syntax-variable: #953800;
+        --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
+        --color-prettylights-syntax-brackethighlighter-angle: #59636e;
+        --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
+        --color-prettylights-syntax-invalid-illegal-bg: #82071e;
+        --color-prettylights-syntax-carriage-return-text: #f6f8fa;
+        --color-prettylights-syntax-carriage-return-bg: #cf222e;
+        --color-prettylights-syntax-string-regexp: #116329;
+        --color-prettylights-syntax-markup-list: #3b2300;
+        --color-prettylights-syntax-markup-heading: #0550ae;
+        --color-prettylights-syntax-markup-italic: #1f2328;
+        --color-prettylights-syntax-markup-bold: #1f2328;
+        --color-prettylights-syntax-markup-deleted-text: #82071e;
+        --color-prettylights-syntax-markup-deleted-bg: #ffebe9;
+        --color-prettylights-syntax-markup-inserted-text: #116329;
+        --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
+        --color-prettylights-syntax-markup-changed-text: #953800;
+        --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
+        --color-prettylights-syntax-markup-ignored-text: #d1d9e0;
+        --color-prettylights-syntax-markup-ignored-bg: #0550ae;
+        --color-prettylights-syntax-meta-diff-range: #8250df;
+        --color-prettylights-syntax-sublimelinter-gutter-mark: #818b98;
+    }
+}
+
+.markdown-body {
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    margin: 0;
+    color: var(--fgColor-default);
+    background-color: var(--bgColor-default);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica,
+        Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    font-size: 16px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.markdown-body .octicon {
+    display: inline-block;
+    fill: currentColor;
+    vertical-align: text-bottom;
+}
+
+.markdown-body h1:hover .anchor .octicon-link:before,
+.markdown-body h2:hover .anchor .octicon-link:before,
+.markdown-body h3:hover .anchor .octicon-link:before,
+.markdown-body h4:hover .anchor .octicon-link:before,
+.markdown-body h5:hover .anchor .octicon-link:before,
+.markdown-body h6:hover .anchor .octicon-link:before {
+    width: 16px;
+    height: 16px;
+    content: " ";
+    display: inline-block;
+    background-color: currentColor;
+    -webkit-mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+    mask-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' version='1.1' aria-hidden='true'><path fill-rule='evenodd' d='M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z'></path></svg>");
+}
+
+.markdown-body details,
+.markdown-body figcaption,
+.markdown-body figure {
+    display: block;
+}
+
+.markdown-body summary {
+    display: list-item;
+}
+
+.markdown-body [hidden] {
+    display: none !important;
+}
+
+.markdown-body a {
+    background-color: transparent;
+    color: var(--fgColor-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 0.7px;
+    text-underline-offset: 3.5px;
+}
+
+.markdown-body abbr[title] {
+    border-bottom: none;
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+}
+
+.markdown-body b,
+.markdown-body strong {
+    font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body dfn {
+    font-style: italic;
+}
+
+.markdown-body h1 {
+    margin: 0.67em 0;
+    font-weight: var(--base-text-weight-semibold, 600);
+    padding-bottom: 0.3em;
+    font-size: 2em;
+    border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body mark {
+    background-color: var(--bgColor-attention-muted);
+    color: var(--fgColor-default);
+}
+
+.markdown-body small {
+    font-size: 90%;
+}
+
+.markdown-body sub,
+.markdown-body sup {
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+}
+
+.markdown-body sub {
+    bottom: -0.25em;
+}
+
+.markdown-body sup {
+    top: -0.5em;
+}
+
+.markdown-body img {
+    border-style: none;
+    max-width: 100%;
+    box-sizing: content-box;
+}
+
+.markdown-body code,
+.markdown-body kbd,
+.markdown-body pre,
+.markdown-body samp {
+    font-family: monospace;
+    font-size: 1em;
+}
+
+.markdown-body figure {
+    margin: 1em var(--base-size-40);
+}
+
+.markdown-body hr {
+    box-sizing: content-box;
+    overflow: hidden;
+    background: transparent;
+    border-bottom: 1px solid var(--borderColor-muted);
+    height: 0.25em;
+    padding: 0;
+    margin: var(--base-size-24) 0;
+    background-color: var(--borderColor-default);
+    border: 0;
+}
+
+.markdown-body input {
+    font: inherit;
+    margin: 0;
+    overflow: visible;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+
+.markdown-body [type="button"],
+.markdown-body [type="reset"],
+.markdown-body [type="submit"] {
+    -webkit-appearance: button;
+    appearance: button;
+}
+
+.markdown-body [type="checkbox"],
+.markdown-body [type="radio"] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.markdown-body [type="number"]::-webkit-inner-spin-button,
+.markdown-body [type="number"]::-webkit-outer-spin-button {
+    height: auto;
+}
+
+.markdown-body [type="search"]::-webkit-search-cancel-button,
+.markdown-body [type="search"]::-webkit-search-decoration {
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.markdown-body ::-webkit-input-placeholder {
+    color: inherit;
+    opacity: 0.54;
+}
+
+.markdown-body ::-webkit-file-upload-button {
+    -webkit-appearance: button;
+    appearance: button;
+    font: inherit;
+}
+
+.markdown-body a:hover {
+    text-decoration: underline;
+}
+
+.markdown-body ::placeholder {
+    color: var(--fgColor-muted);
+    opacity: 1;
+}
+
+.markdown-body hr::before {
+    display: table;
+    content: "";
+}
+
+.markdown-body hr::after {
+    display: table;
+    clear: both;
+    content: "";
+}
+
+.markdown-body table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow: auto;
+    font-variant: tabular-nums;
+}
+
+.markdown-body td,
+.markdown-body th {
+    padding: 0;
+}
+
+.markdown-body details summary {
+    cursor: pointer;
+}
+
+.markdown-body a:focus,
+.markdown-body [role="button"]:focus,
+.markdown-body input[type="radio"]:focus,
+.markdown-body input[type="checkbox"]:focus {
+    outline: 2px solid var(--focus-outlineColor);
+    outline-offset: -2px;
+    box-shadow: none;
+}
+
+.markdown-body a:focus:not(:focus-visible),
+.markdown-body [role="button"]:focus:not(:focus-visible),
+.markdown-body input[type="radio"]:focus:not(:focus-visible),
+.markdown-body input[type="checkbox"]:focus:not(:focus-visible) {
+    outline: solid 1px transparent;
+}
+
+.markdown-body a:focus-visible,
+.markdown-body [role="button"]:focus-visible,
+.markdown-body input[type="radio"]:focus-visible,
+.markdown-body input[type="checkbox"]:focus-visible {
+    outline: 2px solid var(--focus-outlineColor);
+    outline-offset: -2px;
+    box-shadow: none;
+}
+
+.markdown-body a:not([class]):focus,
+.markdown-body a:not([class]):focus-visible,
+.markdown-body input[type="radio"]:focus,
+.markdown-body input[type="radio"]:focus-visible,
+.markdown-body input[type="checkbox"]:focus,
+.markdown-body input[type="checkbox"]:focus-visible {
+    outline-offset: 0;
+}
+
+.markdown-body kbd {
+    display: inline-block;
+    padding: var(--base-size-4);
+    font: 11px
+        var(
+            --fontStack-monospace,
+            ui-monospace,
+            SFMono-Regular,
+            SF Mono,
+            Menlo,
+            Consolas,
+            Liberation Mono,
+            monospace
+        );
+    line-height: 10px;
+    color: var(--fgColor-default);
+    vertical-align: middle;
+    background-color: var(--bgColor-muted);
+    border: solid 1px var(--borderColor-neutral-muted);
+    border-bottom-color: var(--borderColor-neutral-muted);
+    border-radius: 6px;
+    box-shadow: inset 0 -1px 0 var(--borderColor-neutral-muted);
+}
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+    margin-top: var(--base-size-24);
+    margin-bottom: var(--base-size-16);
+    font-weight: var(--base-text-weight-semibold, 600);
+    line-height: 1.25;
+}
+
+.markdown-body h2 {
+    font-weight: var(--base-text-weight-semibold, 600);
+    padding-bottom: 0.3em;
+    font-size: 1.5em;
+    border-bottom: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body h3 {
+    font-weight: var(--base-text-weight-semibold, 600);
+    font-size: 1.25em;
+}
+
+.markdown-body h4 {
+    font-weight: var(--base-text-weight-semibold, 600);
+    font-size: 1em;
+}
+
+.markdown-body h5 {
+    font-weight: var(--base-text-weight-semibold, 600);
+    font-size: 0.875em;
+}
+
+.markdown-body h6 {
+    font-weight: var(--base-text-weight-semibold, 600);
+    font-size: 0.85em;
+    color: var(--fgColor-muted);
+}
+
+.markdown-body p {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.markdown-body blockquote {
+    margin: 0;
+    padding: 0 1em;
+    color: var(--fgColor-muted);
+    border-left: 0.25em solid var(--borderColor-default);
+}
+
+.markdown-body ul,
+.markdown-body ol {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 2em;
+}
+
+.markdown-body ol ol,
+.markdown-body ul ol {
+    list-style-type: lower-roman;
+}
+
+.markdown-body ul ul ol,
+.markdown-body ul ol ol,
+.markdown-body ol ul ol,
+.markdown-body ol ol ol {
+    list-style-type: lower-alpha;
+}
+
+.markdown-body dd {
+    margin-left: 0;
+}
+
+.markdown-body tt,
+.markdown-body code,
+.markdown-body samp {
+    font-family: var(
+        --fontStack-monospace,
+        ui-monospace,
+        SFMono-Regular,
+        SF Mono,
+        Menlo,
+        Consolas,
+        Liberation Mono,
+        monospace
+    );
+    font-size: 12px;
+}
+
+.markdown-body pre {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-family: var(
+        --fontStack-monospace,
+        ui-monospace,
+        SFMono-Regular,
+        SF Mono,
+        Menlo,
+        Consolas,
+        Liberation Mono,
+        monospace
+    );
+    font-size: 12px;
+    word-wrap: normal;
+}
+
+.markdown-body .octicon {
+    display: inline-block;
+    overflow: visible !important;
+    vertical-align: text-bottom;
+    fill: currentColor;
+}
+
+.markdown-body input::-webkit-outer-spin-button,
+.markdown-body input::-webkit-inner-spin-button {
+    margin: 0;
+    appearance: none;
+}
+
+.markdown-body .mr-2 {
+    margin-right: var(--base-size-8, 8px) !important;
+}
+
+.markdown-body::before {
+    display: table;
+    content: "";
+}
+
+.markdown-body::after {
+    display: table;
+    clear: both;
+    content: "";
+}
+
+.markdown-body > *:first-child {
+    margin-top: 0 !important;
+}
+
+.markdown-body > *:last-child {
+    margin-bottom: 0 !important;
+}
+
+.markdown-body a:not([href]) {
+    color: inherit;
+    text-decoration: none;
+}
+
+.markdown-body .absent {
+    color: var(--fgColor-danger);
+}
+
+.markdown-body .anchor {
+    float: left;
+    padding-right: var(--base-size-4);
+    margin-left: -20px;
+    line-height: 1;
+}
+
+.markdown-body .anchor:focus {
+    outline: none;
+}
+
+.markdown-body p,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol,
+.markdown-body dl,
+.markdown-body table,
+.markdown-body pre,
+.markdown-body details {
+    margin-top: 0;
+    margin-bottom: var(--base-size-16);
+}
+
+.markdown-body blockquote > :first-child {
+    margin-top: 0;
+}
+
+.markdown-body blockquote > :last-child {
+    margin-bottom: 0;
+}
+
+.markdown-body h1 .octicon-link,
+.markdown-body h2 .octicon-link,
+.markdown-body h3 .octicon-link,
+.markdown-body h4 .octicon-link,
+.markdown-body h5 .octicon-link,
+.markdown-body h6 .octicon-link {
+    color: var(--fgColor-default);
+    vertical-align: middle;
+    visibility: hidden;
+}
+
+.markdown-body h1:hover .anchor,
+.markdown-body h2:hover .anchor,
+.markdown-body h3:hover .anchor,
+.markdown-body h4:hover .anchor,
+.markdown-body h5:hover .anchor,
+.markdown-body h6:hover .anchor {
+    text-decoration: none;
+}
+
+.markdown-body h1:hover .anchor .octicon-link,
+.markdown-body h2:hover .anchor .octicon-link,
+.markdown-body h3:hover .anchor .octicon-link,
+.markdown-body h4:hover .anchor .octicon-link,
+.markdown-body h5:hover .anchor .octicon-link,
+.markdown-body h6:hover .anchor .octicon-link {
+    visibility: visible;
+}
+
+.markdown-body h1 tt,
+.markdown-body h1 code,
+.markdown-body h2 tt,
+.markdown-body h2 code,
+.markdown-body h3 tt,
+.markdown-body h3 code,
+.markdown-body h4 tt,
+.markdown-body h4 code,
+.markdown-body h5 tt,
+.markdown-body h5 code,
+.markdown-body h6 tt,
+.markdown-body h6 code {
+    padding: 0 0.2em;
+    font-size: inherit;
+}
+
+.markdown-body summary h1,
+.markdown-body summary h2,
+.markdown-body summary h3,
+.markdown-body summary h4,
+.markdown-body summary h5,
+.markdown-body summary h6 {
+    display: inline-block;
+}
+
+.markdown-body summary h1 .anchor,
+.markdown-body summary h2 .anchor,
+.markdown-body summary h3 .anchor,
+.markdown-body summary h4 .anchor,
+.markdown-body summary h5 .anchor,
+.markdown-body summary h6 .anchor {
+    margin-left: -40px;
+}
+
+.markdown-body summary h1,
+.markdown-body summary h2 {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.markdown-body ul.no-list,
+.markdown-body ol.no-list {
+    padding: 0;
+    list-style-type: none;
+}
+
+.markdown-body ol[type="a s"] {
+    list-style-type: lower-alpha;
+}
+
+.markdown-body ol[type="A s"] {
+    list-style-type: upper-alpha;
+}
+
+.markdown-body ol[type="i s"] {
+    list-style-type: lower-roman;
+}
+
+.markdown-body ol[type="I s"] {
+    list-style-type: upper-roman;
+}
+
+.markdown-body ol[type="1"] {
+    list-style-type: decimal;
+}
+
+.markdown-body div > ol:not([type]) {
+    list-style-type: decimal;
+}
+
+.markdown-body ul ul,
+.markdown-body ul ol,
+.markdown-body ol ol,
+.markdown-body ol ul {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.markdown-body li > p {
+    margin-top: var(--base-size-16);
+}
+
+.markdown-body li + li {
+    margin-top: 0.25em;
+}
+
+.markdown-body dl {
+    padding: 0;
+}
+
+.markdown-body dl dt {
+    padding: 0;
+    margin-top: var(--base-size-16);
+    font-size: 1em;
+    font-style: italic;
+    font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body dl dd {
+    padding: 0 var(--base-size-16);
+    margin-bottom: var(--base-size-16);
+}
+
+.markdown-body table th {
+    font-weight: var(--base-text-weight-semibold, 600);
+}
+
+.markdown-body table th,
+.markdown-body table td {
+    padding: 6px 13px;
+    border: 1px solid var(--borderColor-default);
+}
+
+.markdown-body table td > :last-child {
+    margin-bottom: 0;
+}
+
+.markdown-body table tr {
+    background-color: var(--bgColor-default);
+    border-top: 1px solid var(--borderColor-muted);
+}
+
+.markdown-body table tr:nth-child(2n) {
+    background-color: var(--bgColor-muted);
+}
+
+.markdown-body table img {
+    background-color: transparent;
+}
+
+.markdown-body img[align="right"] {
+    padding-left: 20px;
+}
+
+.markdown-body img[align="left"] {
+    padding-right: 20px;
+}
+
+.markdown-body .emoji {
+    max-width: none;
+    vertical-align: text-top;
+    background-color: transparent;
+}
+
+.markdown-body span.frame {
+    display: block;
+    overflow: hidden;
+}
+
+.markdown-body span.frame > span {
+    display: block;
+    float: left;
+    width: auto;
+    padding: 7px;
+    margin: 13px 0 0;
+    overflow: hidden;
+    border: 1px solid var(--borderColor-default);
+}
+
+.markdown-body span.frame span img {
+    display: block;
+    float: left;
+}
+
+.markdown-body span.frame span span {
+    display: block;
+    padding: 5px 0 0;
+    clear: both;
+    color: var(--fgColor-default);
+}
+
+.markdown-body span.align-center {
+    display: block;
+    overflow: hidden;
+    clear: both;
+}
+
+.markdown-body span.align-center > span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: center;
+}
+
+.markdown-body span.align-center span img {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.markdown-body span.align-right {
+    display: block;
+    overflow: hidden;
+    clear: both;
+}
+
+.markdown-body span.align-right > span {
+    display: block;
+    margin: 13px 0 0;
+    overflow: hidden;
+    text-align: right;
+}
+
+.markdown-body span.align-right span img {
+    margin: 0;
+    text-align: right;
+}
+
+.markdown-body span.float-left {
+    display: block;
+    float: left;
+    margin-right: 13px;
+    overflow: hidden;
+}
+
+.markdown-body span.float-left span {
+    margin: 13px 0 0;
+}
+
+.markdown-body span.float-right {
+    display: block;
+    float: right;
+    margin-left: 13px;
+    overflow: hidden;
+}
+
+.markdown-body span.float-right > span {
+    display: block;
+    margin: 13px auto 0;
+    overflow: hidden;
+    text-align: right;
+}
+
+.markdown-body code,
+.markdown-body tt {
+    padding: 0.2em 0.4em;
+    margin: 0;
+    font-size: 85%;
+    white-space: break-spaces;
+    background-color: var(--bgColor-neutral-muted);
+    border-radius: 6px;
+}
+
+.markdown-body code br,
+.markdown-body tt br {
+    display: none;
+}
+
+.markdown-body del code {
+    text-decoration: inherit;
+}
+
+.markdown-body samp {
+    font-size: 85%;
+}
+
+.markdown-body pre code {
+    font-size: 100%;
+}
+
+.markdown-body pre > code {
+    padding: 0;
+    margin: 0;
+    word-break: normal;
+    white-space: pre;
+    background: transparent;
+    border: 0;
+}
+
+.markdown-body .highlight {
+    margin-bottom: var(--base-size-16);
+}
+
+.markdown-body .highlight pre {
+    margin-bottom: 0;
+    word-break: normal;
+}
+
+.markdown-body .highlight pre,
+.markdown-body pre {
+    padding: var(--base-size-16);
+    overflow: auto;
+    font-size: 85%;
+    line-height: 1.45;
+    color: var(--fgColor-default);
+    background-color: var(--bgColor-muted);
+    border-radius: 6px;
+}
+
+.markdown-body pre code,
+.markdown-body pre tt {
+    display: inline;
+    max-width: auto;
+    padding: 0;
+    margin: 0;
+    overflow: visible;
+    line-height: inherit;
+    word-wrap: normal;
+    background-color: transparent;
+    border: 0;
+}
+
+.markdown-body .csv-data td,
+.markdown-body .csv-data th {
+    padding: 5px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.markdown-body .csv-data .blob-num {
+    padding: 10px var(--base-size-8) 9px;
+    text-align: right;
+    background: var(--bgColor-default);
+    border: 0;
+}
+
+.markdown-body .csv-data tr {
+    border-top: 0;
+}
+
+.markdown-body .csv-data th {
+    font-weight: var(--base-text-weight-semibold, 600);
+    background: var(--bgColor-muted);
+    border-top: 0;
+}
+
+.markdown-body [data-footnote-ref]::before {
+    content: "[";
+}
+
+.markdown-body [data-footnote-ref]::after {
+    content: "]";
+}
+
+.markdown-body .footnotes {
+    font-size: 12px;
+    color: var(--fgColor-muted);
+    border-top: 1px solid var(--borderColor-default);
+}
+
+.markdown-body .footnotes ol {
+    padding-left: var(--base-size-16);
+}
+
+.markdown-body .footnotes ol ul {
+    display: inline-block;
+    padding-left: var(--base-size-16);
+    margin-top: var(--base-size-16);
+}
+
+.markdown-body .footnotes li {
+    position: relative;
+}
+
+.markdown-body .footnotes li:target::before {
+    position: absolute;
+    top: calc(var(--base-size-8) * -1);
+    right: calc(var(--base-size-8) * -1);
+    bottom: calc(var(--base-size-8) * -1);
+    left: calc(var(--base-size-24) * -1);
+    pointer-events: none;
+    content: "";
+    border: 2px solid var(--borderColor-accent-emphasis);
+    border-radius: 6px;
+}
+
+.markdown-body .footnotes li:target {
+    color: var(--fgColor-default);
+}
+
+.markdown-body .footnotes .data-footnote-backref g-emoji {
+    font-family: monospace;
+}
+
+.markdown-body body:has(:modal) {
+    padding-right: var(--dialog-scrollgutter) !important;
+}
+
+.markdown-body .pl-c {
+    color: var(--color-prettylights-syntax-comment);
+}
+
+.markdown-body .pl-c1,
+.markdown-body .pl-s .pl-v {
+    color: var(--color-prettylights-syntax-constant);
+}
+
+.markdown-body .pl-e,
+.markdown-body .pl-en {
+    color: var(--color-prettylights-syntax-entity);
+}
+
+.markdown-body .pl-smi,
+.markdown-body .pl-s .pl-s1 {
+    color: var(--color-prettylights-syntax-storage-modifier-import);
+}
+
+.markdown-body .pl-ent {
+    color: var(--color-prettylights-syntax-entity-tag);
+}
+
+.markdown-body .pl-k {
+    color: var(--color-prettylights-syntax-keyword);
+}
+
+.markdown-body .pl-s,
+.markdown-body .pl-pds,
+.markdown-body .pl-s .pl-pse .pl-s1,
+.markdown-body .pl-sr,
+.markdown-body .pl-sr .pl-cce,
+.markdown-body .pl-sr .pl-sre,
+.markdown-body .pl-sr .pl-sra {
+    color: var(--color-prettylights-syntax-string);
+}
+
+.markdown-body .pl-v,
+.markdown-body .pl-smw {
+    color: var(--color-prettylights-syntax-variable);
+}
+
+.markdown-body .pl-bu {
+    color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
+}
+
+.markdown-body .pl-ii {
+    color: var(--color-prettylights-syntax-invalid-illegal-text);
+    background-color: var(--color-prettylights-syntax-invalid-illegal-bg);
+}
+
+.markdown-body .pl-c2 {
+    color: var(--color-prettylights-syntax-carriage-return-text);
+    background-color: var(--color-prettylights-syntax-carriage-return-bg);
+}
+
+.markdown-body .pl-sr .pl-cce {
+    font-weight: bold;
+    color: var(--color-prettylights-syntax-string-regexp);
+}
+
+.markdown-body .pl-ml {
+    color: var(--color-prettylights-syntax-markup-list);
+}
+
+.markdown-body .pl-mh,
+.markdown-body .pl-mh .pl-en,
+.markdown-body .pl-ms {
+    font-weight: bold;
+    color: var(--color-prettylights-syntax-markup-heading);
+}
+
+.markdown-body .pl-mi {
+    font-style: italic;
+    color: var(--color-prettylights-syntax-markup-italic);
+}
+
+.markdown-body .pl-mb {
+    font-weight: bold;
+    color: var(--color-prettylights-syntax-markup-bold);
+}
+
+.markdown-body .pl-md {
+    color: var(--color-prettylights-syntax-markup-deleted-text);
+    background-color: var(--color-prettylights-syntax-markup-deleted-bg);
+}
+
+.markdown-body .pl-mi1 {
+    color: var(--color-prettylights-syntax-markup-inserted-text);
+    background-color: var(--color-prettylights-syntax-markup-inserted-bg);
+}
+
+.markdown-body .pl-mc {
+    color: var(--color-prettylights-syntax-markup-changed-text);
+    background-color: var(--color-prettylights-syntax-markup-changed-bg);
+}
+
+.markdown-body .pl-mi2 {
+    color: var(--color-prettylights-syntax-markup-ignored-text);
+    background-color: var(--color-prettylights-syntax-markup-ignored-bg);
+}
+
+.markdown-body .pl-mdr {
+    font-weight: bold;
+    color: var(--color-prettylights-syntax-meta-diff-range);
+}
+
+.markdown-body .pl-ba {
+    color: var(--color-prettylights-syntax-brackethighlighter-angle);
+}
+
+.markdown-body .pl-sg {
+    color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+}
+
+.markdown-body .pl-corl {
+    text-decoration: underline;
+    color: var(--color-prettylights-syntax-constant-other-reference-link);
+}
+
+.markdown-body [role="button"]:focus:not(:focus-visible),
+.markdown-body [role="tabpanel"][tabindex="0"]:focus:not(:focus-visible),
+.markdown-body button:focus:not(:focus-visible),
+.markdown-body summary:focus:not(:focus-visible),
+.markdown-body a:focus:not(:focus-visible) {
+    outline: none;
+    box-shadow: none;
+}
+
+.markdown-body [tabindex="0"]:focus:not(:focus-visible),
+.markdown-body details-dialog:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.markdown-body g-emoji {
+    display: inline-block;
+    min-width: 1ch;
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 1em;
+    font-style: normal !important;
+    font-weight: var(--base-text-weight-normal, 400);
+    line-height: 1;
+    vertical-align: -0.075em;
+}
+
+.markdown-body g-emoji img {
+    width: 1em;
+    height: 1em;
+}
+
+.markdown-body .task-list-item {
+    list-style-type: none;
+}
+
+.markdown-body .task-list-item label {
+    font-weight: var(--base-text-weight-normal, 400);
+}
+
+.markdown-body .task-list-item.enabled label {
+    cursor: pointer;
+}
+
+.markdown-body .task-list-item + .task-list-item {
+    margin-top: var(--base-size-4);
+}
+
+.markdown-body .task-list-item .handle {
+    display: none;
+}
+
+.markdown-body .task-list-item-checkbox {
+    margin: 0 0.2em 0.25em -1.4em;
+    vertical-align: middle;
+}
+
+.markdown-body ul:dir(rtl) .task-list-item-checkbox {
+    margin: 0 -1.6em 0.25em 0.2em;
+}
+
+.markdown-body ol:dir(rtl) .task-list-item-checkbox {
+    margin: 0 -1.6em 0.25em 0.2em;
+}
+
+.markdown-body .contains-task-list:hover .task-list-item-convert-container,
+.markdown-body .contains-task-list:focus-within .task-list-item-convert-container {
+    display: block;
+    width: auto;
+    height: 24px;
+    overflow: visible;
+    clip: auto;
+}
+
+.markdown-body ::-webkit-calendar-picker-indicator {
+    filter: invert(50%);
+}
+
+.markdown-body .markdown-alert {
+    padding: var(--base-size-8) var(--base-size-16);
+    margin-bottom: var(--base-size-16);
+    color: inherit;
+    border-left: 0.25em solid var(--borderColor-default);
+}
+
+.markdown-body .markdown-alert > :first-child {
+    margin-top: 0;
+}
+
+.markdown-body .markdown-alert > :last-child {
+    margin-bottom: 0;
+}
+
+.markdown-body .markdown-alert .markdown-alert-title {
+    display: flex;
+    font-weight: var(--base-text-weight-medium, 500);
+    align-items: center;
+    line-height: 1;
+}
+
+.markdown-body .markdown-alert.markdown-alert-note {
+    border-left-color: var(--borderColor-accent-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-note .markdown-alert-title {
+    color: var(--fgColor-accent);
+}
+
+.markdown-body .markdown-alert.markdown-alert-important {
+    border-left-color: var(--borderColor-done-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-important .markdown-alert-title {
+    color: var(--fgColor-done);
+}
+
+.markdown-body .markdown-alert.markdown-alert-warning {
+    border-left-color: var(--borderColor-attention-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-warning .markdown-alert-title {
+    color: var(--fgColor-attention);
+}
+
+.markdown-body .markdown-alert.markdown-alert-tip {
+    border-left-color: var(--borderColor-success-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-tip .markdown-alert-title {
+    color: var(--fgColor-success);
+}
+
+.markdown-body .markdown-alert.markdown-alert-caution {
+    border-left-color: var(--borderColor-danger-emphasis);
+}
+
+.markdown-body .markdown-alert.markdown-alert-caution .markdown-alert-title {
+    color: var(--fgColor-danger);
+}
+
+.markdown-body > *:first-child > .heading-element:first-child {
+    margin-top: 0 !important;
+}
+
+.markdown-body .highlight pre:has(+ .zeroclipboard-container) {
+    min-height: 52px;
+}
+
+.markdown-body {
+    width: 980px;
+    padding: 45px;
+    margin: 40px auto;
+    border: 1px solid var(--borderColor-default); 
+    border-radius: 8px;
+}
+</style>
+<script>
+
+</script>
+</body>
+</html>
+    

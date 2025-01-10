@@ -1,0 +1,7 @@
+#!/bin/bash
+
+npm run build
+for file in ./examples/*.md; do
+    [ -f "$file" ] || break
+    xmd $file
+done
