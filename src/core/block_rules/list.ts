@@ -62,7 +62,7 @@ class ListManager {
         this.lastDepth = this.openedLists[0][0];
     }
 
-    closeAndOpen(currentPoint: Point, newTag: ListTag, depth: number) {
+    closeAndOpen(depth: number, tag: ListTag, currentPoint: Point) {
         const [topDepth, topTag] = this.openedLists.pop()!;
 
         this.stateChange.addBlockToken(
@@ -74,12 +74,7 @@ class ListManager {
                 topDepth,
             ),
         );
-        this.stateChange.addBlockToken(
-            BlockToken.createContentless(newTag, currentPoint, List.name, "open", depth),
-        );
-        this.openedLists.push([depth, newTag]);
-        this.lastTag = newTag;
-        this.lastDepth = depth;
+        this.openList(depth, tag, currentPoint);
     }
 
     openList(depth: number, tag: ListTag, currentPoint: Point) {
@@ -90,6 +85,12 @@ class ListManager {
         this.openedLists.push([depth, tag]);
         this.lastTag = tag;
         this.lastDepth = depth;
+    }
+
+    addListItem(content: string, pos: Point) {
+        this.stateChange.addBlockToken(
+            BlockToken.createWrapped("li", pos, List.name, content, this.lastDepth + 1),
+        );
     }
 }
 
@@ -111,18 +112,7 @@ function processListItemContent(
 
         // check if list item is terminated by another rule
         let didTerminate = processTerminations(input, state, stateChange, true, () => {
-            stateChange.addBlockToken(
-                BlockToken.createText(input.currentPoint, List.name, content.join(" ")),
-            );
-            stateChange.addBlockToken(
-                BlockToken.createContentless(
-                    "li",
-                    input.currentPoint,
-                    List.name,
-                    "close",
-                    listManager.lastDepth + 1,
-                ),
-            );
+            listManager.addListItem(content.join(" "), input.currentPoint);
             listManager.closeAll(input.currentPoint);
         });
         if (didTerminate) {
@@ -130,7 +120,6 @@ function processListItemContent(
         }
 
         content.push(nextLine);
-
         input.nextLine();
     }
     return content.join(" ");
@@ -149,7 +138,7 @@ function handleListTermination(input: InputState, listManger: ListManager): bool
     if (depth > prevDepth) {
         listManger.openList(depth, tag, input.currentPoint);
     } else if (depth == prevDepth && tag !== prevTag) {
-        listManger.closeAndOpen(input.currentPoint, tag, depth);
+        listManger.closeAndOpen(depth, tag, input.currentPoint);
     } else if (depth < prevDepth) {
         listManger.closeUntil(input.currentPoint, depth);
     }
@@ -174,20 +163,10 @@ export const List: BlockRule = {
         do {
             doContinue = handleListTermination(input, listManager);
             if (!doContinue) break;
-            openLi(stateChange, input.currentPoint, listManager);
             let content = processListItemContent(input, state, stateChange, listManager);
 
             if (!content) return true; // li was terminated by another rule
-
-            stateChange.addBlockToken(
-                BlockToken.createText(
-                    input.currentPoint,
-                    List.name,
-                    content,
-                    listManager.lastDepth + 1,
-                ),
-            );
-            closeLi(stateChange, input.currentPoint, listManager);
+            listManager.addListItem(content, input.currentPoint);
         } while ((line = input.nextLine()) != null);
 
         listManager.closeAll(input.currentPoint);
@@ -195,29 +174,6 @@ export const List: BlockRule = {
         return true;
     },
 };
-
-function openLi(stateChange: StateChange, pos: Point, listManager: ListManager) {
-    stateChange.addBlockToken(
-        BlockToken.createContentless(
-            "li",
-            pos,
-            List.name,
-            "open",
-            listManager.lastDepth + 1,
-        ),
-    );
-}
-function closeLi(stateChange: StateChange, pos: Point, listManager: ListManager) {
-    stateChange.addBlockToken(
-        BlockToken.createContentless(
-            "li",
-            pos,
-            List.name,
-            "close",
-            listManager.lastDepth + 1,
-        ),
-    );
-}
 
 function getListTag(line: string): ListTag | null {
     const trimmed = line.trim();

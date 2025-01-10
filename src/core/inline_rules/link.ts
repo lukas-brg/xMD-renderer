@@ -41,19 +41,6 @@ export const Link: InlineRule = {
                 const end = match.index + wholeMatch.length;
                 const urlStart = start + 1 + label.length;
 
-                // if (urlRegex.test(label.trim().toLowerCase())) {
-                //     let isSameUrl = false;
-                //     try {
-                //         isSameUrl = normalizeUrl(label) == normalizeUrl(url);
-                //     } catch {}
-                //     if (!isSameUrl) {
-                //         warnInline(
-                //             `Warning: URLs are not permitted as link labels.`,
-                //             state,
-                //             match.index,
-                //         );
-                //     }
-                // }
                 url = processUrl(url);
                 state.addInlineToken(
                     match.index,
