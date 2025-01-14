@@ -2,7 +2,7 @@ import { textChangeRangeIsUnchanged } from "typescript";
 import { Point } from "./input_state.js";
 import { Dict } from "./util.js";
 
-export type ContentKind = "block" | "inline" | "text" | "root";
+type ContentKind = "block" | "inline" | "text" | "root" | "container";
 
 /** `wrapped` is for when the content of a single line is wrapped in an opening and closing tag. ie: `<h1>Heading</h1>` 
  The goal is to make the handling of these situations easier, 
@@ -290,42 +290,55 @@ export class InlineToken extends Token {
 
 export class ContainerToken extends BlockToken {
     children: BlockToken[];
-
+    tags: string[];
     constructor(
-        tag: string,
+        tags: [string, ...string[]] | string,
         relatedPosition: Point,
         createdBy: string,
-        tagKind?: TagKind,
-        content?: string,
         parseContent?: boolean,
         depth?: number,
     ) {
-        super(tag, relatedPosition, createdBy, tagKind, content, parseContent, depth);
+        tags = typeof tags === "string" ? [tags] : tags;
+
+        super(
+            tags[0],
+            relatedPosition,
+            createdBy,
+            undefined,
+            undefined,
+            parseContent,
+            depth,
+        );
         this.children = [];
+        this.tags = tags;
     }
 
-    addChildren(children: BlockToken[]) {
+    addBlockToken(...children: BlockToken[]) {
         this.children.push(...children);
     }
 
     flatten(): BlockToken[] {
         let flattenedTokens = [];
-        flattenedTokens.push(
-            BlockToken.createContentless(
-                this.tag,
-                this.relatedPosition,
-                this.createdByRule,
-                "open",
-            ),
-        );
+        for (let tag of this.tags) {
+            flattenedTokens.push(
+                BlockToken.createContentless(
+                    tag,
+                    this.relatedPosition,
+                    this.createdByRule,
+                    "open",
+                ),
+            );
+        }
         const endPos =
             this.children[this.children.length - 1].relatedPosition ??
             this.relatedPosition;
         flattenedTokens.push(...this.children);
-        flattenedTokens.push(
-            BlockToken.createContentless(this.tag, endPos, this.createdByRule, "close"),
-        );
 
+        for (let tag of this.tags.reverse()) {
+            flattenedTokens.push(
+                BlockToken.createContentless(tag, endPos, this.createdByRule, "close"),
+            );
+        }
         return flattenedTokens;
     }
 }

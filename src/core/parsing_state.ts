@@ -25,6 +25,7 @@ export class ParsingStateBlock {
 
     addBlockToken(token: BlockToken) {
         if (token instanceof ContainerToken) {
+            console.log("ct");
             this.blockTokens.push(...token.flatten());
         } else {
             this.blockTokens.push(token);

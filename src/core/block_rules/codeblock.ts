@@ -1,6 +1,6 @@
 import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
-import { BlockToken, Token } from "../token.js";
+import { BlockToken, ContainerToken, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
 import { toHtml } from "hast-util-to-html";
 import { common, createStarryNight } from "@wooorm/starry-night";
@@ -19,25 +19,12 @@ export const CodeblockFenced: BlockRule = {
         stateChange.document = state.document;
         if (!line.startsWith("```")) return false;
         let langStr = line.substring(3).trim();
-        stateChange.addBlockToken(
-            BlockToken.createContentless(
-                "pre",
-                input.currentPoint,
-                CodeblockFenced.name,
-                "open",
-                1,
-            ),
-        );
 
-        stateChange.addBlockToken(
-            BlockToken.createContentless(
-                "code",
-                input.currentPoint,
-                CodeblockFenced.name,
-                "open",
-            )
-                .withAttribute("class", `${langStr}`)
-                .withAnnotation("codeblock"),
+        let codeContainer = new ContainerToken(
+            ["pre", "code"],
+            input.currentPoint,
+            CodeblockFenced.name,
+            false,
         );
 
         let codeLines: string[] = [];
@@ -61,7 +48,7 @@ export const CodeblockFenced: BlockRule = {
             } catch {}
         }
 
-        stateChange.addBlockToken(
+        codeContainer.addBlockToken(
             BlockToken.createPreservedText(
                 input.currentPoint,
                 CodeblockFenced.name,
@@ -69,23 +56,7 @@ export const CodeblockFenced: BlockRule = {
             ),
         );
 
-        stateChange.addBlockToken(
-            BlockToken.createContentless(
-                "code",
-                input.currentPoint,
-                CodeblockFenced.name,
-                "close",
-            ),
-        );
-        stateChange.addBlockToken(
-            BlockToken.createContentless(
-                "pre",
-                input.currentPoint,
-                CodeblockFenced.name,
-                "close",
-                1,
-            ),
-        );
+        stateChange.addBlockToken(codeContainer);
         input.nextLine();
         return true;
     },
