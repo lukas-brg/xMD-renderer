@@ -1,6 +1,6 @@
 import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
-import { BlockToken, ContainerToken, Token } from "../token.js";
+import { BlockToken, BlockTokenContainer, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
 import { toHtml } from "hast-util-to-html";
 import { common, createStarryNight } from "@wooorm/starry-night";
@@ -20,7 +20,7 @@ export const CodeblockFenced: BlockRule = {
         if (!line.startsWith("```")) return false;
         let langStr = line.substring(3).trim();
 
-        let codeContainer = new ContainerToken(
+        let codeContainer = new BlockTokenContainer(
             ["pre", "code"],
             input.currentPoint,
             CodeblockFenced.name,

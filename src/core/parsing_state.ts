@@ -1,5 +1,5 @@
 import { Point, InputState } from "./input_state.js";
-import { BlockToken, ContainerToken, InlineToken, Token } from "./token.js";
+import { BlockToken, BlockTokenContainer, InlineToken, Token } from "./token.js";
 
 import { DocumentState } from "./document_state.js";
 
@@ -23,9 +23,8 @@ export class ParsingStateBlock {
         this._document = document;
     }
 
-    addBlockToken(token: BlockToken) {
-        if (token instanceof ContainerToken) {
-            console.log("ct");
+    addBlockToken(token: BlockToken | BlockTokenContainer) {
+        if (token instanceof BlockTokenContainer) {
             this.blockTokens.push(...token.flatten());
         } else {
             this.blockTokens.push(token);
