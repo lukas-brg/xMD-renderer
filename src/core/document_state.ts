@@ -1,5 +1,5 @@
 import { assert } from "console";
-import { makeIdString, trailingWhiteSpaces } from "./string_utils.js";
+import { makeIdString as normalizeString, trailingWhiteSpaces } from "./string_utils.js";
 import { InlineToken, Token } from "./token.js";
 
 type Reference = {
@@ -74,11 +74,11 @@ export class DocumentState {
         destination: Token,
         onNumResolved: (footnoteNumber: number) => void,
     ) {
-        label = makeIdString(label);
+        label = normalizeString(label);
         destination.addAttribute("id", `def-${label}`);
         this._footnotes.set(label, {
             token: destination,
-            onNumResolved: onNumResolved,
+            onNumResolved,
         });
 
         let token = this._unresolvedFootnotes.get(label);
@@ -95,7 +95,7 @@ export class DocumentState {
     }
 
     resolveFootnoteRef(label: string, fnToken: Token): number {
-        label = makeIdString(label);
+        label = normalizeString(label);
         let number = this._footnoteNumbers.get(label) ?? this.footnoteCount++;
         this._footnoteNumbers.set(label, number);
         fnToken.addAttribute("id", "ref-" + label);
@@ -111,7 +111,7 @@ export class DocumentState {
     }
 
     registerHeading(text: string, level: number, lineNumber: number, token: Token) {
-        const id = makeIdString(text);
+        const id = normalizeString(text);
         let count = this._headingIds.get(id) ?? 0;
         let uniqueId;
         if (count > 0) {

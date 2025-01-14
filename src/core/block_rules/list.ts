@@ -8,7 +8,7 @@ import { leadingWhitespaces } from "../string_utils.js";
 type ListTag = "ol" | "ul";
 
 class ListManager {
-    /// Contains [depth, tag, marker] for each opened list
+    /**  Contains [depth, tag, marker] for each opened list */
     openedLists: [number, ListTag, string][];
     stateChange: StateChange;
     lastDepth: number;
@@ -62,9 +62,8 @@ class ListManager {
                 break;
             }
         }
-        this.lastTag = this.openedLists[0][1];
-        this.lastDepth = this.openedLists[0][0];
-        this.lastMarker = this.openedLists[0][2];
+
+        [this.lastDepth, this.lastTag, this.lastMarker] = this.openedLists[0];
     }
 
     closeAndOpen(depth: number, tag: ListTag, marker: string, currentPoint: Point) {
@@ -206,7 +205,7 @@ function getListItemData(line: string): {
     if (/^\d+\.\s/.test(trimmed)) tag = "ol";
     if (!tag) return { tag: null, depth: 0, marker: "", content: "" };
 
-    let depth = Math.floor(leadingWhitespaces(line) / 2);
+    const depth = Math.floor(leadingWhitespaces(line) / 2);
     const [marker, content] = trimmed.split(/\s+(.*)/, 2);
 
     return { tag, depth, marker, content };

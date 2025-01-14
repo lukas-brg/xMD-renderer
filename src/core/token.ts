@@ -100,7 +100,6 @@ export class BlockToken extends Token {
         parseContent?: boolean,
         depth?: number,
     ) {
-        let point;
         super(tag, "block", createdBy, content, tagKind, parseContent, depth);
         this.relatedPosition = relatedPosition;
         this.inlineTokens = [];
@@ -262,7 +261,6 @@ export class InlineToken extends Token {
             position,
             createdBy,
             "wrapped",
-
             content,
             parseContent,
             depth,
@@ -282,11 +280,52 @@ export class InlineToken extends Token {
             position,
             createdBy,
             "text",
-
             content,
             true,
             depth,
             positionEnd,
         );
+    }
+}
+
+export class ContainerToken extends BlockToken {
+    children: BlockToken[];
+
+    constructor(
+        tag: string,
+        relatedPosition: Point,
+        createdBy: string,
+        tagKind?: TagKind,
+        content?: string,
+        parseContent?: boolean,
+        depth?: number,
+    ) {
+        super(tag, relatedPosition, createdBy, tagKind, content, parseContent, depth);
+        this.children = [];
+    }
+
+    addChildren(children: BlockToken[]) {
+        this.children.push(...children);
+    }
+
+    flatten(): BlockToken[] {
+        let flattenedTokens = [];
+        flattenedTokens.push(
+            BlockToken.createContentless(
+                this.tag,
+                this.relatedPosition,
+                this.createdByRule,
+                "open",
+            ),
+        );
+        const endPos =
+            this.children[this.children.length - 1].relatedPosition ??
+            this.relatedPosition;
+        flattenedTokens.push(...this.children);
+        flattenedTokens.push(
+            BlockToken.createContentless(this.tag, endPos, this.createdByRule, "close"),
+        );
+
+        return flattenedTokens;
     }
 }

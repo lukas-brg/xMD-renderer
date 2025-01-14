@@ -1,5 +1,5 @@
 import { Point, InputState } from "./input_state.js";
-import { BlockToken, InlineToken, Token } from "./token.js";
+import { BlockToken, ContainerToken, InlineToken, Token } from "./token.js";
 
 import { DocumentState } from "./document_state.js";
 
@@ -24,7 +24,11 @@ export class ParsingStateBlock {
     }
 
     addBlockToken(token: BlockToken) {
-        this.blockTokens.push(token);
+        if (token instanceof ContainerToken) {
+            this.blockTokens.push(...token.flatten());
+        } else {
+            this.blockTokens.push(token);
+        }
     }
 
     addFooterToken(token: BlockToken) {
