@@ -1,6 +1,8 @@
 import { textChangeRangeIsUnchanged } from "typescript";
 import { Point } from "./input_state.js";
 import { Dict } from "./util.js";
+import { assert } from "console";
+import { tracingChannel } from "diagnostics_channel";
 
 type ContentKind = "block" | "inline" | "text" | "root" | "container";
 
@@ -158,6 +160,21 @@ export class BlockToken extends Token {
         );
     }
 
+    static createOpening(
+        tag: string,
+        relatedPosition: Point,
+        createdBy: string,
+        depth?: number,
+    ) {
+        return BlockToken.createContentless(
+            tag,
+            relatedPosition,
+            createdBy,
+            "open",
+            depth,
+        );
+    }
+
     static createText(
         relatedPosition: Point,
         createdBy: string,
@@ -295,6 +312,7 @@ export class BlockTokenContainer {
     createdBy: string;
     parseContent?: boolean;
     depth?: number;
+    containerTokens: BlockToken[];
 
     constructor(
         tags: [string, ...string[]] | string,
@@ -309,10 +327,16 @@ export class BlockTokenContainer {
 
         this.children = [];
         this.tags = tags;
+        this.containerTokens = [];
     }
 
     addBlockToken(...children: BlockToken[]) {
         this.children.push(...children);
+    }
+
+    addContainerToken(token: BlockToken) {
+        assert(token.tagKind === "open");
+        this.containerTokens.push(token);
     }
 
     flatten(): BlockToken[] {
@@ -327,6 +351,12 @@ export class BlockTokenContainer {
                 ),
             );
         }
+
+        for (let tok of this.containerTokens) {
+            flattenedTokens.push(tok);
+            this.tags.push(tok.tag);
+        }
+
         const endPos =
             this.children[this.children.length - 1].relatedPosition ??
             this.relatedPosition;

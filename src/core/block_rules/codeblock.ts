@@ -4,6 +4,7 @@ import { BlockToken, BlockTokenContainer, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
 import { toHtml } from "hast-util-to-html";
 import { common, createStarryNight } from "@wooorm/starry-night";
+import { Code } from "../inline_rules/code.js";
 
 const starryNight = await createStarryNight(common);
 
