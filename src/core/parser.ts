@@ -56,6 +56,13 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
     );
 
     state.blockTokens = state.blockTokens.concat(state._footerTokens);
+    state.appliedTokens.push([
+        "footer",
+        [
+            BlockToken.createSelfClosing("hr", doc.currentPoint, "parser"),
+            ...state._footerTokens,
+        ],
+    ]);
 }
 
 function parseInline(state: ParsingStateBlock) {

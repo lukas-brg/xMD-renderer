@@ -150,6 +150,7 @@ function handleListTermination(input: InputState, listManger: ListManager): bool
     ) {
         listManger.closeAndOpen(depth, tag, marker, input.currentPoint);
     } else if (depth < prevDepth) {
+        ``;
         listManger.closeUntil(input.currentPoint, depth);
         // if the list has a different marker than before on the indentation level,
         // create a new list on the current level

@@ -8,11 +8,14 @@ export class ParsingStateBlock {
     _footerTokens: BlockToken[];
     _document: DocumentState;
 
+    appliedTokens: [string, BlockToken[]][];
+
     constructor() {
         this.blockTokens = [];
         this._footerTokens = [];
 
         this._document = new DocumentState();
+        this.appliedTokens = [];
     }
 
     get document(): DocumentState {
@@ -157,7 +160,7 @@ export class StateChange extends ParsingStateBlock {
     applyToState(state: ParsingStateBlock) {
         state.blockTokens = state.blockTokens.concat(this.blockTokens);
         state._footerTokens = state._footerTokens.concat(this._footerTokens);
-
+        state.appliedTokens.push([this.executedBy, this.blockTokens]);
         this._wasApplied = true;
         state.document = this.document;
     }

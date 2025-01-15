@@ -2,6 +2,8 @@ import { BlockToken, Token } from "./token.js";
 import { InlineToken } from "./token.js";
 import * as fs from "fs";
 import { readFile } from "./string_utils.js";
+import { ParsingStateBlock } from "./parsing_state.js";
+import { Dict } from "./util.js";
 
 function attrStr(token: Token): string {
     const attrs = [...token.attributes.entries()]
@@ -34,6 +36,7 @@ function renderInline(tokens: InlineToken[]) {
 
 function renderHTML(tokens: BlockToken[]): string {
     const indent = (depth: number) => "  ".repeat(depth);
+
     let html = tokens
         .map((token) => {
             let inCodeBlock = token.tag == "pre" || token.tag == "code";
@@ -67,8 +70,16 @@ function renderHTML(tokens: BlockToken[]): string {
     return html;
 }
 
-export function renderToFile(tokens: BlockToken[], filePath: string) {
-    const htmlContent = renderHTML(tokens);
+export function render(state: ParsingStateBlock): string {
+    let html = [];
+    for (let [ruleName, tokens] of state.appliedTokens) {
+        html.push(renderHTML(tokens));
+    }
+    return html.join("");
+}
+
+export function renderToFile(state: ParsingStateBlock, filePath: string) {
+    const htmlContent = render(state);
     const theme = readFile("./src/static/github-markdown.css");
     const marginStyle = readFile("./src/static/margin.css");
     const htmlSkeleton = `

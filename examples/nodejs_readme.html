@@ -114,11 +114,11 @@ files.
   <p>
 To download <code>SHASUMS256.txt</code> using <code>curl</code>:
   </p>
-<pre><code class="bash">curl -O https://nodejs.org/dist/vx.y.z/SHASUMS256.txt
+<pre><code>curl -O https://nodejs.org/dist/vx.y.z/SHASUMS256.txt
 </code></pre>  <p>
 To check that downloaded files match the checksum, use <code>sha256sum</code>:
   </p>
-<pre><code class="bash">sha256sum -c SHASUMS256.txt --ignore-missing
+<pre><code>sha256sum -c SHASUMS256.txt --ignore-missing
 </code></pre>  <p>
 For Current and LTS, the GPG detached signature of <code>SHASUMS256.txt</code> is in
 <code>SHASUMS256.txt.sig</code>. You can use it with <code>gpg</code> to verify the integrity of
@@ -131,7 +131,7 @@ See <a href="#release-keys" title="">Release keys</a> for commands to import act
   <p>
 Next, download the <code>SHASUMS256.txt.sig</code> for the release:
   </p>
-<pre><code class="bash">curl -O https://nodejs.org/dist/vx.y.z/SHASUMS256.txt.sig
+<pre><code>curl -O https://nodejs.org/dist/vx.y.z/SHASUMS256.txt.sig
 </code></pre>  <p>
 Then use <code>gpg --verify SHASUMS256.txt.sig SHASUMS256.txt</code> to verify
 the file's signature.
@@ -523,7 +523,7 @@ Primary GPG keys for Node.js Releasers (some Releasers sign with subkeys):
 To import the full set of trusted release keys (including subkeys possibly used
 to sign releases):
   </p>
-<pre><code class="bash">gpg --keyserver hkps://keys.openpgp.org --recv-keys C0D6248439F1D5604AAFFB4021D900FFDB233756 <span class="pl-c"># Antoine du Hamel</span>
+<pre><code>gpg --keyserver hkps://keys.openpgp.org --recv-keys C0D6248439F1D5604AAFFB4021D900FFDB233756 <span class="pl-c"># Antoine du Hamel</span>
 gpg --keyserver hkps://keys.openpgp.org --recv-keys DD792F5973C6DE52C432CBDAC77ABFA00DDBF2B7 <span class="pl-c"># Juan José Arboleda</span>
 gpg --keyserver hkps://keys.openpgp.org --recv-keys CC68F5A3106FF448322E48ED27F5E38D5B0A215F <span class="pl-c"># Marco Ippolito</span>
 gpg --keyserver hkps://keys.openpgp.org --recv-keys 8FCCA13FEF1D0C2E91008E09770F7A9A5AE15600 <span class="pl-c"># Michaël Zasso</span>
