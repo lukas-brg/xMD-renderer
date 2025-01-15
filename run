@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# ts-node --esm src/index.ts 
-# npm run start
-
-npx tsc
-node dist/index.js

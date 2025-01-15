@@ -1,21 +1,21 @@
-import BlockRule from "./block_rules/blockrule.js";
-import { CodeblockFenced } from "./block_rules/codeblock.js";
-import { FootnoteDef } from "./block_rules/footnote_def.js";
-import { Heading } from "./block_rules/heading.js";
-import { List } from "./block_rules/list.js";
-import { Paragraph } from "./block_rules/paragraph.js";
-import { Code } from "./inline_rules/code.js";
-import { Emphasis } from "./inline_rules/emphasis.js";
-import { Escape } from "./inline_rules/escape.js";
-import { FootnoteRef } from "./inline_rules/footnote_ref.js";
-import InlineRule from "./inline_rules/inline_rule.js";
+import BlockRule from "./rules_block/blockrule.js";
+import { CodeblockFenced } from "./rules_block/codeblock.js";
+import { FootnoteDef } from "./rules_block/footnote_def.js";
+import { Heading } from "./rules_block/heading.js";
+import { List } from "./rules_block/list.js";
+import { Paragraph } from "./rules_block/paragraph.js";
+import { Code } from "./rules_inline/code.js";
+import { Emphasis } from "./rules_inline/emphasis.js";
+import { Escape } from "./rules_inline/escape.js";
+import { FootnoteRef } from "./rules_inline/footnote_ref.js";
+import InlineRule from "./rules_inline/inline_rule.js";
 import {
     AutoLink,
     BracketLink,
     Link,
     ReferenceLink,
     ReferenceLinkDefinition,
-} from "./inline_rules/link.js";
+} from "./rules_inline/link.js";
 import { Dict } from "./util.js";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";

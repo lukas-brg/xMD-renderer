@@ -1,6 +1,8 @@
 dist/
 notes.md
 node_modules/**
+xmd-code/node_modules/**
+**/node_modules/**
 
 *.html
 

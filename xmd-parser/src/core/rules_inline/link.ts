@@ -31,7 +31,7 @@ export const Link: InlineRule = {
 
     process: (state: ParsingStateInline) => {
         let didAddLink = false;
-        state.line
+        state
             .matchAll(pattern)
             ?.filter((m) => !state.isEscaped(m.index))
             .forEach((match) => {

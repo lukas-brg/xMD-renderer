@@ -1,7 +1,7 @@
 import * as esbuild from "esbuild";
-
+console.log("Building with esbuild...");
 await esbuild.build({
-    entryPoints: ["src/cli.ts"],
+    entryPoints: ["./src/cli.ts"],
     bundle: true,
     outdir: "dist",
     platform: "node",

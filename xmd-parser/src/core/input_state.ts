@@ -31,6 +31,10 @@ export class InputState {
         return new InputState(fileContent);
     }
 
+    static fromString(content: string): InputState {
+        return new InputState(content);
+    }
+
     get currentPoint(): Point {
         return { ...this._currentPoint };
     }

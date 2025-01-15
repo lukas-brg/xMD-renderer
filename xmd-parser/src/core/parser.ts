@@ -51,18 +51,21 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
             }
         }
     }
-    state.blockTokens.push(
-        BlockToken.createSelfClosing("hr", doc.currentPoint, "parser"),
-    );
 
-    state.blockTokens = state.blockTokens.concat(state._footerTokens);
-    state.appliedTokens.push([
-        "footer",
-        [
+    if (state._footerTokens.length > 0) {
+        state.blockTokens.push(
             BlockToken.createSelfClosing("hr", doc.currentPoint, "parser"),
-            ...state._footerTokens,
-        ],
-    ]);
+        );
+    
+        state.blockTokens = state.blockTokens.concat(state._footerTokens);
+        state.appliedTokens.push([
+            "footer",
+            [
+                BlockToken.createSelfClosing("hr", doc.currentPoint, "parser"),
+                ...state._footerTokens,
+            ],
+        ]);
+    }
 }
 
 function parseInline(state: ParsingStateBlock) {

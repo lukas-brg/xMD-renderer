@@ -7,7 +7,7 @@ import path from "path";
 import { renderFile } from "./core/index.js";
 
 const isDebugMode = true;
-const debugDefaultInput = "./examples/test.md";
+const debugDefaultInput = "../examples/test.md";
 
 function isDirectory(filePath: string) {
     const hasSep = filePath.endsWith(path.sep);

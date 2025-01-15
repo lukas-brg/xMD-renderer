@@ -34,7 +34,7 @@ function renderInline(tokens: InlineToken[]) {
     return html;
 }
 
-function renderHTML(tokens: BlockToken[]): string {
+export function renderHTML(tokens: BlockToken[]): string {
     const indent = (depth: number) => "  ".repeat(depth);
 
     let html = tokens
@@ -78,10 +78,21 @@ export function render(state: ParsingStateBlock): string {
     return html.join("");
 }
 
-export function renderToFile(state: ParsingStateBlock, filePath: string) {
+
+
+export function renderMarkdownBody(state: ParsingStateBlock) {
     const htmlContent = render(state);
-    const theme = readFile("./src/static/github-markdown.css");
-    const marginStyle = readFile("./src/static/margin.css");
+    return `
+    <div class="markdown-body">
+    ${htmlContent}
+    </div>
+    `
+}
+
+export function renderToHtmlStr(state: ParsingStateBlock) {
+    const htmlContent = render(state);
+    const theme = readFile("./static/github-markdown.css");
+    const marginStyle = readFile("./static/margin.css");
     const htmlSkeleton = `
 <!DOCTYPE html>
 <html lang="en">
@@ -105,6 +116,10 @@ ${marginStyle}
 </body>
 </html>
     `;
+return htmlSkeleton
+}
 
-    fs.writeFileSync(filePath, htmlSkeleton, "utf8");
+export function renderToFile(state: ParsingStateBlock, filePath: string) {
+
+    fs.writeFileSync(filePath, renderToHtmlStr(state), "utf8");
 }

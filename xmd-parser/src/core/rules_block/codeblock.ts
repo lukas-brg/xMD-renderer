@@ -4,9 +4,10 @@ import { BlockToken, BlockTokenContainer, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
 import { toHtml } from "hast-util-to-html";
 import { common, createStarryNight } from "@wooorm/starry-night";
-import { Code } from "../inline_rules/code.js";
+import { Code } from "../rules_inline/code.js";
 
-const starryNight = await createStarryNight(common);
+// const starryNight = await createStarryNight(common);
+
 
 export const CodeblockFenced: BlockRule = {
     name: "codeblock_fenced",
@@ -40,14 +41,14 @@ export const CodeblockFenced: BlockRule = {
             );
         }
 
-        if (langStr != "") {
-            try {
-                const scope = starryNight.flagToScope(langStr);
-                // @ts-ignore
-                const tree = starryNight.highlight(codeContent, scope);
-                codeContent = toHtml(tree);
-            } catch {}
-        }
+        // if (langStr != "") {
+        //     try {
+        //         const scope = starryNight.flagToScope(langStr);
+        //         // @ts-ignore
+        //         const tree = starryNight.highlight(codeContent, scope);
+        //         codeContent = toHtml(tree);
+        //     } catch {}
+        // }
 
         codeContainer.addBlockToken(
             BlockToken.createPreservedText(

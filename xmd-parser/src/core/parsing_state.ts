@@ -103,8 +103,8 @@ export class ParsingStateInline {
         return this.line.charAt(pos);
     }
 
-    matchAll(regex: RegExp): RegExpStringIterator<RegExpExecArray> {
-        let matches = this.line.matchAll(regex).filter((m) => {
+    matchAll(regex: RegExp): RegExpExecArray[] {
+        let matches = Array.from(this.line.matchAll(regex)).filter((m) => {
             const start = m.index;
             const end = start + m[0].length;
             for (let i = start; i < end; i++) {
