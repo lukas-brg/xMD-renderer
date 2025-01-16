@@ -28,7 +28,20 @@ type HeadingEntry = {
     token: Token;
 };
 
-export class DocumentState {
+export interface IDocumentState {
+    registerReference(label: string, url: string, title?: string): void;
+    resolveReference(label: string, token: InlineToken): void;
+    registerFootnoteDef(
+        label: string,
+        destination: Token,
+        onNumResolved: (footnoteNumber: number) => void,
+    ): void;
+    resolveFootnoteRef(label: string, fnToken: Token): number;
+    registerHeading(text: string, level: number, lineNumber: number, token: Token): void;
+    hasFootNote(label: string): boolean;
+}
+
+export class DocumentState implements IDocumentState {
     private _references: Map<string, Reference>;
     private _footnotes: Map<string, FootnoteRef>;
     private _footnoteNumbers: Map<string, number>;
@@ -37,6 +50,7 @@ export class DocumentState {
     private footnoteCount: number;
     _headings: HeadingEntry[];
     _headingIds: Map<string, number>;
+    _ids: Map<string, number>;
 
     constructor() {
         this._references = new Map();
@@ -47,6 +61,21 @@ export class DocumentState {
         this._footnoteNumbers = new Map();
         this._headings = [];
         this._headingIds = new Map();
+        this._ids = new Map();
+    }
+
+    private makeUniqueId(text: string): string {
+        const id = normalizeString(text);
+        let count = this._ids.get(id) ?? 0;
+        let uniqueId;
+        if (count == 0) {
+            uniqueId = id;
+        } else {
+            uniqueId = `${id}-${count}`;
+        }
+        count++;
+        this._ids.set(id, count);
+        return uniqueId;
     }
 
     registerReference(label: string, url: string, title?: string) {
@@ -122,18 +151,18 @@ export class DocumentState {
         return number;
     }
 
+    get footNoteLabels(): string[] {
+        return [...this._footnotes.keys()];
+    }
+
+    get referenceLabels(): string[] {
+        return [...this._references.keys()];
+    }
+
     registerHeading(text: string, level: number, lineNumber: number, token: Token) {
         const id = normalizeString(text);
-        let count = this._headingIds.get(id) ?? 0;
-        let uniqueId;
-        if (count > 0) {
-            uniqueId = `${id}-${count}`;
-        } else {
-            uniqueId = id;
-        }
+        let uniqueId = this.makeUniqueId(text);
         this._headings.push({ text, level, lineNumber, token, id: uniqueId });
-        count++;
-        this._headingIds.set(id, count);
 
         token.addAttribute("id", uniqueId);
     }

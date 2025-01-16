@@ -39,12 +39,7 @@ export const Heading: BlockRule = {
         );
         stateChange.addBlockToken(token);
         const lvl = Number.parseInt(headingTag.substring(1));
-        stateChange.document.registerHeading(
-            remainingLine,
-            lvl,
-            input.currentPoint.line,
-            token,
-        );
+        stateChange.registerHeading(remainingLine, lvl, input.currentPoint.line, token);
 
         stateChange.endPoint = input.currentPoint;
         input.nextLine();

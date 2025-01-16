@@ -2,7 +2,7 @@ import { BlockToken, Token } from "./token.js";
 import { InlineToken } from "./token.js";
 import * as fs from "fs";
 import { readFile } from "./string_utils.js";
-import { ParsingStateBlock } from "./parsing_state.js";
+import { ParsedBlock, ParsingStateBlock } from "./parsing_state.js";
 import { Dict } from "./util.js";
 
 function attrStr(token: Token): string {
@@ -78,15 +78,31 @@ export function render(state: ParsingStateBlock): string {
     return html.join("");
 }
 
-
-
 export function renderMarkdownBody(state: ParsingStateBlock) {
     const htmlContent = render(state);
     return `
     <div class="markdown-body">
     ${htmlContent}
     </div>
-    `
+    `;
+}
+
+export function renderBlock(block: ParsedBlock): string {
+    const content = renderHTML(block.tokens);
+    return `
+    <div id="${block.id}">
+    ${content}
+    </div>
+    `;
+}
+
+export function renderFromBlocks(blocks: ParsedBlock[]): string {
+    let content: string[] = [];
+    blocks.forEach((block, i) => {
+        const blockContent = renderBlock(block);
+        content.push(blockContent);
+    });
+    return content.join("");
 }
 
 export function renderToHtmlStr(state: ParsingStateBlock) {
@@ -116,10 +132,9 @@ ${marginStyle}
 </body>
 </html>
     `;
-return htmlSkeleton
+    return htmlSkeleton;
 }
 
 export function renderToFile(state: ParsingStateBlock, filePath: string) {
-
     fs.writeFileSync(filePath, renderToHtmlStr(state), "utf8");
 }

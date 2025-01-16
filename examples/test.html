@@ -145,7 +145,10 @@ _text_
 <pre><code>var foo = function (bar) {
     return bar++;
 };
-</code></pre>  <h2 id="links">Links</h2>
+</code></pre>  <p>
+Footnote<a id="ref-h-1" href="#def-h-1"><sup>[1]</sup></a>
+  </p>
+  <h2 id="links">Links</h2>
 <pre><code>[Link](www.google.com)
 
 [Link with title](www.google.com "Google")
@@ -204,9 +207,6 @@ _text_
 <a href="mailto:test@email.com">test@email.com</a>
   </p>
   <h3 id="reference-links">Reference Links</h3>
-  <p>
-Footnote<a id="ref-h-1" href="#def-h-1"><sup>[1]</sup></a>
-  </p>
 <pre><code>[link to github][github]
 
 The following definition should not be visible.
@@ -230,6 +230,17 @@ The following definition should not be visible.
 Here is another link to <a href="http://github.com" title="GitHub link">github</a>
   </p>
   <ul>
+    <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
+    <li>Sub-lists are made by indenting 2 spaces:</li>
+    <ul>
+      <li>Marker character change forces new list start:</li>
+      <ol>
+        <li>Lorem ipsum dolor sit amet</li>
+        <li>Consectetur adipiscing elit</li>
+        <li>Integer molestie lorem at massa</li>
+      </ol>
+    </ul>
+    <li>Very easy!</li>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
     <li>Sub-lists are made by indenting 2 spaces:</li>
     <ul>

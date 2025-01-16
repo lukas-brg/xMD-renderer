@@ -1,5 +1,6 @@
 import { InputState } from "./input_state.js";
 import { parse } from "./parser.js";
+import { ParsedBlock } from "./parsing_state.js";
 import { render, renderMarkdownBody, renderToFile, renderToHtmlStr } from "./renderer.js";
 
 export function renderFile(filePath: string, outFilePath: string) {
@@ -15,12 +16,9 @@ export function renderMarkdown(content: string): string {
     return renderMarkdownBody(state);
 }
 
-
-
-export function parseMarkdown(content: string) {
-    const input = InputState.fromString(content);
+export function parseGetBlocks(input: InputState): ParsedBlock[] {
     let state = parse(input);
-    console.log(state);
-    let blocks = [];
-   
+    return state.blocks;
 }
+
+export { renderFromBlocks } from "./renderer.js";

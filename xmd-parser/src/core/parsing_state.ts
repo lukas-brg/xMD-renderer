@@ -1,16 +1,35 @@
 import { Point, InputState } from "./input_state.js";
 import { BlockToken, BlockTokenContainer, InlineToken, Token } from "./token.js";
 
-import { DocumentState } from "./document_state.js";
+import { DocumentState, IDocumentState } from "./document_state.js";
+import { Range } from "./util.js";
 
-type ParsedBlock = {
-    lineStart: number;
-    lineEnd: number;
+type Labels = {
+    footnotes: string[];
+    refs: string[];
+};
+
+export type ParsedBlockData = {
+    id: string;
+    range: Range;
     tokens: BlockToken[];
     createdBy: string;
-    footnoteRefs: string[];
-    refs: string[];
     annotation?: string;
+    text: string;
+} & Labels;
+
+export type ParsedBlock = ParsedBlockData & {
+    equals: (other: ParsedBlock) => boolean;
+};
+
+const ParsedBlockPrototype = {
+    equals(this: ParsedBlock, other: ParsedBlock): boolean {
+        return this.text === other.text && this.range.equals(other.range);
+    },
+};
+
+export function createParsedBlock(data: ParsedBlockData): ParsedBlock {
+    return Object.assign(Object.create(ParsedBlockPrototype), data);
 }
 
 export class ParsingStateBlock {
@@ -55,16 +74,15 @@ export class ParsingStateInline {
     private _tokens: Map<number, InlineToken>;
     private escapedPositions: Set<number>;
     private _consumedIndices: Map<number, string>;
-
     protected _document: DocumentState;
 
-    constructor(line: string, point: Point, references: DocumentState) {
+    constructor(line: string, point: Point, document: DocumentState) {
         this.relatedPoint = point;
         this.line = line;
         this._tokens = new Map<number, InlineToken>();
         this.escapedPositions = new Set();
         this._consumedIndices = new Map();
-        this._document = references;
+        this._document = document;
     }
 
     get document(): DocumentState {
@@ -129,20 +147,24 @@ export class ParsingStateInline {
     }
 }
 
+function mergeDocumentState(left: DocumentState, right: DocumentState) {
+    // headings
+}
+
 /** BlockRules don't mutate state directly. This class represents the change of state a rule wants to apply.
  * Once applied, the state is considered immutable, so there are only positive state changes
  * (i.e. a `StateChange` cannot remove tokens)
  */
-export class StateChange extends ParsingStateBlock {
+export class StateChange extends ParsingStateBlock implements IDocumentState {
     private _startPoint: Point;
     private _endPoint: Point;
     private _wasApplied: boolean = false;
     success: boolean;
     executedBy: string;
-
-    
+    labels: Labels = { footnotes: [], refs: [] };
 
     constructor(
+        document: DocumentState,
         startPoint: Point,
         executedBy?: string,
         endPoint?: Point,
@@ -153,6 +175,35 @@ export class StateChange extends ParsingStateBlock {
         this.success = success;
         this._endPoint = endPoint ?? { ...startPoint };
         this.executedBy = executedBy ?? "";
+        this._document = document;
+    }
+
+    hasFootNote(label: string): boolean {
+        return this._document.hasFootNote(label);
+    }
+
+    registerReference(label: string, url: string, title?: string): void {
+        this.labels.refs.push(label);
+        this._document.registerReference(label, url, title);
+    }
+    resolveReference(label: string, token: InlineToken): void {
+        this.labels.refs.push(label);
+        this._document.resolveReference(label, token);
+    }
+    registerFootnoteDef(
+        label: string,
+        destination: Token,
+        onNumResolved: (footnoteNumber: number) => void,
+    ): void {
+        this.labels.footnotes.push(label);
+        this._document.registerFootnoteDef(label, destination, onNumResolved);
+    }
+    resolveFootnoteRef(label: string, fnToken: Token): number {
+        this.labels.footnotes.push(label);
+        return this._document.resolveFootnoteRef(label, fnToken);
+    }
+    registerHeading(text: string, level: number, lineNumber: number, token: Token): void {
+        this._document.registerHeading(text, level, lineNumber, token);
     }
 
     get wasApplied(): boolean {
@@ -164,19 +215,29 @@ export class StateChange extends ParsingStateBlock {
         startPoint: Point,
         executedBy?: string,
     ): StateChange {
-        let stateChange = new StateChange(startPoint, executedBy);
-        stateChange._document = state.document;
+        let stateChange = new StateChange(state.document, startPoint, executedBy);
         return stateChange;
     }
 
-    applyToState(state: ParsingStateBlock) {
+    applyToState(state: ParsingStateBlock, input: InputState) {
         state.blockTokens = state.blockTokens.concat(this.blockTokens);
         state._footerTokens = state._footerTokens.concat(this._footerTokens);
         state.appliedTokens.push([this.executedBy, this.blockTokens]);
         this._wasApplied = true;
         state.document = this.document;
+        this.endPoint = input.currentPoint;
+        const start = this.startPoint.line - 1;
+        const end = this.endPoint.line - 2;
 
-
+        let block: ParsedBlockData = {
+            id: `markdown-block-${start}-${end}`,
+            range: new Range(start, end),
+            tokens: this.blockTokens,
+            createdBy: this.executedBy,
+            text: input.slice(start, end),
+            ...this.labels,
+        };
+        state.blocks.push(createParsedBlock(block));
     }
 
     merge(other: StateChange) {
