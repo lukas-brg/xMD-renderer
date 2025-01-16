@@ -69,6 +69,10 @@ export class DocumentState {
         }
     }
 
+    hasFootNote(label: string): boolean {
+        return this._footnotes.get(normalizeString(label)) != undefined;
+    }
+
     registerFootnoteDef(
         label: string,
         destination: Token,
@@ -76,6 +80,9 @@ export class DocumentState {
     ) {
         label = normalizeString(label);
         destination.addAttribute("id", `def-${label}`);
+
+        if (this._footnotes.get(label) != undefined) return;
+
         this._footnotes.set(label, {
             token: destination,
             onNumResolved,
@@ -87,6 +94,7 @@ export class DocumentState {
             this._unresolvedRefs.delete(label);
             const num = this._footnoteNumbers.get(label);
             if (num) {
+                console.log("def");
                 onNumResolved(num);
             } else {
                 assert(false, `number for footnote ${label} should be determined`);
@@ -96,13 +104,17 @@ export class DocumentState {
 
     resolveFootnoteRef(label: string, fnToken: Token): number {
         label = normalizeString(label);
-        let number = this._footnoteNumbers.get(label) ?? this.footnoteCount++;
+        let number = this._footnoteNumbers.get(label);
+        const numAlreadyResolved = number != undefined;
+        number ??= this.footnoteCount++;
         this._footnoteNumbers.set(label, number);
         fnToken.addAttribute("id", "ref-" + label);
         let fnRef = this._footnotes.get(label);
         if (fnRef) {
             fnToken.addAttribute("href", `#def-${label}`);
-            fnRef.onNumResolved(number);
+            if (!numAlreadyResolved) {
+                fnRef.onNumResolved(number);
+            }
         } else {
             this._unresolvedFootnotes.set(label, fnToken);
         }

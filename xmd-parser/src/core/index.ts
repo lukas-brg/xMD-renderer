@@ -14,3 +14,13 @@ export function renderMarkdown(content: string): string {
     let state = parse(doc);
     return renderMarkdownBody(state);
 }
+
+
+
+export function parseMarkdown(content: string) {
+    const input = InputState.fromString(content);
+    let state = parse(input);
+    console.log(state);
+    let blocks = [];
+   
+}

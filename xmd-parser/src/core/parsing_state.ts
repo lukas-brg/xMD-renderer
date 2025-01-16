@@ -3,11 +3,21 @@ import { BlockToken, BlockTokenContainer, InlineToken, Token } from "./token.js"
 
 import { DocumentState } from "./document_state.js";
 
+type ParsedBlock = {
+    lineStart: number;
+    lineEnd: number;
+    tokens: BlockToken[];
+    createdBy: string;
+    footnoteRefs: string[];
+    refs: string[];
+    annotation?: string;
+}
+
 export class ParsingStateBlock {
     blockTokens: BlockToken[];
     _footerTokens: BlockToken[];
     _document: DocumentState;
-
+    blocks: ParsedBlock[] = [];
     appliedTokens: [string, BlockToken[]][];
 
     constructor() {
@@ -130,6 +140,8 @@ export class StateChange extends ParsingStateBlock {
     success: boolean;
     executedBy: string;
 
+    
+
     constructor(
         startPoint: Point,
         executedBy?: string,
@@ -163,6 +175,8 @@ export class StateChange extends ParsingStateBlock {
         state.appliedTokens.push([this.executedBy, this.blockTokens]);
         this._wasApplied = true;
         state.document = this.document;
+
+
     }
 
     merge(other: StateChange) {

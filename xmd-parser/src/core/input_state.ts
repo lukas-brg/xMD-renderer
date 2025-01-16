@@ -17,10 +17,12 @@ export class InputState {
     readonly lines: string[];
     readonly content: string;
     private _currentPoint: Point;
+    private consumedLines: Set<number>;
     constructor(content: string) {
         this.content = replaceTabs(content);
         this.lines = this.content.split("\n");
         this._currentPoint = { line: 0, column: 1, offset: 0 };
+        this.consumedLines = new Set();
     }
 
     static fromFile(filePath: string): InputState {
@@ -29,6 +31,10 @@ export class InputState {
             throw new Error(`File ${filePath} could not be loaded`);
         }
         return new InputState(fileContent);
+    }
+
+    get currentLineIndex(): number {
+        return this._currentPoint.line - 1;
     }
 
     static fromString(content: string): InputState {
@@ -40,6 +46,12 @@ export class InputState {
     }
     set currentPoint(p: Point) {
         this.currentPoint = p;
+    }
+
+    consumeLine(relativeIndex?: number) {
+        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        assert(!(absIdx < 0 || absIdx >= this.lines.length));
+        this.consumedLines.add(absIdx);
     }
 
     reset() {

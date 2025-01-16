@@ -17,3 +17,8 @@ export function warnInline(
 
     console.warn(warning);
 }
+
+
+export function warn(msg: string) {
+    console.log(`Warning: ${msg}`)
+}

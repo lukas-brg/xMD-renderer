@@ -56,7 +56,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
         state.blockTokens.push(
             BlockToken.createSelfClosing("hr", doc.currentPoint, "parser"),
         );
-    
+
         state.blockTokens = state.blockTokens.concat(state._footerTokens);
         state.appliedTokens.push([
             "footer",

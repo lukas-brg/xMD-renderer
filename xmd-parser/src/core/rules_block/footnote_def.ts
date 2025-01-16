@@ -1,11 +1,12 @@
+import { warnInline } from "../errors.js";
 import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import { makeIdString } from "../string_utils.js";
 import { BlockToken } from "../token.js";
 import BlockRule from "./blockrule.js";
+import { warn } from "../errors.js";
 
 const regex = /^\s*\[\^(\w+)\]:\s*(\w+.*)/g;
-
 export const FootnoteDef: BlockRule = {
     name: "footnote_def",
 
@@ -18,7 +19,20 @@ export const FootnoteDef: BlockRule = {
         const match = [...line.matchAll(regex)];
         if (match.length == 0) return false;
         let [wholeMatch, label, content] = match[0];
-
+        if (state.document.hasFootNote(label)) {
+            warn(
+                `Duplicate definitions of footnote '${label}'   line: ${input.currentPoint.line}   '${input.currentLine()}'`,
+            );
+            stateChange.addBlockToken(
+                BlockToken.createPreservedText(
+                    input.currentPoint,
+                    FootnoteDef.name,
+                    input.currentLine(),
+                ),
+            );
+            input.nextLine();
+            return true;
+        }
         stateChange.addFooterToken(
             BlockToken.createContentless(
                 "p",
