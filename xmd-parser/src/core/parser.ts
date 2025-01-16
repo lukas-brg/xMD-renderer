@@ -31,9 +31,9 @@ export function processTerminations(
 }
 
 function parseBlocks(doc: InputState, state: ParsingStateBlock) {
-    let line;
     doc.nextLine();
-    outer: while ((line = doc.currentLine()) != null) {
+    outer: while (!doc.isAtEof()) {
+        const line = doc.currentLine();
         if (doc.isEmptyLine()) {
             doc.nextLine();
             continue;
@@ -51,7 +51,6 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
             }
         }
     }
-
     if (state._footerTokens.length > 0) {
         state.blockTokens.push(
             BlockToken.createSelfClosing("hr", doc.currentPoint, "parser"),

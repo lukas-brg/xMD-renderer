@@ -134,8 +134,9 @@ function getListItemContent(
 
 /** Returns false if the whole list ends and handles indentation levels  */
 function handleListTermination(input: InputState, listManger: ListManager): boolean {
-    input.skipToFirstNonEmptyLine();
-
+    if (!input.skipToFirstNonEmptyLine()) {
+        return false;
+    }
     const { tag, depth, marker } = getListItemData(input.currentLine());
     const prevDepth = listManger.lastDepth;
     const prevTag = listManger.lastTag;
@@ -150,7 +151,6 @@ function handleListTermination(input: InputState, listManger: ListManager): bool
     ) {
         listManger.closeAndOpen(depth, tag, marker, input.currentPoint);
     } else if (depth < prevDepth) {
-        ``;
         listManger.closeUntil(input.currentPoint, depth);
         // if the list has a different marker than before on the indentation level,
         // create a new list on the current level
@@ -189,7 +189,6 @@ export const List: BlockRule = {
         } while ((line = input.nextLine()) != null);
 
         listManager.closeAll(input.currentPoint);
-
         return true;
     },
 };

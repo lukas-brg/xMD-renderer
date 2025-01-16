@@ -78,6 +78,10 @@ export class InputState {
         return this.lines[absIdx];
     }
 
+    isAtEof(): boolean {
+        return this.currentPoint.line > this.lines.length;
+    }
+
     hasNext(): boolean {
         return this.currentPoint.line < this.lines.length;
     }
@@ -153,7 +157,12 @@ export class InputState {
         return trailingWhiteSpaces(this.lines[absIdx]);
     }
 
-    skipToFirstNonEmptyLine() {
-        while (this.isEmptyLine() && this.nextLine() != null) {}
+    skipToFirstNonEmptyLine(): string | null {
+        let line: string | null = this.currentLine();
+        while (this.isEmptyLine()) {
+            if ((line = this.nextLine()) == null) break;
+        }
+
+        return line;
     }
 }
