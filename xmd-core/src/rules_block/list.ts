@@ -63,7 +63,8 @@ class ListManager {
             }
         }
 
-        [this.lastDepth, this.lastTag, this.lastMarker] = this.openedLists[0];
+        [this.lastDepth, this.lastTag, this.lastMarker] =
+            this.openedLists[this.openedLists.length - 1];
     }
 
     closeAndOpen(depth: number, tag: ListTag, marker: string, currentPoint: Point) {
@@ -183,7 +184,7 @@ export const List: BlockRule = {
             if (!doContinue) break;
 
             let content = getListItemContent(input, state, stateChange, listManager);
-            if (!content) return true; // li was terminated by another rule
+            if (content == null) return true; // li was terminated by another rule
 
             listManager.addListItem(content, input.currentPoint);
         } while ((line = input.nextLine()) != null);
@@ -201,8 +202,8 @@ function getListItemData(line: string): {
 } {
     let tag: ListTag | null = null;
     const trimmed = line.trim();
-    if (/^[-+*]\s/.test(trimmed)) tag = "ul";
-    if (/^\d+\.\s/.test(trimmed)) tag = "ol";
+    if (/^[-+*](?:\s|$)/.test(trimmed)) tag = "ul";
+    if (/^\d+\.(?:\s|$)/.test(trimmed)) tag = "ol";
     if (!tag) return { tag: null, depth: 0, marker: "", content: "" };
 
     const depth = Math.floor(leadingWhitespaces(line) / 2);

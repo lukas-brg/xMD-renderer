@@ -80,6 +80,7 @@ _**text**_
 **_text_**
 ```
 
+
 ### This is a heading
 
 _text_
@@ -138,6 +139,8 @@ var foo = function (bar) {
 };
 ```
 
+Footnote[^1]
+
 ## Links
 
 ```markdown
@@ -176,6 +179,7 @@ var foo = function (bar) {
 
 [Link to duplicate heading](#this-is-a-heading-1)
 
+
 ### Auto Links
 
 www.google.com
@@ -192,7 +196,6 @@ test@email.com
 
 ### Reference Links
 
-Footnote[^1]
 
 ```
 [link to github][github]
@@ -216,6 +219,14 @@ Here is another link to [github] [github]
 
 [^1]: footnote
 
+
++ Create a list by starting a line with `+`, `-`, or `*`
++ Sub-lists are made by indenting 2 spaces:
+  - Marker character change forces new list start:
+    1. Lorem ipsum dolor sit amet
+    2. Consectetur adipiscing elit
+    3. Integer molestie lorem at massa
++ Very easy!
 
 + Create a list by starting a line with `+`, `-`, or `*`
 + Sub-lists are made by indenting 2 spaces:

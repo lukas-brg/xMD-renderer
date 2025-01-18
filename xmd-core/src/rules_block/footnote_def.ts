@@ -19,7 +19,7 @@ export const FootnoteDef: BlockRule = {
         const match = [...line.matchAll(regex)];
         if (match.length == 0) return false;
         let [wholeMatch, label, content] = match[0];
-        if (state.document.hasFootNote(label)) {
+        if (stateChange.hasFootNote(label)) {
             warn(
                 `Duplicate definitions of footnote '${label}'   line: ${input.currentPoint.line}   '${input.currentLine()}'`,
             );
@@ -50,7 +50,7 @@ export const FootnoteDef: BlockRule = {
             content,
             1,
         ).withAnnotation("footnote-def");
-        stateChange.document.registerFootnoteDef(label, fnTok, (fnNum) => {
+        stateChange.registerFootnoteDef(label, fnTok, (fnNum) => {
             fnTok.content = `${fnNum}. ${fnTok.content}`;
         });
         stateChange.addFooterToken(fnTok);

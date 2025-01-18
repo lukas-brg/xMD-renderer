@@ -1,7 +1,13 @@
 import { InputState, Point } from "./input_state.js";
 import { ruleSet } from "./rules.js";
-import { ParsingStateBlock, ParsingStateInline, StateChange } from "./parsing_state.js";
+import {
+    createParsedBlock,
+    ParsingStateBlock,
+    ParsingStateInline,
+    StateChange,
+} from "./parsing_state.js";
 import { BlockToken, InlineToken } from "./token.js";
+import { Range } from "./util.js";
 
 export function processTerminations(
     input: InputState,
@@ -20,10 +26,10 @@ export function processTerminations(
             onTermination();
 
             if (applyStateChange) {
-                stateChange.applyToState(state);
+                stateChange.applyToState(state, input);
             }
 
-            newStateChange.applyToState(state);
+            newStateChange.applyToState(state, input);
             return true;
         }
     }
@@ -45,7 +51,7 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
             let success = rule.handlerObj.process(doc, state, stateChange);
             if (success) {
                 if (!stateChange.wasApplied) {
-                    stateChange.applyToState(state);
+                    stateChange.applyToState(state, doc);
                     continue outer;
                 }
             }
@@ -141,6 +147,21 @@ function parseInline(state: ParsingStateBlock) {
 
 export function parse(doc: InputState) {
     let state = new ParsingStateBlock();
+    if (doc.isEmpty) {
+        const range = new Range(doc.fragmentOffset, doc.fragmentOffset);
+        const emptyBlock = createParsedBlock({
+            id: `markdown-block-${doc.fragmentOffset}-${doc.fragmentOffset}`,
+            text: "",
+            range: range,
+            createdBy: "empty",
+            tokens: [],
+            footnotes: [],
+            refs: [],
+        });
+        state.blocks.push(emptyBlock);
+        return state;
+    }
+
     parseBlocks(doc, state);
     parseInline(state);
     return state;

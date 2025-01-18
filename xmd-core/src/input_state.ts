@@ -6,6 +6,7 @@ import {
     leadingWhitespaces,
     trailingWhiteSpaces,
 } from "./string_utils.js";
+import { Range } from "./util.js";
 
 export interface Point {
     line: number;
@@ -17,12 +18,17 @@ export class InputState {
     readonly lines: string[];
     readonly content: string;
     private _currentPoint: Point;
-    private consumedLines: Set<number>;
-    constructor(content: string) {
+    readonly fragmentOffset;
+    readonly isWhitespace: boolean;
+    readonly isEmpty: boolean;
+
+    constructor(content: string, lineOffset: number = 0) {
         this.content = replaceTabs(content);
         this.lines = this.content.split("\n");
         this._currentPoint = { line: 0, column: 1, offset: 0 };
-        this.consumedLines = new Set();
+        this.fragmentOffset = lineOffset;
+        this.isEmpty = content === "";
+        this.isWhitespace = this.isEmpty || isEmpty(content);
     }
 
     static fromFile(filePath: string): InputState {
@@ -37,8 +43,8 @@ export class InputState {
         return this._currentPoint.line - 1;
     }
 
-    static fromString(content: string): InputState {
-        return new InputState(content);
+    static fromString(content: string, lineOffset: number = 0): InputState {
+        return new InputState(content, lineOffset);
     }
 
     get currentPoint(): Point {
@@ -46,12 +52,6 @@ export class InputState {
     }
     set currentPoint(p: Point) {
         this.currentPoint = p;
-    }
-
-    consumeLine(relativeIndex?: number) {
-        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
-        assert(!(absIdx < 0 || absIdx >= this.lines.length));
-        this.consumedLines.add(absIdx);
     }
 
     reset() {
@@ -68,26 +68,27 @@ export class InputState {
     }
 
     currentLine(): string {
-        const lineIdx = Math.max(this._currentPoint.line - 1, 0);
+        const lineIdx = Math.max(this._currentPoint.line - 1, 0) - this.fragmentOffset;
         return this.lines[lineIdx];
     }
 
     line(relativeIndex?: number): string {
-        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        const absIdx =
+            this.currentPoint.line - 1 + (relativeIndex ?? 0) - this.fragmentOffset;
         assert(!(absIdx < 0 || absIdx >= this.lines.length));
         return this.lines[absIdx];
     }
 
     isAtEof(): boolean {
-        return this.currentPoint.line > this.lines.length;
+        return this.currentPoint.line - this.fragmentOffset > this.lines.length;
     }
 
     hasNext(): boolean {
-        return this.currentPoint.line < this.lines.length;
+        return this.currentPoint.line - this.fragmentOffset < this.lines.length;
     }
 
     nextLine(): string | null {
-        const lineIdx = this._currentPoint.line;
+        const lineIdx = this._currentPoint.line - this.fragmentOffset;
 
         if (lineIdx >= this.lines.length) {
             this._currentPoint.line++;
@@ -102,7 +103,7 @@ export class InputState {
     }
 
     peekLine(): string | null {
-        const lineIdx = this._currentPoint.line;
+        const lineIdx = this._currentPoint.line - this.fragmentOffset;
 
         if (lineIdx >= this.lines.length) {
             return null;
@@ -115,7 +116,9 @@ export class InputState {
             and the stripped line without advancing to the new Point 
     */
     lineSkipWhiteSpaces(relativeIndex?: number): [Point, string] {
-        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        const absIdx =
+            this.currentPoint.line - 1 + (relativeIndex ?? 0) - this.fragmentOffset;
+
         assert(!(absIdx < 0 || absIdx >= this.lines.length));
         const line = this.lines[absIdx];
 
@@ -131,7 +134,8 @@ export class InputState {
     }
 
     isEmptyLine(relativeIndex?: number): boolean {
-        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        const absIdx =
+            this.currentPoint.line - 1 + (relativeIndex ?? 0) - this.fragmentOffset;
         if (absIdx < 0 || absIdx >= this.lines.length) {
             return true;
         }
@@ -140,7 +144,8 @@ export class InputState {
     }
 
     leadingWhitespaces(relativeIndex?: number): number {
-        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        const absIdx =
+            this.currentPoint.line - 1 + (relativeIndex ?? 0) - this.fragmentOffset;
         if (absIdx < 0 || absIdx >= this.lines.length) {
             return 0;
         }
@@ -149,12 +154,19 @@ export class InputState {
     }
 
     trailingWhitespaces(relativeIndex?: number): number {
-        const absIdx = this.currentPoint.line - 1 + (relativeIndex ?? 0);
+        const absIdx =
+            this.currentPoint.line - 1 + (relativeIndex ?? 0) - this.fragmentOffset;
         if (absIdx < 0 || absIdx >= this.lines.length) {
             return 0;
         }
 
         return trailingWhiteSpaces(this.lines[absIdx]);
+    }
+
+    slice(start: number, end: number): string {
+        return this.lines
+            .slice(start - this.fragmentOffset, end - this.fragmentOffset + 1)
+            .join("\n");
     }
 
     skipToFirstNonEmptyLine(): string | null {

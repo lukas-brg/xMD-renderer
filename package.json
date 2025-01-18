@@ -2,13 +2,16 @@
     "name": "xmd",
     "private": true,
     "workspaces": [
-        "xmd-parser",
-        "xmd-code"
+        "xmd-core",
+        "xmd-code",
+        "xmd-cli"
     ],
     "scripts": {
-        "build": "npm run build --workspace=xmd-parser && npm run build --workspace=xmd-code",
-        "test": "npm test --workspaces",
-        "code": "code --extensionDevelopmentPath=${PWD}/xmd-code",
-        "start": "npm run build --workspace=xmd-parser && npm run start --workspace=xmd-parser"
+        "build-cli": "npm run build --workspace=xmd-cli",
+        "build-code": "npm run build --workspace=xmd-code",
+        "start-cli": "npm run start --workspace=xmd-cli",
+        "cli": "npm run build-cli && xmd",
+        "build": "npm run build-cli && npm run build-code",
+        "test": "npm test --workspaces"
     }
 }

@@ -8,7 +8,6 @@ import { Code } from "../rules_inline/code.js";
 
 // const starryNight = await createStarryNight(common);
 
-
 export const CodeblockFenced: BlockRule = {
     name: "codeblock_fenced",
 
@@ -18,7 +17,6 @@ export const CodeblockFenced: BlockRule = {
         stateChange: StateChange,
     ) => {
         const line = input.currentLine();
-        stateChange.document = state.document;
         if (!line.startsWith("```")) return false;
         let langStr = line.substring(3).trim();
 
