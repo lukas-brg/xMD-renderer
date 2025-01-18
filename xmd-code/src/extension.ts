@@ -1,13 +1,13 @@
 import * as vscode from "vscode";
-import { renderMarkdown, parseGetBlocks, renderFromBlocks } from "xmd-parser/src/core";
-import { ParsedBlock } from "xmd-parser/src/core/parsing_state";
-import { IncrementalParser } from "xmd-parser/src/core/incremental_parser";
+import { renderMarkdown, parseGetBlocks, renderFromBlocks } from "xmd-core/";
+import { ParsedBlock } from "xmd-core/src/parsing_state";
+import { IncrementalParser } from "xmd-core/incremental_parser";
 import { TextDocumentContentChangeEvent } from "vscode";
-import { Range } from "xmd-parser/src/core/util";
+import { Range } from "xmd-core/util";
 
 function isChangeAfterLastBlock(
     change: TextDocumentContentChangeEvent,
-    blocks: ParsedBlock[]
+    blocks: ParsedBlock[],
 ): boolean {
     if (blocks.length === 0) {
         return true;
@@ -33,7 +33,7 @@ export function activate(context: vscode.ExtensionContext) {
                     vscode.ViewColumn.Beside,
                     {
                         enableScripts: true,
-                    }
+                    },
                 );
             }
             parser.parseAll(markdownContent);
@@ -66,7 +66,7 @@ export function activate(context: vscode.ExtensionContext) {
                             start,
                             0,
                             end,
-                            editor.document.lineAt(end).text.length
+                            editor.document.lineAt(end).text.length,
                         );
 
                         const content = editor.document.getText(range);

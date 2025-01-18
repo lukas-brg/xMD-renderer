@@ -4,10 +4,10 @@ import { program } from "commander";
 import fs from "fs";
 import path from "path";
 
-import { renderFile } from "./core/index.js";
+import { renderFile } from "xmd-core";
 
 const isDebugMode = true;
-const debugDefaultInput = "../examples/test.md";
+const debugDefaultInput = "./examples/test.md";
 
 function isDirectory(filePath: string) {
     const hasSep = filePath.endsWith(path.sep);
