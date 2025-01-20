@@ -1,5 +1,5 @@
 import { InputState, Point } from "./input_state.js";
-import { ruleSet } from "./rules.js";
+import { RuleSet, ruleSet, RuleState } from "./rules.js";
 import {
     createParsedBlock,
     ParsingStateBlock,
@@ -7,7 +7,7 @@ import {
     StateChange,
 } from "./parsing_state.js";
 import { BlockToken, InlineToken } from "./token.js";
-import { Range } from "./util.js";
+import { MultiMap, Range } from "./util.js";
 
 export function processTerminations(
     input: InputState,
@@ -17,7 +17,7 @@ export function processTerminations(
     onTermination: () => void,
 ): boolean {
     const terminatedBy = ruleSet.block[stateChange.executedBy].terminatedBy;
-    let newStateChange = StateChange.fromState(stateChange, input.currentPoint);
+    let newStateChange = StateChange.fromState(state, input.currentPoint);
 
     for (const ruleObj of terminatedBy) {
         const success = ruleObj.process(input, state, newStateChange);
@@ -44,10 +44,14 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
             doc.nextLine();
             continue;
         }
-        let ruleApplied = false;
+
         for (let [ruleName, rule] of Object.entries(ruleSet.block)) {
             rule.handlerObj.terminatedBy = rule.terminatedBy;
             let stateChange = StateChange.fromState(state, doc.currentPoint, ruleName);
+            let ruleStates = new Map<string, RuleState>();
+            initRuleState(ruleStates, ruleSet.block);
+            initRuleState(ruleStates, ruleSet.inline);
+            stateChange.ruleStates = ruleStates;
             let success = rule.handlerObj.process(doc, state, stateChange);
             if (success) {
                 if (!stateChange.wasApplied) {
@@ -58,11 +62,11 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
         }
     }
     if (state._footerTokens.length > 0) {
-        state.blockTokens.push(
+        state._tokens.push(
             BlockToken.createSelfClosing("hr", doc.currentPoint, "parser"),
         );
 
-        state.blockTokens = state.blockTokens.concat(state._footerTokens);
+        state._tokens = state._tokens.concat(state._footerTokens);
         state.appliedTokens.push([
             "footer",
             [
@@ -73,9 +77,19 @@ function parseBlocks(doc: InputState, state: ParsingStateBlock) {
     }
 }
 
+function initRuleState(ruleStates: Map<string, RuleState>, ruleSet: RuleSet) {
+    for (let ruleName of Object.keys(ruleSet)) {
+        let state: RuleState = {
+            ruleState: new Map(),
+            deferredState: new MultiMap(),
+        };
+        ruleStates.set(ruleName, state);
+    }
+}
+
 function parseInline(state: ParsingStateBlock) {
     let references = state.document;
-    for (let blockTok of state.blockTokens) {
+    for (let blockTok of state._tokens) {
         const line = blockTok.content;
         if (line) {
             if (blockTok.parseContent) {
@@ -87,7 +101,8 @@ function parseInline(state: ParsingStateBlock) {
                 let anyRuleApplies = false;
 
                 for (let [ruleName, rule] of Object.entries(ruleSet.inline)) {
-                    let success = rule.handlerObj.process(inlineState);
+                    const ruleState = state.ruleStates.get(ruleName)!;
+                    const success = rule.handlerObj.process(inlineState, ruleState);
                     anyRuleApplies = anyRuleApplies || success;
                 }
 
@@ -147,6 +162,11 @@ function parseInline(state: ParsingStateBlock) {
 
 export function parse(doc: InputState) {
     let state = new ParsingStateBlock();
+    let ruleStates = new Map<string, RuleState>();
+    initRuleState(ruleStates, ruleSet.block);
+    initRuleState(ruleStates, ruleSet.inline);
+    state.ruleStates = ruleStates;
+
     if (doc.isEmpty) {
         const range = new Range(doc.fragmentOffset, doc.fragmentOffset);
         const emptyBlock = createParsedBlock({

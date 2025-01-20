@@ -5,7 +5,7 @@
     "main": "./src/index.js",
     "type": "module",
     "scripts": {
-        "start": "npm run check && npx tsx src/cli.ts",
+        "start": "npm run check && npx tsx src/cli.ts  ",
         "check": "npx tsc --noEmit",
         "cli": "npm run build && xmd",
         "build": "npm run check && node esbuild.js"

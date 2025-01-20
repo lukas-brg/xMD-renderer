@@ -1,6 +1,7 @@
-import { ParsingStateInline } from "../parsing_state.js";
+import { DeferredState, ParsingStateInline } from "../parsing_state.js";
 import InlineRule from "./inline_rule.js";
 import { InlineToken } from "../token.js";
+import { RuleState } from "../rules.js";
 
 const ESCAPABLE: Set<string> = new Set([
     "\\",
@@ -26,7 +27,7 @@ const ESCAPABLE: Set<string> = new Set([
 export const Escape: InlineRule = {
     name: "escape",
 
-    process: (state: ParsingStateInline) => {
+    process: (state: ParsingStateInline, ruleState: RuleState) => {
         const line = state.line;
         const matches = new Set([...line.matchAll(/\\/g)].map((match) => match.index));
         if (matches.size == 0) return false;

@@ -18,7 +18,7 @@ export const Paragraph: BlockRule = {
                 return false;
             }
         }
-        stateChange.addBlockToken(
+        stateChange.addToken(
             BlockToken.createContentless("p", input.currentPoint, Paragraph.name, "open"),
         );
         do {
@@ -28,7 +28,7 @@ export const Paragraph: BlockRule = {
                 stateChange,
                 containsText, // don't apply paragraph state change if it's empty
                 () => {
-                    stateChange.addBlockToken(
+                    stateChange.addToken(
                         BlockToken.createContentless(
                             "p",
                             input.currentPoint,
@@ -48,12 +48,12 @@ export const Paragraph: BlockRule = {
             }
 
             let line = input.currentLine();
-            stateChange.addBlockToken(
+            stateChange.addToken(
                 BlockToken.createText(input.currentPoint, Paragraph.name, line, 1),
             );
             containsText = true;
             if (input.trailingWhitespaces() >= 2) {
-                stateChange.addBlockToken(
+                stateChange.addToken(
                     BlockToken.createSelfClosing(
                         "br",
                         input.currentPoint,
@@ -62,7 +62,7 @@ export const Paragraph: BlockRule = {
                 );
             }
         } while (input.nextLine() != null);
-        stateChange.addBlockToken(
+        stateChange.addToken(
             BlockToken.createContentless(
                 "p",
                 input.currentPoint,

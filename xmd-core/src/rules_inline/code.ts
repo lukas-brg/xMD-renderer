@@ -1,12 +1,13 @@
-import { ParsingStateInline } from "../parsing_state.js";
+import { DeferredState, ParsingStateInline } from "../parsing_state.js";
 import InlineRule from "./inline_rule.js";
 import { InlineToken } from "../token.js";
 import { pairs } from "../util.js";
+import { RuleState } from "../rules.js";
 
 export const Code: InlineRule = {
     name: "code",
 
-    process: (state: ParsingStateInline) => {
+    process: (state: ParsingStateInline, ruleState: RuleState) => {
         const line = state.line;
         const matches: number[] = [...line.matchAll(/`/g)]
             .map((match) => match.index)

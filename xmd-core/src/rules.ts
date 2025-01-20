@@ -1,3 +1,4 @@
+import { DeferredState, DeferredTokenStateEntry } from "./parsing_state.js";
 import BlockRule from "./rules_block/blockrule.js";
 import { CodeblockFenced } from "./rules_block/codeblock.js";
 import { FootnoteDef } from "./rules_block/footnote_def.js";
@@ -16,7 +17,7 @@ import {
     ReferenceLink,
     ReferenceLinkDefinition,
 } from "./rules_inline/link.js";
-import { Dict } from "./util.js";
+import { Dict, MultiMap } from "./util.js";
 
 type FailureMode = "plaintext" | "applyPartially" | "ignore";
 
@@ -30,7 +31,9 @@ type InlineRuleEntry = {
     handlerObj: InlineRule;
 };
 
-type RuleSet = Dict<InlineRuleEntry> | Dict<BlockRuleEntry>;
+export type RuleSet = Dict<InlineRuleEntry> | Dict<BlockRuleEntry>;
+
+export type Rule = BlockRule | InlineRule;
 
 const blockRules: RuleSet = {
     codeblock_fenced: {
@@ -94,4 +97,9 @@ const inlineRules: RuleSet = {
 export const ruleSet = {
     inline: inlineRules,
     block: blockRules,
+};
+
+export type RuleState = {
+    ruleState: Map<string, any>;
+    deferredState: DeferredState;
 };

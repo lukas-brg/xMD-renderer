@@ -9,7 +9,7 @@
     "scripts": {
         "build-cli": "npm run build --workspace=xmd-cli",
         "build-code": "npm run build --workspace=xmd-code",
-        "start-cli": "npm run start --workspace=xmd-cli",
+        "start-cli": "npm run build --workspace=xmd-cli && npx tsx xmd-cli/dist/cli.js",
         "cli": "npm run build-cli && xmd",
         "build": "npm run build-cli && npm run build-code",
         "test": "npm test --workspaces"

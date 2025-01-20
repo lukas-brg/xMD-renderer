@@ -1,8 +1,9 @@
-import { ParsingStateInline } from "../parsing_state.js";
+import { DeferredState, ParsingStateInline } from "../parsing_state.js";
 import InlineRule from "./inline_rule.js";
 import { InlineToken } from "../token.js";
 import normalizeUrl from "normalize-url";
 import { warnInline } from "../errors.js";
+import { RuleState } from "../rules.js";
 
 const pattern = /\[(.*?)\]\((.*?)(?:\s*\"(.*?)\")?\)/g;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -29,7 +30,7 @@ function processUrl(url: string): string {
 export const Link: InlineRule = {
     name: "link",
 
-    process: (state: ParsingStateInline) => {
+    process: (state: ParsingStateInline, ruleState: RuleState) => {
         let didAddLink = false;
         state
             .matchAll(pattern)
@@ -70,7 +71,7 @@ export const Link: InlineRule = {
 export const AutoLink: InlineRule = {
     name: "autolink",
 
-    process: (state: ParsingStateInline) => {
+    process: (state: ParsingStateInline, ruleState: RuleState) => {
         let didAddLink = false;
         state.matchAll(urlRegex).forEach((match) => {
             const linkText = match[0];
@@ -103,7 +104,7 @@ const bracketAutoEmailRegex = /<<([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}
 export const BracketLink: InlineRule = {
     name: "bracket_link",
 
-    process: (state: ParsingStateInline) => {
+    process: (state: ParsingStateInline, ruleState: RuleState) => {
         let didAddLink = false;
 
         state.matchAll(bracketAutoEmailRegex).forEach((match) => {
@@ -155,7 +156,7 @@ const refRegex = /\[(\w+.*)\]\s?\[(.*?)\]/g;
 export const ReferenceLink: InlineRule = {
     name: "reference_link",
 
-    process: (state: ParsingStateInline) => {
+    process: (state: ParsingStateInline, ruleState: RuleState) => {
         let didAddLink = false;
         let matches = state.matchAll(refRegex);
 
@@ -195,7 +196,7 @@ const referenceDefRegex = new RegExp(`${defRegex.source}([^\\s]+)(?:.*"(\\w+.*)"
 export const ReferenceLinkDefinition: InlineRule = {
     name: "reference_link_definition",
 
-    process: (state: ParsingStateInline) => {
+    process: (state: ParsingStateInline, ruleState: RuleState) => {
         let didAddLink = false;
         let matches = [...state.matchAll(referenceDefRegex)];
         if (matches.length == 0) {

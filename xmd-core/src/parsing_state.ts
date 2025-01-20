@@ -1,13 +1,36 @@
 import { Point, InputState } from "./input_state.js";
-import { BlockToken, BlockTokenContainer, InlineToken, Token } from "./token.js";
+import {
+    BlockToken,
+    BlockTokenContainer,
+    InlineToken,
+    Token,
+    DeferredTokenState as DeferredStateEntry,
+} from "./token.js";
 
 import { DocumentState, IDocumentState } from "./document_state.js";
-import { Range } from "./util.js";
+import { MultiMap, Range } from "./util.js";
+import { RuleState } from "./rules.js";
 
 type Labels = {
     footnotes: string[];
     refs: string[];
 };
+
+interface IParsingState {
+    _tokens: Token[];
+    _footerTokens: Token[];
+}
+
+interface IParsingMethods extends IParsingState {
+    addToken(token: Token): void;
+    addFooterToken(token: Token): void;
+}
+
+export type DeferredTokenStateEntry = DeferredStateEntry & {
+    token: Token;
+};
+
+export type DeferredState = MultiMap<string, DeferredTokenStateEntry>;
 
 export type ParsedBlockData = {
     id: string;
@@ -32,19 +55,22 @@ export function createParsedBlock(data: ParsedBlockData): ParsedBlock {
     return Object.assign(Object.create(ParsedBlockPrototype), data);
 }
 
-export class ParsingStateBlock {
-    blockTokens: BlockToken[];
+export class ParsingStateBlock implements IParsingMethods {
+    _tokens: BlockToken[];
     _footerTokens: BlockToken[];
     _document: DocumentState;
     blocks: ParsedBlock[] = [];
     appliedTokens: [string, BlockToken[]][];
+    deferredState: Map<string, MultiMap<string, DeferredTokenStateEntry>>;
+    ruleStates: Map<string, RuleState>;
 
     constructor() {
-        this.blockTokens = [];
+        this._tokens = [];
         this._footerTokens = [];
-
         this._document = new DocumentState();
         this.appliedTokens = [];
+        this.deferredState = new Map();
+        this.ruleStates = new Map();
     }
 
     get document(): DocumentState {
@@ -55,11 +81,14 @@ export class ParsingStateBlock {
         this._document = document;
     }
 
-    addBlockToken(token: BlockToken | BlockTokenContainer) {
+    addTokenContainer(container: BlockTokenContainer) {
+        this._tokens.push(...container.flatten());
+    }
+    addToken(token: BlockToken) {
         if (token instanceof BlockTokenContainer) {
-            this.blockTokens.push(...token.flatten());
+            this._tokens.push(...token.flatten());
         } else {
-            this.blockTokens.push(token);
+            this._tokens.push(token);
         }
     }
 
@@ -75,6 +104,7 @@ export class ParsingStateInline {
     private escapedPositions: Set<number>;
     private _consumedIndices: Map<number, string>;
     protected _document: DocumentState;
+    ruleState: MultiMap<string, DeferredTokenStateEntry>;
 
     constructor(line: string, point: Point, document: DocumentState) {
         this.relatedPoint = point;
@@ -83,6 +113,7 @@ export class ParsingStateInline {
         this.escapedPositions = new Set();
         this._consumedIndices = new Map();
         this._document = document;
+        this.ruleState = new MultiMap();
     }
 
     get document(): DocumentState {
@@ -155,13 +186,17 @@ function mergeDocumentState(left: DocumentState, right: DocumentState) {
  * Once applied, the state is considered immutable, so there are only positive state changes
  * (i.e. a `StateChange` cannot remove tokens)
  */
-export class StateChange extends ParsingStateBlock implements IDocumentState {
+export class StateChange implements IParsingMethods {
     private _startPoint: Point;
     private _endPoint: Point;
     private _wasApplied: boolean = false;
     success: boolean;
     executedBy: string;
     labels: Labels = { footnotes: [], refs: [] };
+    _tokens: BlockToken[];
+    _footerTokens: BlockToken[];
+
+    ruleStates: Map<string, RuleState>;
 
     constructor(
         document: DocumentState,
@@ -170,40 +205,13 @@ export class StateChange extends ParsingStateBlock implements IDocumentState {
         endPoint?: Point,
         success: boolean = true,
     ) {
-        super();
         this._startPoint = startPoint;
         this.success = success;
         this._endPoint = endPoint ?? { ...startPoint };
         this.executedBy = executedBy ?? "";
-        this._document = document;
-    }
-
-    hasFootNote(label: string): boolean {
-        return this._document.hasFootNote(label);
-    }
-
-    registerReference(label: string, url: string, title?: string): void {
-        this.labels.refs.push(label);
-        this._document.registerReference(label, url, title);
-    }
-    resolveReference(label: string, token: InlineToken): void {
-        this.labels.refs.push(label);
-        this._document.resolveReference(label, token);
-    }
-    registerFootnoteDef(
-        label: string,
-        destination: Token,
-        onNumResolved: (footnoteNumber: number) => void,
-    ): void {
-        this.labels.footnotes.push(label);
-        this._document.registerFootnoteDef(label, destination, onNumResolved);
-    }
-    resolveFootnoteRef(label: string, fnToken: Token): number {
-        this.labels.footnotes.push(label);
-        return this._document.resolveFootnoteRef(label, fnToken);
-    }
-    registerHeading(text: string, level: number, lineNumber: number, token: Token): void {
-        this._document.registerHeading(text, level, lineNumber, token);
+        this._tokens = [];
+        this._footerTokens = [];
+        this.ruleStates = new Map();
     }
 
     get wasApplied(): boolean {
@@ -219,20 +227,53 @@ export class StateChange extends ParsingStateBlock implements IDocumentState {
         return stateChange;
     }
 
+    registerSharedState(token: BlockToken, state: DeferredStateEntry) {
+        for (let ruleName of state.updatedBy) {
+            this.ruleStates
+                .get(ruleName)!
+                .deferredState.add(state.identifier, { ...state, token });
+        }
+    }
+
+    addTokenContainer(container: BlockTokenContainer) {
+        this._tokens.push(...container.flatten());
+    }
+
+    addToken(token: BlockToken) {
+        if (token.state) {
+            this.registerSharedState(token, token.state);
+        }
+        this._tokens.push(token);
+    }
+
+    addFooterToken(token: BlockToken) {
+        if (token.state) {
+            this.registerSharedState(token, token.state);
+        }
+        this._footerTokens.push(token);
+    }
+
     applyToState(state: ParsingStateBlock, input: InputState) {
-        state.blockTokens = state.blockTokens.concat(this.blockTokens);
-        state._footerTokens = state._footerTokens.concat(this._footerTokens);
-        state.appliedTokens.push([this.executedBy, this.blockTokens]);
+        state.appliedTokens.push([this.executedBy, this._tokens]);
         this._wasApplied = true;
-        state.document = this.document;
         this.endPoint = input.currentPoint;
         const start = this.startPoint.line - 1;
         const end = this.endPoint.line - 2;
+        state._footerTokens.push(...this._footerTokens);
+
+        state._tokens.push(...this._tokens);
+
+        for (let [ruleName, ruleState] of this.ruleStates.entries()) {
+            let stateRuleState = state.ruleStates.get(ruleName)!;
+            for (let [key, values] of ruleState.deferredState.entries()) {
+                stateRuleState.deferredState.add(key, ...values);
+            }
+        }
 
         let block: ParsedBlockData = {
             id: `markdown-block-${start}-${end}`,
             range: new Range(start, end),
-            tokens: this.blockTokens,
+            tokens: this._tokens,
             createdBy: this.executedBy,
             text: input.slice(start, end),
             ...this.labels,
@@ -241,7 +282,7 @@ export class StateChange extends ParsingStateBlock implements IDocumentState {
     }
 
     merge(other: StateChange) {
-        this.blockTokens = this.blockTokens.concat(other.blockTokens);
+        this._tokens = this._tokens.concat(other._tokens);
         this.endPoint = other.endPoint;
         this.executedBy += ", " + other.executedBy;
     }

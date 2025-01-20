@@ -1,5 +1,5 @@
 import { assert } from "console";
-import { makeIdString as normalizeString, trailingWhiteSpaces } from "./string_utils.js";
+import { normalizeString, trailingWhiteSpaces } from "./string_utils.js";
 import { InlineToken, Token } from "./token.js";
 
 type Reference = {

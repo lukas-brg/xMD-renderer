@@ -1,10 +1,11 @@
 import { warnInline } from "../errors.js";
 import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
-import { makeIdString } from "../string_utils.js";
-import { BlockToken } from "../token.js";
+import { normalizeString } from "../string_utils.js";
+import { BlockToken, DeferredTokenState } from "../token.js";
 import BlockRule from "./blockrule.js";
 import { warn } from "../errors.js";
+import { FootnoteRef } from "../rules_inline/footnote_ref.js";
 
 const regex = /^\s*\[\^(\w+)\]:\s*(\w+.*)/g;
 export const FootnoteDef: BlockRule = {
@@ -19,20 +20,7 @@ export const FootnoteDef: BlockRule = {
         const match = [...line.matchAll(regex)];
         if (match.length == 0) return false;
         let [wholeMatch, label, content] = match[0];
-        if (stateChange.hasFootNote(label)) {
-            warn(
-                `Duplicate definitions of footnote '${label}'   line: ${input.currentPoint.line}   '${input.currentLine()}'`,
-            );
-            stateChange.addBlockToken(
-                BlockToken.createPreservedText(
-                    input.currentPoint,
-                    FootnoteDef.name,
-                    input.currentLine(),
-                ),
-            );
-            input.nextLine();
-            return true;
-        }
+        label = normalizeString(label);
         stateChange.addFooterToken(
             BlockToken.createContentless(
                 "p",
@@ -47,12 +35,19 @@ export const FootnoteDef: BlockRule = {
             "span",
             input.currentPoint,
             FootnoteDef.name,
-            content,
+            "",
             1,
-        ).withAnnotation("footnote-def");
-        stateChange.registerFootnoteDef(label, fnTok, (fnNum) => {
-            fnTok.content = `${fnNum}. ${fnTok.content}`;
+        );
+        fnTok.attachState({
+            identifier: label,
+            updatedBy: [FootnoteRef.name],
+            values: {},
+            sourceRule: FootnoteDef.name,
+            onUpdate(values) {
+                fnTok.content = `${values.number}. ${content}`;
+            },
         });
+
         stateChange.addFooterToken(fnTok);
 
         stateChange.addFooterToken(
@@ -62,7 +57,10 @@ export const FootnoteDef: BlockRule = {
                 FootnoteDef.name,
                 "Link",
                 1,
-            ).withAttribute("href", `#ref-${makeIdString(label)}`),
+            ).withAttributes({
+                id: `def-${label}`,
+                href: `#ref-${label}`,
+            }),
         );
 
         stateChange.addFooterToken(

@@ -56,7 +56,7 @@ export const CodeblockFenced: BlockRule = {
             ),
         );
 
-        stateChange.addBlockToken(codeContainer);
+        stateChange.addTokenContainer(codeContainer);
         input.nextLine();
         return true;
     },

@@ -73,3 +73,39 @@ export class Range {
         return `[${this.start}, ${this.end}]`;
     }
 }
+
+export class MultiMap<K, V> {
+    private map = new Map<K, V[]>();
+
+    add(key: K, ...value: V[]): void {
+        if (!this.map.has(key)) {
+            this.map.set(key, [...value]);
+        } else {
+            this.map.get(key)!.push(...value);
+        }
+    }
+
+    get(key: K): V[] {
+        if (!this.map.has(key)) return [];
+        return this.map.get(key)!;
+    }
+
+    remove(key: K, value: V): boolean {
+        const values = this.map.get(key);
+        if (!values) return false;
+
+        const index = values.indexOf(value);
+        if (index !== -1) {
+            values.splice(index, 1);
+            if (values.length === 0) {
+                this.map.delete(key);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    entries(): MapIterator<[K, V[]]> {
+        return this.map.entries();
+    }
+}

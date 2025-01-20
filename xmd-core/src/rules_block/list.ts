@@ -33,7 +33,7 @@ class ListManager {
     closeAll(currentPoint: Point) {
         let item;
         while ((item = this.openedLists.pop()) != undefined) {
-            this.stateChange.addBlockToken(
+            this.stateChange.addToken(
                 BlockToken.createContentless(
                     item[1],
                     currentPoint,
@@ -49,7 +49,7 @@ class ListManager {
         while (this.openedLists.length > 1) {
             const [topDepth, topTag] = this.openedLists.pop()!;
             if (topDepth >= targetDepth) {
-                this.stateChange.addBlockToken(
+                this.stateChange.addToken(
                     BlockToken.createContentless(
                         topTag,
                         currentPoint,
@@ -70,7 +70,7 @@ class ListManager {
     closeAndOpen(depth: number, tag: ListTag, marker: string, currentPoint: Point) {
         const [topDepth, topTag] = this.openedLists.pop()!;
 
-        this.stateChange.addBlockToken(
+        this.stateChange.addToken(
             BlockToken.createContentless(
                 topTag,
                 currentPoint,
@@ -83,7 +83,7 @@ class ListManager {
     }
 
     openList(depth: number, tag: ListTag, marker: string, currentPoint: Point) {
-        this.stateChange.addBlockToken(
+        this.stateChange.addToken(
             BlockToken.createContentless(tag, currentPoint, List.name, "open", depth),
         );
 
@@ -94,7 +94,7 @@ class ListManager {
     }
 
     addListItem(content: string, pos: Point) {
-        this.stateChange.addBlockToken(
+        this.stateChange.addToken(
             BlockToken.createWrapped("li", pos, List.name, content, this.lastDepth + 1),
         );
     }

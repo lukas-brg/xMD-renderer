@@ -1,8 +1,8 @@
-import { textChangeRangeIsUnchanged } from "typescript";
 import { Point } from "./input_state.js";
 import { Dict } from "./util.js";
 import { assert } from "console";
-import { tracingChannel } from "diagnostics_channel";
+import { Rule } from "./rules.js";
+import { getRandomValues } from "crypto";
 
 type ContentKind = "block" | "inline" | "text" | "root" | "container";
 
@@ -18,6 +18,14 @@ export type TagKind =
     | "text"
     | "preservedText";
 
+export type DeferredTokenState = {
+    identifier: string;
+    updatedBy: string[];
+    values: Record<string, string | number>;
+    sourceRule: string;
+    onUpdate: (values: Record<string, string | number>) => void;
+};
+
 export class Token {
     tag: string;
     content?: string;
@@ -27,6 +35,7 @@ export class Token {
     tagKind: TagKind = "selfClosing";
     attributes: Map<string, string>;
     createdByRule: string;
+    private _state?: DeferredTokenState;
 
     /**
      * An annotation can be used to specify the context or role of the token.
@@ -53,6 +62,15 @@ export class Token {
         this.attributes = new Map();
         this.tagKind = tagKind ?? "selfClosing";
         this.createdByRule = createdBy;
+    }
+
+    get state(): DeferredTokenState | undefined {
+        return this._state;
+    }
+
+    attachState(state: DeferredTokenState): this {
+        this._state = state;
+        return this;
     }
 
     addAttribute(key: string, value: string) {
