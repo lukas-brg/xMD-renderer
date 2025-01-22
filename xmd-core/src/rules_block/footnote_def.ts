@@ -38,7 +38,7 @@ export const FootnoteDef: BlockRule = {
             "",
             1,
         );
-        fnTok.attachState({
+        fnTok.attachDeferredState({
             identifier: label,
             updatedBy: [FootnoteRef.name],
             values: {},

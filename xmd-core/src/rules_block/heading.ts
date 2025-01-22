@@ -31,15 +31,16 @@ export const Heading: BlockRule = {
         const headingTag = headingTypes[heading];
 
         if (!headingTag) return false;
+        const headingId = stateChange.registerUniqueId(remainingLine);
         const token = BlockToken.createWrapped(
             headingTag,
             input.currentPoint,
             Heading.name,
             remainingLine,
-        );
+        ).withAttribute("id", headingId);
+
         stateChange.addToken(token);
         const lvl = Number.parseInt(headingTag.substring(1));
-        // stateChange.registerHeading(remainingLine, lvl, input.currentPoint.line, token);
 
         stateChange.endPoint = input.currentPoint;
         input.nextLine();

@@ -4,6 +4,7 @@ import { InlineToken } from "../token.js";
 import normalizeUrl from "normalize-url";
 import { warnInline } from "../errors.js";
 import { RuleState } from "../rules.js";
+import { normalizeString } from "../string_utils.js";
 
 const pattern = /\[(.*?)\]\((.*?)(?:\s*\"(.*?)\")?\)/g;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -162,6 +163,8 @@ export const ReferenceLink: InlineRule = {
 
         state.matchAll(refRegex).forEach((match) => {
             let [wholeMatch, text, label] = match;
+            label = normalizeString(label);
+
             if (!label) {
                 label = text;
             }
@@ -174,6 +177,7 @@ export const ReferenceLink: InlineRule = {
                 ReferenceLink.name,
                 "open",
             );
+
             let linkTokenClose = InlineToken.createContentless(
                 "a",
                 afterContentStart,
@@ -181,9 +185,10 @@ export const ReferenceLink: InlineRule = {
                 "close",
                 end,
             );
+
             state.addInlineToken(start, linkTokenOpen);
             state.addInlineToken(afterContentStart, linkTokenClose);
-            state.document.resolveReference(label, linkTokenOpen);
+            // state.document.resolveReference(label, linkTokenOpen);
             didAddLink = true;
         });
         return didAddLink;
@@ -210,7 +215,7 @@ export const ReferenceLinkDefinition: InlineRule = {
             const start = match.index;
             const end = match.index + wholeMatch.length + 1;
             state.consume(start, end);
-            state.document.registerReference(label, url, title);
+            // state.document.registerReference(label, url, title);
             didAddLink = true;
         });
         return didAddLink;

@@ -68,7 +68,13 @@ export class Token {
         return this._state;
     }
 
-    attachState(state: DeferredTokenState): this {
+    attachDeferredState(state: {
+        identifier: string;
+        updatedBy: string[];
+        values: Record<string, string | number>;
+        sourceRule: string;
+        onUpdate: (values: Record<string, string | number>) => void;
+    }): this {
         this._state = state;
         return this;
     }

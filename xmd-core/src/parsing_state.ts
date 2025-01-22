@@ -7,9 +7,9 @@ import {
     DeferredTokenState as DeferredStateEntry,
 } from "./token.js";
 
-import { DocumentState, IDocumentState } from "./document_state.js";
 import { MultiMap, Range } from "./util.js";
 import { RuleState } from "./rules.js";
+import { normalizeString } from "./string_utils.js";
 
 type Labels = {
     footnotes: string[];
@@ -19,6 +19,7 @@ type Labels = {
 interface IParsingState {
     _tokens: Token[];
     _footerTokens: Token[];
+    _ids: Map<string, number>;
 }
 
 interface IParsingMethods extends IParsingState {
@@ -58,27 +59,19 @@ export function createParsedBlock(data: ParsedBlockData): ParsedBlock {
 export class ParsingStateBlock implements IParsingMethods {
     _tokens: BlockToken[];
     _footerTokens: BlockToken[];
-    _document: DocumentState;
     blocks: ParsedBlock[] = [];
     appliedTokens: [string, BlockToken[]][];
     deferredState: Map<string, MultiMap<string, DeferredTokenStateEntry>>;
     ruleStates: Map<string, RuleState>;
+    _ids: Map<string, number>;
 
     constructor() {
         this._tokens = [];
         this._footerTokens = [];
-        this._document = new DocumentState();
         this.appliedTokens = [];
         this.deferredState = new Map();
         this.ruleStates = new Map();
-    }
-
-    get document(): DocumentState {
-        return this._document;
-    }
-
-    set document(document: DocumentState) {
-        this._document = document;
+        this._ids = new Map();
     }
 
     addTokenContainer(container: BlockTokenContainer) {
@@ -103,21 +96,15 @@ export class ParsingStateInline {
     private _tokens: Map<number, InlineToken>;
     private escapedPositions: Set<number>;
     private _consumedIndices: Map<number, string>;
-    protected _document: DocumentState;
     ruleState: MultiMap<string, DeferredTokenStateEntry>;
 
-    constructor(line: string, point: Point, document: DocumentState) {
+    constructor(line: string, point: Point) {
         this.relatedPoint = point;
         this.line = line;
         this._tokens = new Map<number, InlineToken>();
         this.escapedPositions = new Set();
         this._consumedIndices = new Map();
-        this._document = document;
         this.ruleState = new MultiMap();
-    }
-
-    get document(): DocumentState {
-        return this._document;
     }
 
     addInlineToken(startPos: number, token: InlineToken) {
@@ -178,10 +165,6 @@ export class ParsingStateInline {
     }
 }
 
-function mergeDocumentState(left: DocumentState, right: DocumentState) {
-    // headings
-}
-
 /** BlockRules don't mutate state directly. This class represents the change of state a rule wants to apply.
  * Once applied, the state is considered immutable, so there are only positive state changes
  * (i.e. a `StateChange` cannot remove tokens)
@@ -197,10 +180,12 @@ export class StateChange implements IParsingMethods {
     _footerTokens: BlockToken[];
 
     ruleStates: Map<string, RuleState>;
+    _ids: Map<string, number>;
+    private newIds: [string, number][];
 
     constructor(
-        document: DocumentState,
         startPoint: Point,
+        ids: Map<string, number>,
         executedBy?: string,
         endPoint?: Point,
         success: boolean = true,
@@ -212,6 +197,8 @@ export class StateChange implements IParsingMethods {
         this._tokens = [];
         this._footerTokens = [];
         this.ruleStates = new Map();
+        this.newIds = [];
+        this._ids = ids;
     }
 
     get wasApplied(): boolean {
@@ -223,7 +210,7 @@ export class StateChange implements IParsingMethods {
         startPoint: Point,
         executedBy?: string,
     ): StateChange {
-        let stateChange = new StateChange(state.document, startPoint, executedBy);
+        let stateChange = new StateChange(startPoint, state._ids, executedBy);
         return stateChange;
     }
 
@@ -253,6 +240,21 @@ export class StateChange implements IParsingMethods {
         this._footerTokens.push(token);
     }
 
+    registerUniqueId(text: string): string {
+        const normalized = normalizeString(text);
+
+        let count = this._ids.get(normalized) ?? 0;
+        let uniqueId = normalized;
+
+        if (count != 0) {
+            uniqueId += `-${count}`;
+        }
+        count++;
+
+        this.newIds.push([normalized, count]);
+        return uniqueId;
+    }
+
     applyToState(state: ParsingStateBlock, input: InputState) {
         state.appliedTokens.push([this.executedBy, this._tokens]);
         this._wasApplied = true;
@@ -268,6 +270,10 @@ export class StateChange implements IParsingMethods {
             for (let [key, values] of ruleState.deferredState.entries()) {
                 stateRuleState.deferredState.add(key, ...values);
             }
+        }
+
+        for (let [id, count] of this.newIds) {
+            state._ids.set(id, count);
         }
 
         let block: ParsedBlockData = {

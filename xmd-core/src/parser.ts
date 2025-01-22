@@ -88,16 +88,11 @@ function initRuleState(ruleStates: Map<string, RuleState>, ruleSet: RuleSet) {
 }
 
 function parseInline(state: ParsingStateBlock) {
-    let references = state.document;
     for (let blockTok of state._tokens) {
         const line = blockTok.content;
         if (line) {
             if (blockTok.parseContent) {
-                let inlineState = new ParsingStateInline(
-                    line,
-                    blockTok.relatedPosition,
-                    references,
-                );
+                let inlineState = new ParsingStateInline(line, blockTok.relatedPosition);
                 let anyRuleApplies = false;
 
                 for (let [ruleName, rule] of Object.entries(ruleSet.inline)) {

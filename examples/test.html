@@ -10,9 +10,9 @@
     <title>Markdown Output</title>
 </head>
 <body class="markdown-body">
-  <h1>Markdown</h1>
-  <h2>Lists</h2>
-  <h3>Unordered List</h3>
+  <h1 id="markdown">Markdown</h1>
+  <h2 id="lists">Lists</h2>
+  <h3 id="unordered-list">Unordered List</h3>
   <ul>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
     <li>Sub-lists are made by indenting 2 spaces:</li>
@@ -33,7 +33,7 @@
     </ul>
     <li>Very easy!</li>
   </ul>
-  <h3>Ordered List</h3>
+  <h3 id="ordered-list">Ordered List</h3>
   <ol>
     <li>Lorem ipsum dolor sit amet</li>
     <li>Consectetur adipiscing elit</li>
@@ -41,7 +41,7 @@
     <li>You can use sequential numbers...</li>
     <li>...or keep all the numbers as <code>1.</code></li>
   </ol>
-  <h3>Mix Ordered and Unordered List</h3>
+  <h3 id="mix-ordered-and-unordered-list">Mix Ordered and Unordered List</h3>
   <ul>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
     <li>Sub-lists are made by indenting 2 spaces:</li>
@@ -55,13 +55,13 @@
     </ul>
     <li>Very easy!</li>
   </ul>
-  <h3>Multiline list items</h3>
+  <h3 id="multiline-list-items">Multiline list items</h3>
   <ul>
     <li><strong>Current</strong>: Under active development. Code for the Current release is in the branch for its major version number (for example, <a href="https://github.com/nodejs/node/tree/v22.x" title=""><a href="http://v22.x">v22.x</a>). Node.js releases a new major version every 6 months, allowing for breaking changes. This happens in April and October every year. Releases appearing each October have a support life of 8 months. Releases appearing each April convert to LTS (see below) each October.</li>
     <li><strong>LTS</strong>: Releases that receive Long Term Support, with a focus on stability and security. Every even-numbered major version will become an LTS release. LTS releases receive 12 months of <em>Active LTS</em> support and a further 18 months of <em>Maintenance</em>. LTS release lines have alphabetically-ordered code names, beginning with v4 Argon. There are no breaking changes or feature additions, except in some special circumstances.</li>
     <li><strong>Nightly</strong>: Code from the Current branch built every 24-hours when there are changes. Use with caution.</li>
   </ul>
-  <h2>Paragraph</h2>
+  <h2 id="paragraph">Paragraph</h2>
   <p>
 This is a paragraph of text.
 This should still be on the same line  
@@ -72,7 +72,7 @@ This should be a new line
     <li>Here the paragraph should be terminated by the list</li>
     <li>List item 2</li>
   </ul>
-  <h2>Emphasis</h2>
+  <h2 id="emphasis">Emphasis</h2>
 <pre><code>*text*
 
 **text**
@@ -86,7 +86,7 @@ __text__
 _**text**_
 
 **_text_**
-</code></pre>  <h3>This is a heading</h3>
+</code></pre>  <h3 id="this-is-a-heading">This is a heading</h3>
   <p>
 <em>text</em>
   </p>
@@ -108,8 +108,8 @@ _**text**_
   <p>
 <strong><em>text</em></strong>
   </p>
-  <h3>This is a heading</h3>
-  <h2>Escaping</h2>
+  <h3 id="this-is-a-heading-1">This is a heading</h3>
+  <h2 id="escaping">Escaping</h2>
 <pre><code>\*text*
 
 \*\*text\*\*
@@ -121,7 +121,7 @@ _**text**_
 *\*text\**
 
 **\*text\***
-</code></pre>  <h2>Linking to headings</h2>
+</code></pre>  <h2 id="linking-to-headings">Linking to headings</h2>
   <p>
 *text*
   </p>
@@ -140,15 +140,15 @@ _text_
   <p>
 <strong>*text*</strong>
   </p>
-  <h2>Codeblock</h2>
-  <h3>Fenced</h3>
+  <h2 id="codeblock">Codeblock</h2>
+  <h3 id="fenced">Fenced</h3>
 <pre><code>var foo = function (bar) {
     return bar++;
 };
 </code></pre>  <p>
 Footnote<a id="ref-h-1" href="#def-h-1"><sup>[1]</sup></a>
   </p>
-  <h2>Links</h2>
+  <h2 id="links">Links</h2>
 <pre><code>[Link](www.google.com)
 
 [Link with title](www.google.com "Google")
@@ -187,7 +187,7 @@ Footnote<a id="ref-h-1" href="#def-h-1"><sup>[1]</sup></a>
   <p>
 <a href="#this-is-a-heading-1" title="">Link to duplicate heading</a>
   </p>
-  <h3>Auto Links</h3>
+  <h3 id="auto-links">Auto Links</h3>
   <p>
 <a href="http://google.com">www.google.com</a>
   </p>
@@ -206,7 +206,7 @@ Footnote<a id="ref-h-1" href="#def-h-1"><sup>[1]</sup></a>
   <p>
 <a href="mailto:test@email.com">test@email.com</a>
   </p>
-  <h3>Reference Links</h3>
+  <h3 id="reference-links">Reference Links</h3>
 <pre><code>[link to github][github]
 
 The following definition should not be visible.
@@ -218,7 +218,7 @@ Here is another link to [github] [github]
 <a href="http://youtube.com" title=""><a href="http://youtube.com">youtube.com</a>
   </p>
   <p>
-<a href="http://github.com" title="GitHub link">link to github</a>
+<a>link to github</a>
   </p>
   <p>
 The following definition should not be visible.
@@ -227,7 +227,7 @@ The following definition should not be visible.
 
   </p>
   <p>
-Here is another link to <a href="http://github.com" title="GitHub link">github</a>
+Here is another link to <a>github</a>
   </p>
   <ul>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
