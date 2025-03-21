@@ -52,7 +52,6 @@ export const Escape: InlineRule = {
             );
             didEscape = true;
         }
-
         return didEscape;
     },
 };

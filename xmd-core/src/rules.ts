@@ -9,6 +9,7 @@ import { Code } from "./rules_inline/code.js";
 import { Emphasis } from "./rules_inline/emphasis.js";
 import { Escape } from "./rules_inline/escape.js";
 import { FootnoteRef } from "./rules_inline/footnote_ref.js";
+import { InlineLatex } from "./rules_inline/inline_latex.js";
 import InlineRule from "./rules_inline/inline_rule.js";
 import {
     AutoLink,
@@ -91,6 +92,9 @@ const inlineRules: RuleSet = {
     },
     emphasis: {
         handlerObj: Emphasis,
+    },
+    inline_latex: {
+        handlerObj: InlineLatex,
     },
 };
 

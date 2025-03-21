@@ -204,7 +204,7 @@ export const ReferenceLinkDefinition: InlineRule = {
     process: (state: ParsingStateInline, ruleState: RuleState) => {
         let didAddLink = false;
         let matches = [...state.matchAll(referenceDefRegex)];
-        if (matches.length == 0) {
+        if (matches.length === 0) {
             return false;
         }
 

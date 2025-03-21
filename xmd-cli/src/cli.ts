@@ -9,6 +9,9 @@ import { renderFile } from "xmd-core";
 const isDebugMode = true;
 const debugDefaultInput = "./examples/test.md";
 
+const rootPath = path.join(import.meta.dirname, "../../");
+const staticFolder = path.join(rootPath, "static");
+
 function isDirectory(filePath: string) {
     const hasSep = filePath.endsWith(path.sep);
     if (hasSep) return true;
