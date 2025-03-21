@@ -14,7 +14,7 @@
         "build": "npm run build-cli && npm run build-code",
         "test": "npm test --workspaces"
     },
-    "devDependencies": {
+    "dependencies": {
         "katex": "^0.16.21"
     }
 }
