@@ -6,7 +6,6 @@ import { render, renderMarkdownBody, renderToFile, renderToHtmlStr } from "./ren
 export function renderFile(filePath: string, outFilePath: string) {
     let doc = InputState.fromFile(filePath);
     let state = parse(doc);
-
     renderToFile(state, outFilePath);
 }
 
