@@ -228,3 +228,26 @@ Here is another link to [github] [github]
         2. Consectetur adipiscing elit
         3. Integer molestie lorem at massa
 - Very easy!
+
+
+# Latex
+
+## Inline
+
+```
+This is an inline equation: $f(x) = \frac{1}{2}x^2 + 2x - 2$
+```
+
+This is an inline equation: $f(x) = \frac{1}{2}x^2 + 2x - 2$
+
+## Block
+
+```
+This is a block equation: 
+
+$$f(x) = \frac{1}{2}x^2 + 2x - 2$$
+```
+
+This is a block equation: 
+
+$$f(x) = \frac{1}{2}x^2 + 2x - 2$$

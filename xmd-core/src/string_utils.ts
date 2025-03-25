@@ -44,5 +44,5 @@ export function readFile(filePath: string): string | null {
 }
 
 export function replaceTabs(input: string): string {
-    return input.replace(/\\t/g, "    ");
+    return input.replace(/\t/g, "    ");
 }

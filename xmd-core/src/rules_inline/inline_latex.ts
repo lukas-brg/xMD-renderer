@@ -16,7 +16,6 @@ export const InlineLatex: InlineRule = {
         for (let [start, end] of pairs(matches)) {
             if (end - start < 2) continue;
             let latexCode = line.substring(start + 1, end);
-            latexCode = latexCode.replaceAll("    ", "\\t");
             console.log(latexCode);
             const html = katex.renderToString(latexCode);
             state.addInlineToken(
@@ -32,6 +31,5 @@ export const InlineLatex: InlineRule = {
             );
         }
         return true;
-
     },
 };

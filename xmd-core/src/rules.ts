@@ -1,4 +1,5 @@
 import { DeferredState, DeferredTokenStateEntry } from "./parsing_state.js";
+import { BlockLatex } from "./rules_block/block_latex.js";
 import BlockRule from "./rules_block/blockrule.js";
 import { CodeblockFenced } from "./rules_block/codeblock.js";
 import { FootnoteDef } from "./rules_block/footnote_def.js";
@@ -43,6 +44,11 @@ const blockRules: RuleSet = {
         failureMode: "plaintext",
     },
 
+    block_latex: {
+        handlerObj: BlockLatex,
+        terminatedBy: [],
+        failureMode: "plaintext",
+    },
     footnote_def: {
         handlerObj: FootnoteDef,
         terminatedBy: [],
