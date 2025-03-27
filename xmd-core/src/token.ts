@@ -199,6 +199,21 @@ export class BlockToken extends Token {
         );
     }
 
+    static createClosing(
+        tag: string,
+        relatedPosition: Point,
+        createdBy: string,
+        depth?: number,
+    ) {
+        return BlockToken.createContentless(
+            tag,
+            relatedPosition,
+            createdBy,
+            "close",
+            depth,
+        );
+    }
+
     static createText(
         relatedPosition: Point,
         createdBy: string,

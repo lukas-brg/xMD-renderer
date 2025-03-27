@@ -9,6 +9,12 @@ export function* pairs<T>(arr: T[]): Generator<[T, T]> {
     }
 }
 
+export function* tupleWindow<T>(arr: T[]): Generator<[T, T]> {
+    for (let i = 0; i < arr.length - 1; i += 1) {
+        yield [arr[i], arr[i + 1]];
+    }
+}
+
 export class Range {
     constructor(
         public start: number,

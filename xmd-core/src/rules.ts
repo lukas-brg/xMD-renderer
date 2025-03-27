@@ -6,6 +6,7 @@ import { FootnoteDef } from "./rules_block/footnote_def.js";
 import { Heading } from "./rules_block/heading.js";
 import { List } from "./rules_block/list.js";
 import { Paragraph } from "./rules_block/paragraph.js";
+import { Table } from "./rules_block/table.js";
 import { Code } from "./rules_inline/code.js";
 import { Emphasis } from "./rules_inline/emphasis.js";
 import { Escape } from "./rules_inline/escape.js";
@@ -49,6 +50,11 @@ const blockRules: RuleSet = {
         terminatedBy: [],
         failureMode: "plaintext",
     },
+    table: {
+        handlerObj: Table,
+        terminatedBy: [],
+        failureMode: "plaintext",
+    },
     footnote_def: {
         handlerObj: FootnoteDef,
         terminatedBy: [],
@@ -87,12 +93,13 @@ const inlineRules: RuleSet = {
     footnote_ref: {
         handlerObj: FootnoteRef,
     },
-    reference_link_definition: {
-        handlerObj: ReferenceLinkDefinition,
-    },
+    // reference_link_definition: {
+    //     handlerObj: ReferenceLinkDefinition,
+    // },
     reference_link_: {
         handlerObj: ReferenceLink,
     },
+
     autolink: {
         handlerObj: AutoLink,
     },
