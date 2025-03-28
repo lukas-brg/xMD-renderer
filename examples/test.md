@@ -232,7 +232,7 @@ Here is another link to [github] [github]
 
 # Latex
 
-## Inline
+### Inline
 
 ```
 This is an inline equation: $f(x) = \frac{1}{2}x^2 + 2x - 2$
@@ -240,7 +240,7 @@ This is an inline equation: $f(x) = \frac{1}{2}x^2 + 2x - 2$
 
 This is an inline equation: $f(x) = \frac{1}{2}x^2 + 2x - 2$
 
-## Block
+### Block
 
 ```
 This is a block equation: 
@@ -251,3 +251,44 @@ $$f(x) = \frac{1}{2}x^2 + 2x - 2$$
 This is a block equation: 
 
 $$f(x) = \frac{1}{2}x^2 + 2x - 2$$
+
+
+## Tables
+
+
+The exact width of the columns does not need to be consistent, only the number of columns does.
+
+```
+| Column A | Column B   | Column C         |
+| -------- | -----------| ---------------- |
+| 1        | 7          |   13             |
+| 3       | 9          |   15             |
+| 5         | 11         |   17             |
+```
+
+
+| Column A | Column B   | Column C         |
+| -------- | -----------| ---------------- |
+| 1        | 7          |   13             |
+| 3       | 9          |   15             |
+| 5         | 11         |   17             |
+
+
+
+### Table with alignments
+
+```
+| Default Alignment| Left Alignment    | Center Alignment   | Right Alignment |
+| ---------------- | :---------------- | :----------------: | --------------: |
+| False            | Python Hat        |   True             | 23.99           |
+| True             | SQL Hat           |   True             | 23.99           |
+| True             | Codecademy Tee    |  False             | 19.99           |
+| False            | Codecademy Hoodie |  False             | 42.99           |
+```
+
+| Default Alignment| Left Alignment    | Center Alignment   | Right Alignment |
+| ---------------- | :---------------- | :----------------: | --------------: |
+| False            | Python Hat        |   True             | 23.99           |
+| True             | SQL Hat           |   True             | 23.99           |
+| True             | Codecademy Tee    |  False             | 19.99           |
+| False            | Codecademy Hoodie |  False             | 42.99           |

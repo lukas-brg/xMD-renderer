@@ -3,7 +3,20 @@ import { InputState } from "../input_state.js";
 import { ParsingStateBlock, StateChange } from "../parsing_state.js";
 import { BlockToken, Token } from "../token.js";
 import BlockRule from "./blockrule.js";
-import { pairs, tupleWindow as tuplesWindow } from "../util.js";
+import { pairs, tupleWindows as tupleWindows, zip } from "../util.js";
+
+function findColumnContent(line: string): string[] {
+    const pipePositions = [...line.matchAll(/\|/g)].map((m) => m.index);
+
+    // if (pipePositions.length < 3) break;
+    const columns = [...tupleWindows(pipePositions)].map((tp) => {
+        const [l, r] = tp;
+        let columnContent = line.slice(l + 1, r);
+        return columnContent.trim();
+    });
+
+    return columns;
+}
 
 export const Table: BlockRule = {
     name: "table",
@@ -17,11 +30,23 @@ export const Table: BlockRule = {
             return false;
         }
         let tableElems: BlockToken[] = [];
-        const matches = [...tableHeaderLine.matchAll(/\|/g)].map((m) => m.index);
-        const headerColumns = [...tuplesWindow(matches)].map((tp) => {
-            const [l, r] = tp;
-            let columnContent = tableHeaderLine.slice(l + 1, r);
-            return columnContent.trim();
+
+        const headerColumns = findColumnContent(tableHeaderLine);
+
+        let headerSeparatorLine = input.nextLine();
+        if (!headerSeparatorLine) return false;
+
+        const sepColumns = findColumnContent(headerSeparatorLine);
+        const alignments = sepColumns.map((s) => {
+            if (s.length >= 3 && s.charAt(0) == ":" && s.charAt(s.length - 1) == ":") {
+                return "center";
+            } else if (s.length >= 2 && s.charAt(0) == ":") {
+                return "left";
+            } else if (s.length >= 2 && s.charAt(s.length - 1) == ":") {
+                return "right";
+            } else {
+                return "left";
+            }
         });
 
         tableElems.push(
@@ -29,17 +54,20 @@ export const Table: BlockRule = {
         );
         tableElems.push(BlockToken.createOpening("tr", input.currentPoint, Table.name));
 
-        headerColumns.forEach((c) => {
-            const th = BlockToken.createWrapped("th", input.currentPoint, Table.name, c);
+        zip(headerColumns, alignments).forEach(([c, align]) => {
+            const th = BlockToken.createWrapped(
+                "th",
+                input.currentPoint,
+                Table.name,
+                c,
+            ).withAttribute("style", `text-align:${align}`);
+
             tableElems.push(th);
         });
 
         tableElems.push(BlockToken.createClosing("tr", input.currentPoint, Table.name));
-
-        let headerSeparatorLine = input.nextLine();
-        if (!headerSeparatorLine) return false;
-
         let line = input.nextLine();
+
         do {
             if (!line) break;
             tableElems.push(
@@ -53,27 +81,24 @@ export const Table: BlockRule = {
             if (!lineStr.endsWith("|")) {
                 lineStr = lineStr + "|";
             }
-            const matches = [...lineStr.matchAll(/\|/g)].map((m) => m.index);
-            if (matches.length < 3) break;
-            const columns = [...tuplesWindow(matches)].map((tp) => {
-                const [l, r] = tp;
-                let columnContent = lineStr.slice(l + 1, r);
-                return columnContent.trim();
-            });
 
-            columns.forEach((c) => {
-                const th = BlockToken.createWrapped(
+            const columns = findColumnContent(line);
+
+            zip(columns, alignments).forEach(([c, align]) => {
+                const td = BlockToken.createWrapped(
                     "td",
                     input.currentPoint,
                     Table.name,
                     c,
-                );
-                tableElems.push(th);
+                ).withAttribute("style", `text-align:${align}`);
+                tableElems.push(td);
             });
+
             tableElems.push(
                 BlockToken.createClosing("tr", input.currentPoint, Table.name),
             );
         } while ((line = input.nextLine()) != null);
+
         tableElems.push(
             BlockToken.createClosing("table", input.currentPoint, Table.name),
         );

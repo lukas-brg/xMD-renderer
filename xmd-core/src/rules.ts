@@ -100,9 +100,9 @@ const inlineRules: RuleSet = {
         handlerObj: ReferenceLink,
     },
 
-    autolink: {
-        handlerObj: AutoLink,
-    },
+    // autolink: {
+    //     handlerObj: AutoLink,
+    // },
     emphasis: {
         handlerObj: Emphasis,
     },

@@ -9,10 +9,18 @@ export function* pairs<T>(arr: T[]): Generator<[T, T]> {
     }
 }
 
-export function* tupleWindow<T>(arr: T[]): Generator<[T, T]> {
+export function* tupleWindows<T>(arr: T[]): Generator<[T, T]> {
     for (let i = 0; i < arr.length - 1; i += 1) {
         yield [arr[i], arr[i + 1]];
     }
+}
+
+export function zip<T extends unknown[][]>(
+    ...args: T
+): { [K in keyof T]: T[K] extends (infer V)[] ? V : never }[] {
+    const minLength = Math.min(...args.map((arr) => arr.length));
+    // @ts-expect-error
+    return [...Array(minLength).keys()].map((i) => args.map((arr) => arr[i]));
 }
 
 export class Range {
