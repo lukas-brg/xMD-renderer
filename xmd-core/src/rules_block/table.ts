@@ -82,7 +82,7 @@ export const Table: BlockRule = {
                 lineStr = lineStr + "|";
             }
 
-            const columns = findColumnContent(line);
+            const columns = findColumnContent(lineStr);
 
             zip(columns, alignments).forEach(([c, align]) => {
                 const td = BlockToken.createWrapped(
