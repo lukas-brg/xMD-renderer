@@ -1,14 +1,17 @@
 import { DeferredState, DeferredTokenStateEntry } from "./parsing_state.js";
+import { BlockLatex } from "./rules_block/block_latex.js";
 import BlockRule from "./rules_block/blockrule.js";
 import { CodeblockFenced } from "./rules_block/codeblock.js";
 import { FootnoteDef } from "./rules_block/footnote_def.js";
 import { Heading } from "./rules_block/heading.js";
 import { List } from "./rules_block/list.js";
 import { Paragraph } from "./rules_block/paragraph.js";
+import { Table } from "./rules_block/table.js";
 import { Code } from "./rules_inline/code.js";
 import { Emphasis } from "./rules_inline/emphasis.js";
 import { Escape } from "./rules_inline/escape.js";
 import { FootnoteRef } from "./rules_inline/footnote_ref.js";
+import { InlineLatex } from "./rules_inline/inline_latex.js";
 import InlineRule from "./rules_inline/inline_rule.js";
 import {
     AutoLink,
@@ -42,6 +45,16 @@ const blockRules: RuleSet = {
         failureMode: "plaintext",
     },
 
+    block_latex: {
+        handlerObj: BlockLatex,
+        terminatedBy: [],
+        failureMode: "plaintext",
+    },
+    table: {
+        handlerObj: Table,
+        terminatedBy: [],
+        failureMode: "plaintext",
+    },
     footnote_def: {
         handlerObj: FootnoteDef,
         terminatedBy: [],
@@ -80,17 +93,21 @@ const inlineRules: RuleSet = {
     footnote_ref: {
         handlerObj: FootnoteRef,
     },
-    reference_link_definition: {
-        handlerObj: ReferenceLinkDefinition,
-    },
+    // reference_link_definition: {
+    //     handlerObj: ReferenceLinkDefinition,
+    // },
     reference_link_: {
         handlerObj: ReferenceLink,
     },
-    autolink: {
-        handlerObj: AutoLink,
-    },
+
+    // autolink: {
+    //     handlerObj: AutoLink,
+    // },
     emphasis: {
         handlerObj: Emphasis,
+    },
+    inline_latex: {
+        handlerObj: InlineLatex,
     },
 };
 

@@ -1,10 +1,17 @@
-import { DeferredState, ParsingStateInline } from "../parsing_state.js";
+import {
+    DeferredState,
+    ParsingStateBlock,
+    ParsingStateInline,
+    StateChange,
+} from "../parsing_state.js";
 import InlineRule from "./inline_rule.js";
 import { InlineToken } from "../token.js";
 import normalizeUrl from "normalize-url";
 import { warnInline } from "../errors.js";
 import { RuleState } from "../rules.js";
 import { normalizeString } from "../string_utils.js";
+import BlockRule from "../rules_block/blockrule.js";
+import { InputState } from "../input_state.js";
 
 const pattern = /\[(.*?)\]\((.*?)(?:\s*\"(.*?)\")?\)/g;
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -198,26 +205,26 @@ export const ReferenceLink: InlineRule = {
 const defRegex = /\[(\w+.*)\]:\s+/g;
 const referenceDefRegex = new RegExp(`${defRegex.source}([^\\s]+)(?:.*"(\\w+.*)")?`, "g");
 
-export const ReferenceLinkDefinition: InlineRule = {
+export const ReferenceLinkDefinition: BlockRule = {
     name: "reference_link_definition",
 
-    process: (state: ParsingStateInline, ruleState: RuleState) => {
-        let didAddLink = false;
-        let matches = [...state.matchAll(referenceDefRegex)];
-        if (matches.length == 0) {
-            return false;
-        }
+    process: (
+        input: InputState,
+        state: Readonly<ParsingStateBlock>,
+        stateChange: StateChange,
+    ) => {
+        const line = input.currentLine().trim();
+        const match = line.match(referenceDefRegex);
+        if (!match) return false;
 
-        matches.forEach((match) => {
-            const [wholeMatch, label, urlText, title] = match;
+        const [wholeMatch, label, urlText, title] = match;
 
-            const url = processUrl(urlText);
-            const start = match.index;
-            const end = match.index + wholeMatch.length + 1;
-            state.consume(start, end);
-            // state.document.registerReference(label, url, title);
-            didAddLink = true;
-        });
-        return didAddLink;
+        // const url = processUrl(urlText);
+        // const start = match.index;
+        // const end = match.index + wholeMatch.length + 1;
+        // state.consume(start, end);
+        // // state.document.registerReference(label, url, title);
+        // didAddLink = true;
+        return true;
     },
 };

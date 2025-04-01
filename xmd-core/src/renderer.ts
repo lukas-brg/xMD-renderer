@@ -109,13 +109,14 @@ export function renderToHtmlStr(state: ParsingStateBlock) {
     const htmlContent = render(state);
     const theme = readFile("./static/github-markdown.css");
     const marginStyle = readFile("./static/margin.css");
+    const starryNight = readFile("./static/starry-night.css");
+    const katex = readFile("./static/katex.css");
     const htmlSkeleton = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://esm.sh/@wooorm/starry-night@3/style/both">
     <script type="module">
     </script>
     <title>Markdown Output</title>
@@ -124,6 +125,8 @@ export function renderToHtmlStr(state: ParsingStateBlock) {
 ${htmlContent}
 <style>
 ${theme}
+${starryNight}
+${katex}
 ${marginStyle}
 </style>
 <script>

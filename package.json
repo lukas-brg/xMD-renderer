@@ -13,5 +13,8 @@
         "cli": "npm run build-cli && xmd",
         "build": "npm run build-cli && npm run build-code",
         "test": "npm test --workspaces"
+    },
+    "dependencies": {
+        "katex": "^0.16.21"
     }
 }

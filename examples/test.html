@@ -4,7 +4,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://esm.sh/@wooorm/starry-night@3/style/both">
     <script type="module">
     </script>
     <title>Markdown Output</title>
@@ -16,21 +15,21 @@
   <ul>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
     <li>Sub-lists are made by indenting 2 spaces:</li>
-    <ul>
-      <li>Marker character change forces new list start:</li>
       <ul>
-        <li>Ac tristique libero volutpat at</li>
+        <li>Marker character change forces new list start:</li>
+          <ul>
+            <li>Ac tristique libero volutpat at</li>
+          </ul>
+          <ul>
+            <li>Facilisis in pretium nisl aliquet</li>
+          </ul>
+          <ul>
+            <li>Nulla volutpat aliquam velit</li>
+              <ul>
+                <li>Test</li>
+              </ul>
+          </ul>
       </ul>
-      <ul>
-        <li>Facilisis in pretium nisl aliquet</li>
-      </ul>
-      <ul>
-        <li>Nulla volutpat aliquam velit</li>
-        <ul>
-          <li>Test</li>
-        </ul>
-      </ul>
-    </ul>
     <li>Very easy!</li>
   </ul>
   <h3 id="ordered-list">Ordered List</h3>
@@ -45,19 +44,19 @@
   <ul>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
     <li>Sub-lists are made by indenting 2 spaces:</li>
-    <ul>
-      <li>Marker character change forces new list start:</li>
-      <ol>
-        <li>Lorem ipsum dolor sit amet</li>
-        <li>Consectetur adipiscing elit</li>
-        <li>Integer molestie lorem at massa</li>
-      </ol>
-    </ul>
+      <ul>
+        <li>Marker character change forces new list start:</li>
+          <ol>
+            <li>Lorem ipsum dolor sit amet</li>
+            <li>Consectetur adipiscing elit</li>
+            <li>Integer molestie lorem at massa</li>
+          </ol>
+      </ul>
     <li>Very easy!</li>
   </ul>
   <h3 id="multiline-list-items">Multiline list items</h3>
   <ul>
-    <li><strong>Current</strong>: Under active development. Code for the Current release is in the branch for its major version number (for example, <a href="https://github.com/nodejs/node/tree/v22.x" title=""><a href="http://v22.x">v22.x</a>). Node.js releases a new major version every 6 months, allowing for breaking changes. This happens in April and October every year. Releases appearing each October have a support life of 8 months. Releases appearing each April convert to LTS (see below) each October.</li>
+    <li><strong>Current</strong>: Under active development. Code for the Current release is in the branch for its major version number (for example, <a href="https://github.com/nodejs/node/tree/v22.x" title="">v22.x</a>). Node.js releases a new major version every 6 months, allowing for breaking changes. This happens in April and October every year. Releases appearing each October have a support life of 8 months. Releases appearing each April convert to LTS (see below) each October.</li>
     <li><strong>LTS</strong>: Releases that receive Long Term Support, with a focus on stability and security. Every even-numbered major version will become an LTS release. LTS releases receive 12 months of <em>Active LTS</em> support and a further 18 months of <em>Maintenance</em>. LTS release lines have alphabetically-ordered code names, beginning with v4 Argon. There are no breaking changes or feature additions, except in some special circumstances.</li>
     <li><strong>Nightly</strong>: Code from the Current branch built every 24-hours when there are changes. Use with caution.</li>
   </ul>
@@ -142,22 +141,22 @@ _text_
   </p>
   <h2 id="codeblock">Codeblock</h2>
   <h3 id="fenced">Fenced</h3>
-<pre><code>var foo = function (bar) {
-    return bar++;
+<pre><code><span class="pl-k">var</span> <span class="pl-en">foo</span> <span class="pl-k">=</span> <span class="pl-k">function</span> (<span class="pl-smi">bar</span>) {
+    <span class="pl-k">return</span> bar<span class="pl-k">++</span>;
 };
 </code></pre>  <p>
 Footnote<a id="ref-h-1" href="#def-h-1"><sup>[1]</sup></a>
   </p>
   <h2 id="links">Links</h2>
-<pre><code>[Link](www.google.com)
+<pre><code><span class="pl-s">[</span>Link<span class="pl-s">](<span class="pl-corl">www.google.com</span>)</span>
 
-[Link with title](www.google.com "Google")
+<span class="pl-s">[</span>Link with title<span class="pl-s">](<span class="pl-corl">www.google.com</span></span> <span class="pl-s">"Google")</span>
 
-[Link with **markup**](www.google.com)
+<span class="pl-s">[</span>Link with <span class="pl-s">**</span>markup<span class="pl-s">**](<span class="pl-corl">www.google.com</span>)</span>
 
-[_Another link with markup_](www.google.com)
+<span class="pl-s">[_</span>Another link with markup<span class="pl-s">_](<span class="pl-corl">www.google.com</span>)</span>
 
-[Link to first H1 heading](#markdown)
+<span class="pl-s">[</span>Link to first H1 heading<span class="pl-s">](<span class="pl-corl">#markdown</span>)</span>
 </code></pre>  <p>
 <a href="http://google.com" title="">Link</a>
   </p>
@@ -189,22 +188,22 @@ Footnote<a id="ref-h-1" href="#def-h-1"><sup>[1]</sup></a>
   </p>
   <h3 id="auto-links">Auto Links</h3>
   <p>
-<a href="http://google.com">www.google.com</a>
+www.google.com
   </p>
   <p>
-<a href="http://google.com">google.com</a>
+google.com
   </p>
   <p>
-<a href="https://github.com">https://github.com</a>
+https://github.com/
   </p>
   <p>
-<a href="http://github.com">github.com</a>
+github.com/
   </p>
   <p>
-<a href="http://github.com">github.com</a>
+github.com
   </p>
   <p>
-<a href="mailto:test@email.com">test@email.com</a>
+test@email.com
   </p>
   <h3 id="reference-links">Reference Links</h3>
 <pre><code>[link to github][github]
@@ -215,7 +214,7 @@ The following definition should not be visible.
 
 Here is another link to [github] [github]
 </code></pre>  <p>
-<a href="http://youtube.com" title=""><a href="http://youtube.com">youtube.com</a>
+<a href="http://youtube.com" title="">youtube.com</a>
   </p>
   <p>
 <a>link to github</a>
@@ -224,7 +223,7 @@ Here is another link to [github] [github]
 The following definition should not be visible.
   </p>
   <p>
-
+[github]: github.com/ "GitHub link"
   </p>
   <p>
 Here is another link to <a>github</a>
@@ -232,27 +231,111 @@ Here is another link to <a>github</a>
   <ul>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
     <li>Sub-lists are made by indenting 2 spaces:</li>
-    <ul>
-      <li>Marker character change forces new list start:</li>
-      <ol>
-        <li>Lorem ipsum dolor sit amet</li>
-        <li>Consectetur adipiscing elit</li>
-        <li>Integer molestie lorem at massa</li>
-      </ol>
-    </ul>
+      <ul>
+        <li>Marker character change forces new list start:</li>
+          <ol>
+            <li>Lorem ipsum dolor sit amet</li>
+            <li>Consectetur adipiscing elit</li>
+            <li>Integer molestie lorem at massa</li>
+          </ol>
+      </ul>
     <li>Very easy!</li>
     <li>Create a list by starting a line with <code>+</code>, <code>-</code>, or <code>*</code></li>
     <li>Sub-lists are made by indenting 2 spaces:</li>
-    <ul>
-      <li>Marker character change forces new list start:</li>
-      <ol>
-        <li>Lorem ipsum dolor sit amet</li>
-        <li>Consectetur adipiscing elit</li>
-        <li>Integer molestie lorem at massa</li>
-      </ol>
-    </ul>
+      <ul>
+        <li>Marker character change forces new list start:</li>
+          <ol>
+            <li>Lorem ipsum dolor sit amet</li>
+            <li>Consectetur adipiscing elit</li>
+            <li>Integer molestie lorem at massa</li>
+          </ol>
+      </ul>
     <li>Very easy!</li>
   </ul>
+  <h1 id="latex">Latex</h1>
+  <h3 id="inline">Inline</h3>
+<pre><code>This is an inline equation: $f(x) = \frac{1}{2}x^2 + 2x - 2$
+</code></pre>  <p>
+This is an inline equation: <span class="inline-latex"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>x</mi><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">f(x) = \frac{1}{2}x^2 + 2x - 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1901em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8451em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span></span>
+  </p>
+  <h3 id="block">Block</h3>
+<pre><code>This is a block equation: 
+
+$$f(x) = \frac{1}{2}x^2 + 2x - 2$$
+</code></pre>  <p>
+This is a block equation: 
+  </p>
+<span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>f</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msup><mi>x</mi><mn>2</mn></msup><mo>+</mo><mn>2</mn><mi>x</mi><mo>−</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">f(x) = \frac{1}{2}x^2 + 2x - 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord"><span class="mord mathnormal">x</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span></span>
+  <h2 id="tables">Tables</h2>
+  <p>
+The exact width of the columns does not need to be consistent, only the number of columns does.
+  </p>
+<pre><code>| Column A | Column B   | Column C         |
+| -------- | -----------| ---------------- |
+| 1        | 7          |   13             |
+| 3       | 9          |   15             |
+| 5         | 11         |   17             |
+</code></pre>  <table>
+  <tr>
+  <th style="text-align:left">Column A</th>
+  <th style="text-align:left">Column B</th>
+  <th style="text-align:left">Column C</th>
+  </tr>
+  <tr>
+  <td style="text-align:left">1</td>
+  <td style="text-align:left">7</td>
+  <td style="text-align:left">13</td>
+  </tr>
+  <tr>
+  <td style="text-align:left">3</td>
+  <td style="text-align:left">9</td>
+  <td style="text-align:left">15</td>
+  </tr>
+  <tr>
+  <td style="text-align:left">5</td>
+  <td style="text-align:left">11</td>
+  <td style="text-align:left">17</td>
+  </tr>
+  </table>
+  <h3 id="table-with-alignments">Table with alignments</h3>
+<pre><code>| Default Alignment| Left Alignment    | Center Alignment   | Right Alignment |
+| ---------------- | :---------------- | :----------------: | --------------: |
+| False            | Python Hat        |   True             | 23.99           |
+| True             | SQL Hat           |   True             | 23.99           |
+| True             | Codecademy Tee    |  False             | 19.99           |
+| False            | Codecademy Hoodie |  False             | 42.99           |
+</code></pre>  <table>
+  <tr>
+  <th style="text-align:left">Default Alignment</th>
+  <th style="text-align:left">Left Alignment</th>
+  <th style="text-align:center">Center Alignment</th>
+  <th style="text-align:right">Right Alignment</th>
+  </tr>
+  <tr>
+  <td style="text-align:left">False</td>
+  <td style="text-align:left">Python Hat</td>
+  <td style="text-align:center">True</td>
+  <td style="text-align:right">23.99</td>
+  </tr>
+  <tr>
+  <td style="text-align:left">True</td>
+  <td style="text-align:left">SQL Hat</td>
+  <td style="text-align:center">True</td>
+  <td style="text-align:right">23.99</td>
+  </tr>
+  <tr>
+  <td style="text-align:left">True</td>
+  <td style="text-align:left">Codecademy Tee</td>
+  <td style="text-align:center">False</td>
+  <td style="text-align:right">19.99</td>
+  </tr>
+  <tr>
+  <td style="text-align:left">False</td>
+  <td style="text-align:left">Codecademy Hoodie</td>
+  <td style="text-align:center">False</td>
+  <td style="text-align:right">42.99</td>
+  </tr>
+  </table>
   <hr/>
   <p>
     <span>1. footnote</span>
@@ -1533,6 +1616,1332 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 .markdown-body .highlight pre:has(+ .zeroclipboard-container) {
     min-height: 52px;
+}
+
+/* This is a theme distributed by `starry-night`.
+ * It’s based on what GitHub uses on their site.
+ * See <https://github.com/wooorm/starry-night> for more info. */
+:root {
+    --color-prettylights-syntax-comment: #59636e;
+    --color-prettylights-syntax-constant: #0550ae;
+    --color-prettylights-syntax-constant-other-reference-link: #0a3069;
+    --color-prettylights-syntax-entity: #6639ba;
+    --color-prettylights-syntax-storage-modifier-import: #1f2328;
+    --color-prettylights-syntax-entity-tag: #0550ae;
+    --color-prettylights-syntax-keyword: #cf222e;
+    --color-prettylights-syntax-string: #0a3069;
+    --color-prettylights-syntax-variable: #953800;
+    --color-prettylights-syntax-brackethighlighter-unmatched: #82071e;
+    --color-prettylights-syntax-brackethighlighter-angle: #59636e;
+    --color-prettylights-syntax-invalid-illegal-text: #f6f8fa;
+    --color-prettylights-syntax-invalid-illegal-bg: #82071e;
+    --color-prettylights-syntax-carriage-return-text: #f6f8fa;
+    --color-prettylights-syntax-carriage-return-bg: #cf222e;
+    --color-prettylights-syntax-string-regexp: #116329;
+    --color-prettylights-syntax-markup-list: #3b2300;
+    --color-prettylights-syntax-markup-heading: #0550ae;
+    --color-prettylights-syntax-markup-italic: #1f2328;
+    --color-prettylights-syntax-markup-bold: #1f2328;
+    --color-prettylights-syntax-markup-deleted-text: #82071e;
+    --color-prettylights-syntax-markup-deleted-bg: #ffebe9;
+    --color-prettylights-syntax-markup-inserted-text: #116329;
+    --color-prettylights-syntax-markup-inserted-bg: #dafbe1;
+    --color-prettylights-syntax-markup-changed-text: #953800;
+    --color-prettylights-syntax-markup-changed-bg: #ffd8b5;
+    --color-prettylights-syntax-markup-ignored-text: #d1d9e0;
+    --color-prettylights-syntax-markup-ignored-bg: #0550ae;
+    --color-prettylights-syntax-meta-diff-range: #8250df;
+    --color-prettylights-syntax-sublimelinter-gutter-mark: #818b98;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --color-prettylights-syntax-comment: #9198a1;
+        --color-prettylights-syntax-constant: #79c0ff;
+        --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
+        --color-prettylights-syntax-entity: #d2a8ff;
+        --color-prettylights-syntax-storage-modifier-import: #f0f6fc;
+        --color-prettylights-syntax-entity-tag: #7ee787;
+        --color-prettylights-syntax-keyword: #ff7b72;
+        --color-prettylights-syntax-string: #a5d6ff;
+        --color-prettylights-syntax-variable: #ffa657;
+        --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
+        --color-prettylights-syntax-brackethighlighter-angle: #9198a1;
+        --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
+        --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
+        --color-prettylights-syntax-carriage-return-text: #f0f6fc;
+        --color-prettylights-syntax-carriage-return-bg: #b62324;
+        --color-prettylights-syntax-string-regexp: #7ee787;
+        --color-prettylights-syntax-markup-list: #f2cc60;
+        --color-prettylights-syntax-markup-heading: #1f6feb;
+        --color-prettylights-syntax-markup-italic: #f0f6fc;
+        --color-prettylights-syntax-markup-bold: #f0f6fc;
+        --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
+        --color-prettylights-syntax-markup-deleted-bg: #67060c;
+        --color-prettylights-syntax-markup-inserted-text: #aff5b4;
+        --color-prettylights-syntax-markup-inserted-bg: #033a16;
+        --color-prettylights-syntax-markup-changed-text: #ffdfb6;
+        --color-prettylights-syntax-markup-changed-bg: #5a1e02;
+        --color-prettylights-syntax-markup-ignored-text: #f0f6fc;
+        --color-prettylights-syntax-markup-ignored-bg: #1158c7;
+        --color-prettylights-syntax-meta-diff-range: #d2a8ff;
+        --color-prettylights-syntax-sublimelinter-gutter-mark: #3d444d;
+    }
+}
+
+.pl-c {
+    color: var(--color-prettylights-syntax-comment);
+}
+
+.pl-c1,
+.pl-s .pl-v {
+    color: var(--color-prettylights-syntax-constant);
+}
+
+.pl-e,
+.pl-en {
+    color: var(--color-prettylights-syntax-entity);
+}
+
+.pl-smi,
+.pl-s .pl-s1 {
+    color: var(--color-prettylights-syntax-storage-modifier-import);
+}
+
+.pl-ent {
+    color: var(--color-prettylights-syntax-entity-tag);
+}
+
+.pl-k {
+    color: var(--color-prettylights-syntax-keyword);
+}
+
+.pl-s,
+.pl-pds,
+.pl-s .pl-pse .pl-s1,
+.pl-sr,
+.pl-sr .pl-cce,
+.pl-sr .pl-sre,
+.pl-sr .pl-sra {
+    color: var(--color-prettylights-syntax-string);
+}
+
+.pl-v,
+.pl-smw {
+    color: var(--color-prettylights-syntax-variable);
+}
+
+.pl-bu {
+    color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
+}
+
+.pl-ii {
+    color: var(--color-prettylights-syntax-invalid-illegal-text);
+    background-color: var(--color-prettylights-syntax-invalid-illegal-bg);
+}
+
+.pl-c2 {
+    color: var(--color-prettylights-syntax-carriage-return-text);
+    background-color: var(--color-prettylights-syntax-carriage-return-bg);
+}
+
+.pl-sr .pl-cce {
+    font-weight: bold;
+    color: var(--color-prettylights-syntax-string-regexp);
+}
+
+.pl-ml {
+    color: var(--color-prettylights-syntax-markup-list);
+}
+
+.pl-mh,
+.pl-mh .pl-en,
+.pl-ms {
+    font-weight: bold;
+    color: var(--color-prettylights-syntax-markup-heading);
+}
+
+.pl-mi {
+    font-style: italic;
+    color: var(--color-prettylights-syntax-markup-italic);
+}
+
+.pl-mb {
+    font-weight: bold;
+    color: var(--color-prettylights-syntax-markup-bold);
+}
+
+.pl-md {
+    color: var(--color-prettylights-syntax-markup-deleted-text);
+    background-color: var(--color-prettylights-syntax-markup-deleted-bg);
+}
+
+.pl-mi1 {
+    color: var(--color-prettylights-syntax-markup-inserted-text);
+    background-color: var(--color-prettylights-syntax-markup-inserted-bg);
+}
+
+.pl-mc {
+    color: var(--color-prettylights-syntax-markup-changed-text);
+    background-color: var(--color-prettylights-syntax-markup-changed-bg);
+}
+
+.pl-mi2 {
+    color: var(--color-prettylights-syntax-markup-ignored-text);
+    background-color: var(--color-prettylights-syntax-markup-ignored-bg);
+}
+
+.pl-mdr {
+    font-weight: bold;
+    color: var(--color-prettylights-syntax-meta-diff-range);
+}
+
+.pl-ba {
+    color: var(--color-prettylights-syntax-brackethighlighter-angle);
+}
+
+.pl-sg {
+    color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+}
+
+.pl-corl {
+    text-decoration: underline;
+    color: var(--color-prettylights-syntax-constant-other-reference-link);
+}
+
+@font-face {
+    font-family: KaTeX_AMS;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_AMS-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_AMS-Regular.woff) format("woff"),
+        url(fonts/KaTeX_AMS-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Caligraphic;
+    font-style: normal;
+    font-weight: 700;
+    src:
+        url(fonts/KaTeX_Caligraphic-Bold.woff2) format("woff2"),
+        url(fonts/KaTeX_Caligraphic-Bold.woff) format("woff"),
+        url(fonts/KaTeX_Caligraphic-Bold.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Caligraphic;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Caligraphic-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Caligraphic-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Caligraphic-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Fraktur;
+    font-style: normal;
+    font-weight: 700;
+    src:
+        url(fonts/KaTeX_Fraktur-Bold.woff2) format("woff2"),
+        url(fonts/KaTeX_Fraktur-Bold.woff) format("woff"),
+        url(fonts/KaTeX_Fraktur-Bold.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Fraktur;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Fraktur-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Fraktur-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Fraktur-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Main;
+    font-style: normal;
+    font-weight: 700;
+    src:
+        url(fonts/KaTeX_Main-Bold.woff2) format("woff2"),
+        url(fonts/KaTeX_Main-Bold.woff) format("woff"),
+        url(fonts/KaTeX_Main-Bold.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Main;
+    font-style: italic;
+    font-weight: 700;
+    src:
+        url(fonts/KaTeX_Main-BoldItalic.woff2) format("woff2"),
+        url(fonts/KaTeX_Main-BoldItalic.woff) format("woff"),
+        url(fonts/KaTeX_Main-BoldItalic.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Main;
+    font-style: italic;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Main-Italic.woff2) format("woff2"),
+        url(fonts/KaTeX_Main-Italic.woff) format("woff"),
+        url(fonts/KaTeX_Main-Italic.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Main;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Main-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Main-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Main-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Math;
+    font-style: italic;
+    font-weight: 700;
+    src:
+        url(fonts/KaTeX_Math-BoldItalic.woff2) format("woff2"),
+        url(fonts/KaTeX_Math-BoldItalic.woff) format("woff"),
+        url(fonts/KaTeX_Math-BoldItalic.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Math;
+    font-style: italic;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Math-Italic.woff2) format("woff2"),
+        url(fonts/KaTeX_Math-Italic.woff) format("woff"),
+        url(fonts/KaTeX_Math-Italic.ttf) format("truetype");
+}
+@font-face {
+    font-family: "KaTeX_SansSerif";
+    font-style: normal;
+    font-weight: 700;
+    src:
+        url(fonts/KaTeX_SansSerif-Bold.woff2) format("woff2"),
+        url(fonts/KaTeX_SansSerif-Bold.woff) format("woff"),
+        url(fonts/KaTeX_SansSerif-Bold.ttf) format("truetype");
+}
+@font-face {
+    font-family: "KaTeX_SansSerif";
+    font-style: italic;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_SansSerif-Italic.woff2) format("woff2"),
+        url(fonts/KaTeX_SansSerif-Italic.woff) format("woff"),
+        url(fonts/KaTeX_SansSerif-Italic.ttf) format("truetype");
+}
+@font-face {
+    font-family: "KaTeX_SansSerif";
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_SansSerif-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_SansSerif-Regular.woff) format("woff"),
+        url(fonts/KaTeX_SansSerif-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Script;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Script-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Script-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Script-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Size1;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Size1-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Size1-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Size1-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Size2;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Size2-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Size2-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Size2-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Size3;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Size3-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Size3-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Size3-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Size4;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Size4-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Size4-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Size4-Regular.ttf) format("truetype");
+}
+@font-face {
+    font-family: KaTeX_Typewriter;
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url(fonts/KaTeX_Typewriter-Regular.woff2) format("woff2"),
+        url(fonts/KaTeX_Typewriter-Regular.woff) format("woff"),
+        url(fonts/KaTeX_Typewriter-Regular.ttf) format("truetype");
+}
+.katex {
+    font:
+        normal 1.21em KaTeX_Main,
+        Times New Roman,
+        serif;
+    line-height: 1.2;
+    text-indent: 0;
+    text-rendering: auto;
+}
+.katex * {
+    -ms-high-contrast-adjust: none !important;
+    border-color: currentColor;
+}
+.katex .katex-version:after {
+    content: "0.16.21";
+}
+.katex .katex-mathml {
+    clip: rect(1px, 1px, 1px, 1px);
+    border: 0;
+    height: 1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+.katex .katex-html > .newline {
+    display: block;
+}
+.katex .base {
+    position: relative;
+    white-space: nowrap;
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
+}
+.katex .base,
+.katex .strut {
+    display: inline-block;
+}
+.katex .textbf {
+    font-weight: 700;
+}
+.katex .textit {
+    font-style: italic;
+}
+.katex .textrm {
+    font-family: KaTeX_Main;
+}
+.katex .textsf {
+    font-family: KaTeX_SansSerif;
+}
+.katex .texttt {
+    font-family: KaTeX_Typewriter;
+}
+.katex .mathnormal {
+    font-family: KaTeX_Math;
+    font-style: italic;
+}
+.katex .mathit {
+    font-family: KaTeX_Main;
+    font-style: italic;
+}
+.katex .mathrm {
+    font-style: normal;
+}
+.katex .mathbf {
+    font-family: KaTeX_Main;
+    font-weight: 700;
+}
+.katex .boldsymbol {
+    font-family: KaTeX_Math;
+    font-style: italic;
+    font-weight: 700;
+}
+.katex .amsrm,
+.katex .mathbb,
+.katex .textbb {
+    font-family: KaTeX_AMS;
+}
+.katex .mathcal {
+    font-family: KaTeX_Caligraphic;
+}
+.katex .mathfrak,
+.katex .textfrak {
+    font-family: KaTeX_Fraktur;
+}
+.katex .mathboldfrak,
+.katex .textboldfrak {
+    font-family: KaTeX_Fraktur;
+    font-weight: 700;
+}
+.katex .mathtt {
+    font-family: KaTeX_Typewriter;
+}
+.katex .mathscr,
+.katex .textscr {
+    font-family: KaTeX_Script;
+}
+.katex .mathsf,
+.katex .textsf {
+    font-family: KaTeX_SansSerif;
+}
+.katex .mathboldsf,
+.katex .textboldsf {
+    font-family: KaTeX_SansSerif;
+    font-weight: 700;
+}
+.katex .mathitsf,
+.katex .mathsfit,
+.katex .textitsf {
+    font-family: KaTeX_SansSerif;
+    font-style: italic;
+}
+.katex .mainrm {
+    font-family: KaTeX_Main;
+    font-style: normal;
+}
+.katex .vlist-t {
+    border-collapse: collapse;
+    display: inline-table;
+    table-layout: fixed;
+}
+.katex .vlist-r {
+    display: table-row;
+}
+.katex .vlist {
+    display: table-cell;
+    position: relative;
+    vertical-align: bottom;
+}
+.katex .vlist > span {
+    display: block;
+    height: 0;
+    position: relative;
+}
+.katex .vlist > span > span {
+    display: inline-block;
+}
+.katex .vlist > span > .pstrut {
+    overflow: hidden;
+    width: 0;
+}
+.katex .vlist-t2 {
+    margin-right: -2px;
+}
+.katex .vlist-s {
+    display: table-cell;
+    font-size: 1px;
+    min-width: 2px;
+    vertical-align: bottom;
+    width: 2px;
+}
+.katex .vbox {
+    align-items: baseline;
+    display: inline-flex;
+    flex-direction: column;
+}
+.katex .hbox {
+    width: 100%;
+}
+.katex .hbox,
+.katex .thinbox {
+    display: inline-flex;
+    flex-direction: row;
+}
+.katex .thinbox {
+    max-width: 0;
+    width: 0;
+}
+.katex .msupsub {
+    text-align: left;
+}
+.katex .mfrac > span > span {
+    text-align: center;
+}
+.katex .mfrac .frac-line {
+    border-bottom-style: solid;
+    display: inline-block;
+    width: 100%;
+}
+.katex .hdashline,
+.katex .hline,
+.katex .mfrac .frac-line,
+.katex .overline .overline-line,
+.katex .rule,
+.katex .underline .underline-line {
+    min-height: 1px;
+}
+.katex .mspace {
+    display: inline-block;
+}
+.katex .clap,
+.katex .llap,
+.katex .rlap {
+    position: relative;
+    width: 0;
+}
+.katex .clap > .inner,
+.katex .llap > .inner,
+.katex .rlap > .inner {
+    position: absolute;
+}
+.katex .clap > .fix,
+.katex .llap > .fix,
+.katex .rlap > .fix {
+    display: inline-block;
+}
+.katex .llap > .inner {
+    right: 0;
+}
+.katex .clap > .inner,
+.katex .rlap > .inner {
+    left: 0;
+}
+.katex .clap > .inner > span {
+    margin-left: -50%;
+    margin-right: 50%;
+}
+.katex .rule {
+    border: 0 solid;
+    display: inline-block;
+    position: relative;
+}
+.katex .hline,
+.katex .overline .overline-line,
+.katex .underline .underline-line {
+    border-bottom-style: solid;
+    display: inline-block;
+    width: 100%;
+}
+.katex .hdashline {
+    border-bottom-style: dashed;
+    display: inline-block;
+    width: 100%;
+}
+.katex .sqrt > .root {
+    margin-left: 0.2777777778em;
+    margin-right: -0.5555555556em;
+}
+.katex .fontsize-ensurer.reset-size1.size1,
+.katex .sizing.reset-size1.size1 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size1.size2,
+.katex .sizing.reset-size1.size2 {
+    font-size: 1.2em;
+}
+.katex .fontsize-ensurer.reset-size1.size3,
+.katex .sizing.reset-size1.size3 {
+    font-size: 1.4em;
+}
+.katex .fontsize-ensurer.reset-size1.size4,
+.katex .sizing.reset-size1.size4 {
+    font-size: 1.6em;
+}
+.katex .fontsize-ensurer.reset-size1.size5,
+.katex .sizing.reset-size1.size5 {
+    font-size: 1.8em;
+}
+.katex .fontsize-ensurer.reset-size1.size6,
+.katex .sizing.reset-size1.size6 {
+    font-size: 2em;
+}
+.katex .fontsize-ensurer.reset-size1.size7,
+.katex .sizing.reset-size1.size7 {
+    font-size: 2.4em;
+}
+.katex .fontsize-ensurer.reset-size1.size8,
+.katex .sizing.reset-size1.size8 {
+    font-size: 2.88em;
+}
+.katex .fontsize-ensurer.reset-size1.size9,
+.katex .sizing.reset-size1.size9 {
+    font-size: 3.456em;
+}
+.katex .fontsize-ensurer.reset-size1.size10,
+.katex .sizing.reset-size1.size10 {
+    font-size: 4.148em;
+}
+.katex .fontsize-ensurer.reset-size1.size11,
+.katex .sizing.reset-size1.size11 {
+    font-size: 4.976em;
+}
+.katex .fontsize-ensurer.reset-size2.size1,
+.katex .sizing.reset-size2.size1 {
+    font-size: 0.8333333333em;
+}
+.katex .fontsize-ensurer.reset-size2.size2,
+.katex .sizing.reset-size2.size2 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size2.size3,
+.katex .sizing.reset-size2.size3 {
+    font-size: 1.1666666667em;
+}
+.katex .fontsize-ensurer.reset-size2.size4,
+.katex .sizing.reset-size2.size4 {
+    font-size: 1.3333333333em;
+}
+.katex .fontsize-ensurer.reset-size2.size5,
+.katex .sizing.reset-size2.size5 {
+    font-size: 1.5em;
+}
+.katex .fontsize-ensurer.reset-size2.size6,
+.katex .sizing.reset-size2.size6 {
+    font-size: 1.6666666667em;
+}
+.katex .fontsize-ensurer.reset-size2.size7,
+.katex .sizing.reset-size2.size7 {
+    font-size: 2em;
+}
+.katex .fontsize-ensurer.reset-size2.size8,
+.katex .sizing.reset-size2.size8 {
+    font-size: 2.4em;
+}
+.katex .fontsize-ensurer.reset-size2.size9,
+.katex .sizing.reset-size2.size9 {
+    font-size: 2.88em;
+}
+.katex .fontsize-ensurer.reset-size2.size10,
+.katex .sizing.reset-size2.size10 {
+    font-size: 3.4566666667em;
+}
+.katex .fontsize-ensurer.reset-size2.size11,
+.katex .sizing.reset-size2.size11 {
+    font-size: 4.1466666667em;
+}
+.katex .fontsize-ensurer.reset-size3.size1,
+.katex .sizing.reset-size3.size1 {
+    font-size: 0.7142857143em;
+}
+.katex .fontsize-ensurer.reset-size3.size2,
+.katex .sizing.reset-size3.size2 {
+    font-size: 0.8571428571em;
+}
+.katex .fontsize-ensurer.reset-size3.size3,
+.katex .sizing.reset-size3.size3 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size3.size4,
+.katex .sizing.reset-size3.size4 {
+    font-size: 1.1428571429em;
+}
+.katex .fontsize-ensurer.reset-size3.size5,
+.katex .sizing.reset-size3.size5 {
+    font-size: 1.2857142857em;
+}
+.katex .fontsize-ensurer.reset-size3.size6,
+.katex .sizing.reset-size3.size6 {
+    font-size: 1.4285714286em;
+}
+.katex .fontsize-ensurer.reset-size3.size7,
+.katex .sizing.reset-size3.size7 {
+    font-size: 1.7142857143em;
+}
+.katex .fontsize-ensurer.reset-size3.size8,
+.katex .sizing.reset-size3.size8 {
+    font-size: 2.0571428571em;
+}
+.katex .fontsize-ensurer.reset-size3.size9,
+.katex .sizing.reset-size3.size9 {
+    font-size: 2.4685714286em;
+}
+.katex .fontsize-ensurer.reset-size3.size10,
+.katex .sizing.reset-size3.size10 {
+    font-size: 2.9628571429em;
+}
+.katex .fontsize-ensurer.reset-size3.size11,
+.katex .sizing.reset-size3.size11 {
+    font-size: 3.5542857143em;
+}
+.katex .fontsize-ensurer.reset-size4.size1,
+.katex .sizing.reset-size4.size1 {
+    font-size: 0.625em;
+}
+.katex .fontsize-ensurer.reset-size4.size2,
+.katex .sizing.reset-size4.size2 {
+    font-size: 0.75em;
+}
+.katex .fontsize-ensurer.reset-size4.size3,
+.katex .sizing.reset-size4.size3 {
+    font-size: 0.875em;
+}
+.katex .fontsize-ensurer.reset-size4.size4,
+.katex .sizing.reset-size4.size4 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size4.size5,
+.katex .sizing.reset-size4.size5 {
+    font-size: 1.125em;
+}
+.katex .fontsize-ensurer.reset-size4.size6,
+.katex .sizing.reset-size4.size6 {
+    font-size: 1.25em;
+}
+.katex .fontsize-ensurer.reset-size4.size7,
+.katex .sizing.reset-size4.size7 {
+    font-size: 1.5em;
+}
+.katex .fontsize-ensurer.reset-size4.size8,
+.katex .sizing.reset-size4.size8 {
+    font-size: 1.8em;
+}
+.katex .fontsize-ensurer.reset-size4.size9,
+.katex .sizing.reset-size4.size9 {
+    font-size: 2.16em;
+}
+.katex .fontsize-ensurer.reset-size4.size10,
+.katex .sizing.reset-size4.size10 {
+    font-size: 2.5925em;
+}
+.katex .fontsize-ensurer.reset-size4.size11,
+.katex .sizing.reset-size4.size11 {
+    font-size: 3.11em;
+}
+.katex .fontsize-ensurer.reset-size5.size1,
+.katex .sizing.reset-size5.size1 {
+    font-size: 0.5555555556em;
+}
+.katex .fontsize-ensurer.reset-size5.size2,
+.katex .sizing.reset-size5.size2 {
+    font-size: 0.6666666667em;
+}
+.katex .fontsize-ensurer.reset-size5.size3,
+.katex .sizing.reset-size5.size3 {
+    font-size: 0.7777777778em;
+}
+.katex .fontsize-ensurer.reset-size5.size4,
+.katex .sizing.reset-size5.size4 {
+    font-size: 0.8888888889em;
+}
+.katex .fontsize-ensurer.reset-size5.size5,
+.katex .sizing.reset-size5.size5 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size5.size6,
+.katex .sizing.reset-size5.size6 {
+    font-size: 1.1111111111em;
+}
+.katex .fontsize-ensurer.reset-size5.size7,
+.katex .sizing.reset-size5.size7 {
+    font-size: 1.3333333333em;
+}
+.katex .fontsize-ensurer.reset-size5.size8,
+.katex .sizing.reset-size5.size8 {
+    font-size: 1.6em;
+}
+.katex .fontsize-ensurer.reset-size5.size9,
+.katex .sizing.reset-size5.size9 {
+    font-size: 1.92em;
+}
+.katex .fontsize-ensurer.reset-size5.size10,
+.katex .sizing.reset-size5.size10 {
+    font-size: 2.3044444444em;
+}
+.katex .fontsize-ensurer.reset-size5.size11,
+.katex .sizing.reset-size5.size11 {
+    font-size: 2.7644444444em;
+}
+.katex .fontsize-ensurer.reset-size6.size1,
+.katex .sizing.reset-size6.size1 {
+    font-size: 0.5em;
+}
+.katex .fontsize-ensurer.reset-size6.size2,
+.katex .sizing.reset-size6.size2 {
+    font-size: 0.6em;
+}
+.katex .fontsize-ensurer.reset-size6.size3,
+.katex .sizing.reset-size6.size3 {
+    font-size: 0.7em;
+}
+.katex .fontsize-ensurer.reset-size6.size4,
+.katex .sizing.reset-size6.size4 {
+    font-size: 0.8em;
+}
+.katex .fontsize-ensurer.reset-size6.size5,
+.katex .sizing.reset-size6.size5 {
+    font-size: 0.9em;
+}
+.katex .fontsize-ensurer.reset-size6.size6,
+.katex .sizing.reset-size6.size6 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size6.size7,
+.katex .sizing.reset-size6.size7 {
+    font-size: 1.2em;
+}
+.katex .fontsize-ensurer.reset-size6.size8,
+.katex .sizing.reset-size6.size8 {
+    font-size: 1.44em;
+}
+.katex .fontsize-ensurer.reset-size6.size9,
+.katex .sizing.reset-size6.size9 {
+    font-size: 1.728em;
+}
+.katex .fontsize-ensurer.reset-size6.size10,
+.katex .sizing.reset-size6.size10 {
+    font-size: 2.074em;
+}
+.katex .fontsize-ensurer.reset-size6.size11,
+.katex .sizing.reset-size6.size11 {
+    font-size: 2.488em;
+}
+.katex .fontsize-ensurer.reset-size7.size1,
+.katex .sizing.reset-size7.size1 {
+    font-size: 0.4166666667em;
+}
+.katex .fontsize-ensurer.reset-size7.size2,
+.katex .sizing.reset-size7.size2 {
+    font-size: 0.5em;
+}
+.katex .fontsize-ensurer.reset-size7.size3,
+.katex .sizing.reset-size7.size3 {
+    font-size: 0.5833333333em;
+}
+.katex .fontsize-ensurer.reset-size7.size4,
+.katex .sizing.reset-size7.size4 {
+    font-size: 0.6666666667em;
+}
+.katex .fontsize-ensurer.reset-size7.size5,
+.katex .sizing.reset-size7.size5 {
+    font-size: 0.75em;
+}
+.katex .fontsize-ensurer.reset-size7.size6,
+.katex .sizing.reset-size7.size6 {
+    font-size: 0.8333333333em;
+}
+.katex .fontsize-ensurer.reset-size7.size7,
+.katex .sizing.reset-size7.size7 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size7.size8,
+.katex .sizing.reset-size7.size8 {
+    font-size: 1.2em;
+}
+.katex .fontsize-ensurer.reset-size7.size9,
+.katex .sizing.reset-size7.size9 {
+    font-size: 1.44em;
+}
+.katex .fontsize-ensurer.reset-size7.size10,
+.katex .sizing.reset-size7.size10 {
+    font-size: 1.7283333333em;
+}
+.katex .fontsize-ensurer.reset-size7.size11,
+.katex .sizing.reset-size7.size11 {
+    font-size: 2.0733333333em;
+}
+.katex .fontsize-ensurer.reset-size8.size1,
+.katex .sizing.reset-size8.size1 {
+    font-size: 0.3472222222em;
+}
+.katex .fontsize-ensurer.reset-size8.size2,
+.katex .sizing.reset-size8.size2 {
+    font-size: 0.4166666667em;
+}
+.katex .fontsize-ensurer.reset-size8.size3,
+.katex .sizing.reset-size8.size3 {
+    font-size: 0.4861111111em;
+}
+.katex .fontsize-ensurer.reset-size8.size4,
+.katex .sizing.reset-size8.size4 {
+    font-size: 0.5555555556em;
+}
+.katex .fontsize-ensurer.reset-size8.size5,
+.katex .sizing.reset-size8.size5 {
+    font-size: 0.625em;
+}
+.katex .fontsize-ensurer.reset-size8.size6,
+.katex .sizing.reset-size8.size6 {
+    font-size: 0.6944444444em;
+}
+.katex .fontsize-ensurer.reset-size8.size7,
+.katex .sizing.reset-size8.size7 {
+    font-size: 0.8333333333em;
+}
+.katex .fontsize-ensurer.reset-size8.size8,
+.katex .sizing.reset-size8.size8 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size8.size9,
+.katex .sizing.reset-size8.size9 {
+    font-size: 1.2em;
+}
+.katex .fontsize-ensurer.reset-size8.size10,
+.katex .sizing.reset-size8.size10 {
+    font-size: 1.4402777778em;
+}
+.katex .fontsize-ensurer.reset-size8.size11,
+.katex .sizing.reset-size8.size11 {
+    font-size: 1.7277777778em;
+}
+.katex .fontsize-ensurer.reset-size9.size1,
+.katex .sizing.reset-size9.size1 {
+    font-size: 0.2893518519em;
+}
+.katex .fontsize-ensurer.reset-size9.size2,
+.katex .sizing.reset-size9.size2 {
+    font-size: 0.3472222222em;
+}
+.katex .fontsize-ensurer.reset-size9.size3,
+.katex .sizing.reset-size9.size3 {
+    font-size: 0.4050925926em;
+}
+.katex .fontsize-ensurer.reset-size9.size4,
+.katex .sizing.reset-size9.size4 {
+    font-size: 0.462962963em;
+}
+.katex .fontsize-ensurer.reset-size9.size5,
+.katex .sizing.reset-size9.size5 {
+    font-size: 0.5208333333em;
+}
+.katex .fontsize-ensurer.reset-size9.size6,
+.katex .sizing.reset-size9.size6 {
+    font-size: 0.5787037037em;
+}
+.katex .fontsize-ensurer.reset-size9.size7,
+.katex .sizing.reset-size9.size7 {
+    font-size: 0.6944444444em;
+}
+.katex .fontsize-ensurer.reset-size9.size8,
+.katex .sizing.reset-size9.size8 {
+    font-size: 0.8333333333em;
+}
+.katex .fontsize-ensurer.reset-size9.size9,
+.katex .sizing.reset-size9.size9 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size9.size10,
+.katex .sizing.reset-size9.size10 {
+    font-size: 1.2002314815em;
+}
+.katex .fontsize-ensurer.reset-size9.size11,
+.katex .sizing.reset-size9.size11 {
+    font-size: 1.4398148148em;
+}
+.katex .fontsize-ensurer.reset-size10.size1,
+.katex .sizing.reset-size10.size1 {
+    font-size: 0.2410800386em;
+}
+.katex .fontsize-ensurer.reset-size10.size2,
+.katex .sizing.reset-size10.size2 {
+    font-size: 0.2892960463em;
+}
+.katex .fontsize-ensurer.reset-size10.size3,
+.katex .sizing.reset-size10.size3 {
+    font-size: 0.337512054em;
+}
+.katex .fontsize-ensurer.reset-size10.size4,
+.katex .sizing.reset-size10.size4 {
+    font-size: 0.3857280617em;
+}
+.katex .fontsize-ensurer.reset-size10.size5,
+.katex .sizing.reset-size10.size5 {
+    font-size: 0.4339440694em;
+}
+.katex .fontsize-ensurer.reset-size10.size6,
+.katex .sizing.reset-size10.size6 {
+    font-size: 0.4821600771em;
+}
+.katex .fontsize-ensurer.reset-size10.size7,
+.katex .sizing.reset-size10.size7 {
+    font-size: 0.5785920926em;
+}
+.katex .fontsize-ensurer.reset-size10.size8,
+.katex .sizing.reset-size10.size8 {
+    font-size: 0.6943105111em;
+}
+.katex .fontsize-ensurer.reset-size10.size9,
+.katex .sizing.reset-size10.size9 {
+    font-size: 0.8331726133em;
+}
+.katex .fontsize-ensurer.reset-size10.size10,
+.katex .sizing.reset-size10.size10 {
+    font-size: 1em;
+}
+.katex .fontsize-ensurer.reset-size10.size11,
+.katex .sizing.reset-size10.size11 {
+    font-size: 1.1996142719em;
+}
+.katex .fontsize-ensurer.reset-size11.size1,
+.katex .sizing.reset-size11.size1 {
+    font-size: 0.2009646302em;
+}
+.katex .fontsize-ensurer.reset-size11.size2,
+.katex .sizing.reset-size11.size2 {
+    font-size: 0.2411575563em;
+}
+.katex .fontsize-ensurer.reset-size11.size3,
+.katex .sizing.reset-size11.size3 {
+    font-size: 0.2813504823em;
+}
+.katex .fontsize-ensurer.reset-size11.size4,
+.katex .sizing.reset-size11.size4 {
+    font-size: 0.3215434084em;
+}
+.katex .fontsize-ensurer.reset-size11.size5,
+.katex .sizing.reset-size11.size5 {
+    font-size: 0.3617363344em;
+}
+.katex .fontsize-ensurer.reset-size11.size6,
+.katex .sizing.reset-size11.size6 {
+    font-size: 0.4019292605em;
+}
+.katex .fontsize-ensurer.reset-size11.size7,
+.katex .sizing.reset-size11.size7 {
+    font-size: 0.4823151125em;
+}
+.katex .fontsize-ensurer.reset-size11.size8,
+.katex .sizing.reset-size11.size8 {
+    font-size: 0.578778135em;
+}
+.katex .fontsize-ensurer.reset-size11.size9,
+.katex .sizing.reset-size11.size9 {
+    font-size: 0.6945337621em;
+}
+.katex .fontsize-ensurer.reset-size11.size10,
+.katex .sizing.reset-size11.size10 {
+    font-size: 0.8336012862em;
+}
+.katex .fontsize-ensurer.reset-size11.size11,
+.katex .sizing.reset-size11.size11 {
+    font-size: 1em;
+}
+.katex .delimsizing.size1 {
+    font-family: KaTeX_Size1;
+}
+.katex .delimsizing.size2 {
+    font-family: KaTeX_Size2;
+}
+.katex .delimsizing.size3 {
+    font-family: KaTeX_Size3;
+}
+.katex .delimsizing.size4 {
+    font-family: KaTeX_Size4;
+}
+.katex .delimsizing.mult .delim-size1 > span {
+    font-family: KaTeX_Size1;
+}
+.katex .delimsizing.mult .delim-size4 > span {
+    font-family: KaTeX_Size4;
+}
+.katex .nulldelimiter {
+    display: inline-block;
+    width: 0.12em;
+}
+.katex .delimcenter,
+.katex .op-symbol {
+    position: relative;
+}
+.katex .op-symbol.small-op {
+    font-family: KaTeX_Size1;
+}
+.katex .op-symbol.large-op {
+    font-family: KaTeX_Size2;
+}
+.katex .accent > .vlist-t,
+.katex .op-limits > .vlist-t {
+    text-align: center;
+}
+.katex .accent .accent-body {
+    position: relative;
+}
+.katex .accent .accent-body:not(.accent-full) {
+    width: 0;
+}
+.katex .overlay {
+    display: block;
+}
+.katex .mtable .vertical-separator {
+    display: inline-block;
+    min-width: 1px;
+}
+.katex .mtable .arraycolsep {
+    display: inline-block;
+}
+.katex .mtable .col-align-c > .vlist-t {
+    text-align: center;
+}
+.katex .mtable .col-align-l > .vlist-t {
+    text-align: left;
+}
+.katex .mtable .col-align-r > .vlist-t {
+    text-align: right;
+}
+.katex .svg-align {
+    text-align: left;
+}
+.katex svg {
+    fill: currentColor;
+    stroke: currentColor;
+    fill-rule: nonzero;
+    fill-opacity: 1;
+    stroke-width: 1;
+    stroke-linecap: butt;
+    stroke-linejoin: miter;
+    stroke-miterlimit: 4;
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    stroke-opacity: 1;
+    display: block;
+    height: inherit;
+    position: absolute;
+    width: 100%;
+}
+.katex svg path {
+    stroke: none;
+}
+.katex img {
+    border-style: none;
+    max-height: none;
+    max-width: none;
+    min-height: 0;
+    min-width: 0;
+}
+.katex .stretchy {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+.katex .stretchy:after,
+.katex .stretchy:before {
+    content: "";
+}
+.katex .hide-tail {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+.katex .halfarrow-left {
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 50.2%;
+}
+.katex .halfarrow-right {
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    width: 50.2%;
+}
+.katex .brace-left {
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 25.1%;
+}
+.katex .brace-center {
+    left: 25%;
+    overflow: hidden;
+    position: absolute;
+    width: 50%;
+}
+.katex .brace-right {
+    overflow: hidden;
+    position: absolute;
+    right: 0;
+    width: 25.1%;
+}
+.katex .x-arrow-pad {
+    padding: 0 0.5em;
+}
+.katex .cd-arrow-pad {
+    padding: 0 0.55556em 0 0.27778em;
+}
+.katex .mover,
+.katex .munder,
+.katex .x-arrow {
+    text-align: center;
+}
+.katex .boxpad {
+    padding: 0 0.3em;
+}
+.katex .fbox,
+.katex .fcolorbox {
+    border: 0.04em solid;
+    box-sizing: border-box;
+}
+.katex .cancel-pad {
+    padding: 0 0.2em;
+}
+.katex .cancel-lap {
+    margin-left: -0.2em;
+    margin-right: -0.2em;
+}
+.katex .sout {
+    border-bottom-style: solid;
+    border-bottom-width: 0.08em;
+}
+.katex .angl {
+    border-right: 0.049em solid;
+    border-top: 0.049em solid;
+    box-sizing: border-box;
+    margin-right: 0.03889em;
+}
+.katex .anglpad {
+    padding: 0 0.03889em;
+}
+.katex .eqn-num:before {
+    content: "(" counter(katexEqnNo) ")";
+    counter-increment: katexEqnNo;
+}
+.katex .mml-eqn-num:before {
+    content: "(" counter(mmlEqnNo) ")";
+    counter-increment: mmlEqnNo;
+}
+.katex .mtr-glue {
+    width: 50%;
+}
+.katex .cd-vert-arrow {
+    display: inline-block;
+    position: relative;
+}
+.katex .cd-label-left {
+    display: inline-block;
+    position: absolute;
+    right: calc(50% + 0.3em);
+    text-align: left;
+}
+.katex .cd-label-right {
+    display: inline-block;
+    left: calc(50% + 0.3em);
+    position: absolute;
+    text-align: right;
+}
+.katex-display {
+    display: block;
+    margin: 1em 0;
+    text-align: center;
+}
+.katex-display > .katex {
+    display: block;
+    text-align: center;
+    white-space: nowrap;
+}
+.katex-display > .katex > .katex-html {
+    display: block;
+    position: relative;
+}
+.katex-display > .katex > .katex-html > .tag {
+    position: absolute;
+    right: 0;
+}
+.katex-display.leqno > .katex > .katex-html > .tag {
+    left: 0;
+    right: auto;
+}
+.katex-display.fleqn > .katex {
+    padding-left: 2em;
+    text-align: left;
+}
+body {
+    counter-reset: katexEqnNo mmlEqnNo;
 }
 
 .markdown-body {
