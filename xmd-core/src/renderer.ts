@@ -106,6 +106,8 @@ export function renderFromBlocks(blocks: ParsedBlock[]): string {
 }
 
 export function renderToHtmlStr(state: ParsingStateBlock) {
+    console.log(process.cwd());
+
     const htmlContent = render(state);
     const theme = readFile("./static/github-markdown.css");
     const marginStyle = readFile("./static/margin.css");

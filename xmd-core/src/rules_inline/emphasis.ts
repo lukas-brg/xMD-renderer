@@ -16,34 +16,18 @@ export const Emphasis: InlineRule = {
             "_": [],
             "__": [],
         };
-        let stack: string[] = [];
 
+        // prettier-ignore
+
+        let posAstr = state.findIndices(/\*/g);
+        let posUnder = state.findIndices(/_/g);
+
+        if (!posAstr && !posUnder) return false;
+
+        let stack: string[] = [];
         for (let i = 0; i < state.line.length; ) {
             const char = state.charAt(i);
             if (char == "_" || char == "*") {
-                if (stack[stack.length - 1] == char) {
-                    tokenPositions[char].push(i);
-                    stack.pop();
-                    i += 1;
-                    continue;
-                }
-
-                if (state.charAt(i + 1) == char) {
-                    if (stack[stack.length - 1] == char + char) {
-                        tokenPositions[char + char].push(i);
-                        stack.pop();
-                        i += 2;
-                        continue;
-                    }
-                    tokenPositions[char + char].push(i);
-                    stack.push(char + char);
-                    i += 2;
-                    continue;
-                }
-                tokenPositions[char].push(i);
-                stack.push(char);
-                i += 1;
-                continue;
             }
             i++;
         }
@@ -57,23 +41,11 @@ export const Emphasis: InlineRule = {
             for (let [start, end] of pairs(positions)) {
                 state.addInlineToken(
                     start,
-                    InlineToken.createContentless(
-                        tag,
-                        start,
-                        Emphasis.name,
-                        "open",
-                        start + tokLen,
-                    ),
+                    InlineToken.createOpening(tag, start, Emphasis.name, start + tokLen),
                 );
                 state.addInlineToken(
                     end,
-                    InlineToken.createContentless(
-                        tag,
-                        end,
-                        Emphasis.name,
-                        "close",
-                        end + tokLen,
-                    ),
+                    InlineToken.createClosing(tag, end, Emphasis.name, end + tokLen),
                 );
                 madeChange = true;
             }

@@ -163,6 +163,21 @@ export class ParsingStateInline {
 
         return matches;
     }
+
+    findIndices(regex: RegExp): number[] {
+        let matches = Array.from(this.line.matchAll(regex)).filter((m) => {
+            const start = m.index;
+            const end = start + m[0].length;
+            for (let i = start; i < end; i++) {
+                if (this._consumedIndices.has(i)) {
+                    return false;
+                }
+                return true;
+            }
+        });
+
+        return matches.map((m) => m.index);
+    }
 }
 
 /** BlockRules don't mutate state directly. This class represents the change of state a rule wants to apply.

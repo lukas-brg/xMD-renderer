@@ -6,6 +6,9 @@
         "xmd-code",
         "xmd-cli"
     ],
+    "bin": {
+        "xmd": "./xmd-cli/dist/cli.js"
+    },
     "scripts": {
         "build-cli": "npm run build --workspace=xmd-cli",
         "build-code": "npm run build --workspace=xmd-code",
@@ -13,8 +16,5 @@
         "cli": "npm run build-cli && xmd",
         "build": "npm run build-cli && npm run build-code",
         "test": "npm test --workspaces"
-    },
-    "dependencies": {
-        "katex": "^0.16.21"
     }
 }

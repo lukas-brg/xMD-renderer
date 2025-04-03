@@ -286,6 +286,44 @@ export class InlineToken extends Token {
         );
     }
 
+    static createOpening(
+        tag: string,
+        position: number,
+        createdBy: string,
+        positionEnd?: number,
+        depth?: number,
+    ): InlineToken {
+        return new InlineToken(
+            tag,
+            position,
+            createdBy,
+            "open",
+            undefined,
+            false,
+            depth,
+            positionEnd,
+        );
+    }
+
+    static createClosing(
+        tag: string,
+        position: number,
+        createdBy: string,
+        positionEnd?: number,
+        depth?: number,
+    ): InlineToken {
+        return new InlineToken(
+            tag,
+            position,
+            createdBy,
+            "close",
+            undefined,
+            false,
+            depth,
+            positionEnd,
+        );
+    }
+
     static createSelfClosing(
         tag: string,
         position: number,
